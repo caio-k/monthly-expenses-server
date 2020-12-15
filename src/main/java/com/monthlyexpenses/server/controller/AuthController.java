@@ -1,7 +1,7 @@
 package com.monthlyexpenses.server.controller;
 
-import com.monthlyexpenses.server.dto.request.LoginRequest;
-import com.monthlyexpenses.server.dto.request.SignUpRequest;
+import com.monthlyexpenses.server.dto.request.auth.LoginRequest;
+import com.monthlyexpenses.server.dto.request.auth.SignUpRequest;
 import com.monthlyexpenses.server.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

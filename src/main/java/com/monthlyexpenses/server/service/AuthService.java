@@ -1,9 +1,10 @@
 package com.monthlyexpenses.server.service;
 
-import com.monthlyexpenses.server.dto.request.LoginRequest;
-import com.monthlyexpenses.server.dto.request.SignUpRequest;
-import com.monthlyexpenses.server.dto.response.JwtResponse;
+import com.monthlyexpenses.server.dto.request.auth.LoginRequest;
+import com.monthlyexpenses.server.dto.request.auth.SignUpRequest;
+import com.monthlyexpenses.server.dto.response.auth.JwtResponse;
 import com.monthlyexpenses.server.dto.response.MessageResponse;
+import com.monthlyexpenses.server.error.ResourceNotFoundException;
 import com.monthlyexpenses.server.message.MessagesComponent;
 import com.monthlyexpenses.server.model.ERole;
 import com.monthlyexpenses.server.model.Role;
@@ -93,7 +94,7 @@ public class AuthService {
         Set<Role> roles = new HashSet<>();
 
         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException(messages.get("ROLE_NOT_FOUND")));
+                .orElseThrow(() -> new ResourceNotFoundException(messages.get("ROLE_NOT_FOUND")));
         roles.add(userRole);
 
         user.setRoles(roles);

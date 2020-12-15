@@ -4,7 +4,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "expense_type", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "user_id"}))
+@Table(name = "expense_type", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name", "user_id"})
+})
 public class ExpenseType {
 
     @Id
@@ -14,8 +16,7 @@ public class ExpenseType {
     @NotBlank
     private String name;
 
-    @ManyToOne
-    @MapsId("id")
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 

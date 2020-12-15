@@ -1,4 +1,4 @@
-package com.monthlyexpenses.server.dto.response;
+package com.monthlyexpenses.server.dto.response.auth;
 
 import java.util.List;
 

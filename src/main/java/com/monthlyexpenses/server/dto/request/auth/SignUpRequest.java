@@ -1,4 +1,4 @@
-package com.monthlyexpenses.server.dto.request;
+package com.monthlyexpenses.server.dto.request.auth;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
