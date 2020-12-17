@@ -1,8 +1,8 @@
-package com.monthlyexpenses.server.dto.request.expenseType;
+package com.monthlyexpenses.server.dto.request.utils;
 
 import javax.validation.constraints.NotNull;
 
-public class ExpenseTypeGetRequest {
+public class UserIdRequest {
 
     @NotNull(message = "{userId.not.null}")
     private Long userId;
