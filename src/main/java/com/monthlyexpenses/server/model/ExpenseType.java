@@ -2,6 +2,8 @@ package com.monthlyexpenses.server.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "expense_type", uniqueConstraints = {
@@ -19,6 +21,9 @@ public class ExpenseType {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "expenseType", cascade = {CascadeType.ALL})
+    private Set<Expense> expenses = new HashSet<>();
 
     public ExpenseType() {
 
@@ -51,5 +56,13 @@ public class ExpenseType {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Set<Expense> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(Set<Expense> expenses) {
+        this.expenses = expenses;
     }
 }
