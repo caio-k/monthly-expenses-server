@@ -31,9 +31,11 @@ public class Expense {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @MapsId("id")
-    @JoinColumn(name = "month_year_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumns({
+            @JoinColumn(name = "monthId", insertable = false, updatable = false),
+            @JoinColumn(name = "yearId", insertable = false, updatable = false)
+    })
     private MonthYear monthYear;
 
     public Expense() {

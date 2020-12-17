@@ -4,7 +4,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "initial_money", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "month_year_id"}))
+@Table(name = "initial_money", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"monthId", "yearId", "user_id"})
+})
 public class InitialMoney {
 
     @Id
@@ -19,9 +21,11 @@ public class InitialMoney {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @MapsId("id")
-    @JoinColumn(name = "month_year_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumns({
+            @JoinColumn(name = "monthId", insertable = false, updatable = false),
+            @JoinColumn(name = "yearId", insertable = false, updatable = false)
+    })
     private MonthYear monthYear;
 
     public InitialMoney() {

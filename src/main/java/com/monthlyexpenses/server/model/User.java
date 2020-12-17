@@ -38,10 +38,10 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
-    private Set<ExpenseType> expenseTypes = new HashSet<>();
+    private Set<Year> years = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
-    private Set<MonthYear> monthYears = new HashSet<>();
+    private Set<ExpenseType> expenseTypes = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
     private Set<InitialMoney> initialMoneySet = new HashSet<>();
@@ -100,20 +100,20 @@ public class User {
         this.roles = roles;
     }
 
+    public Set<Year> getYears() {
+        return years;
+    }
+
+    public void setYears(Set<Year> years) {
+        this.years = years;
+    }
+
     public Set<ExpenseType> getExpenseTypes() {
         return expenseTypes;
     }
 
     public void setExpenseTypes(Set<ExpenseType> expenseTypes) {
         this.expenseTypes = expenseTypes;
-    }
-
-    public Set<MonthYear> getMonthYears() {
-        return monthYears;
-    }
-
-    public void setMonthYears(Set<MonthYear> monthYears) {
-        this.monthYears = monthYears;
     }
 
     public Set<InitialMoney> getInitialMoneySet() {

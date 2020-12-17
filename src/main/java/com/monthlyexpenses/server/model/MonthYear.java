@@ -1,28 +1,26 @@
 package com.monthlyexpenses.server.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "month_years", uniqueConstraints = @UniqueConstraint(columnNames = {"month", "year", "user_id"}))
-public class MonthYear {
+@Table(name = "month_years")
+public class MonthYear implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotBlank
-    private int month;
-
-    @NotBlank
-    private int year;
+    @EmbeddedId
+    private MonthYearKey id;
 
     @ManyToOne
-    @MapsId("id")
-    @JoinColumn(name = "user_id")
-    private User user;
+    @MapsId("monthId")
+    @JoinColumn(name = "month_id")
+    private Month month;
+
+    @ManyToOne
+    @MapsId("yearId")
+    @JoinColumn(name = "year_id")
+    private Year year;
 
     @OneToMany(mappedBy = "monthYear")
     private Set<InitialMoney> initialMoneySet = new HashSet<>();
@@ -34,42 +32,34 @@ public class MonthYear {
 
     }
 
-    public MonthYear(@NotBlank int month, @NotBlank int year, User user) {
+    public MonthYear(Month month, Year year) {
+        this.id = new MonthYearKey(month.getId(), year.getId());
         this.month = month;
         this.year = year;
-        this.user = user;
     }
 
-    public Long getId() {
+    public MonthYearKey getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(MonthYearKey id) {
         this.id = id;
     }
 
-    public int getMonth() {
+    public Month getMonth() {
         return month;
     }
 
-    public void setMonth(int month) {
+    public void setMonth(Month month) {
         this.month = month;
     }
 
-    public int getYear() {
+    public Year getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Year year) {
         this.year = year;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public Set<InitialMoney> getInitialMoneySet() {
