@@ -22,10 +22,10 @@ public class MonthYear implements Serializable {
     @JoinColumn(name = "year_id")
     private Year year;
 
-    @OneToMany(mappedBy = "monthYear")
+    @OneToMany(mappedBy = "monthYear", cascade = CascadeType.ALL)
     private Set<InitialMoney> initialMoneySet = new HashSet<>();
 
-    @OneToMany(mappedBy = "monthYear")
+    @OneToMany(mappedBy = "monthYear", cascade = CascadeType.ALL)
     private Set<Expense> expenses = new HashSet<>();
 
     public MonthYear() {

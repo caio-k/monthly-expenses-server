@@ -2,6 +2,7 @@ package com.monthlyexpenses.server.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "initial_money", uniqueConstraints = {
@@ -13,18 +14,17 @@ public class InitialMoney {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotNull
     private float initialMoney;
 
-    @ManyToOne
-    @MapsId("id")
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns({
-            @JoinColumn(name = "monthId", insertable = false, updatable = false),
-            @JoinColumn(name = "yearId", insertable = false, updatable = false)
+            @JoinColumn(name = "monthId"),
+            @JoinColumn(name = "yearId")
     })
     private MonthYear monthYear;
 
