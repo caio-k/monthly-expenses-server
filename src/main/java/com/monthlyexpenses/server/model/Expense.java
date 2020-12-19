@@ -3,6 +3,7 @@ package com.monthlyexpenses.server.model;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "expense")
@@ -16,25 +17,24 @@ public class Expense {
     private String name;
 
     @Min(0)
-    @NotBlank
+    @NotNull
     private float price;
 
-    @NotBlank
+    @NotNull
     private boolean paid;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "expense_type_id")
     private ExpenseType expenseType;
 
-    @ManyToOne
-    @MapsId("id")
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns({
-            @JoinColumn(name = "monthId", insertable = false, updatable = false),
-            @JoinColumn(name = "yearId", insertable = false, updatable = false)
+            @JoinColumn(name = "monthId"),
+            @JoinColumn(name = "yearId")
     })
     private MonthYear monthYear;
 
@@ -42,7 +42,7 @@ public class Expense {
 
     }
 
-    public Expense(@NotBlank String name, @Min(0) @NotBlank float price, @NotBlank boolean paid,
+    public Expense(@NotBlank String name, @Min(0) @NotNull float price, @NotNull boolean paid,
                    ExpenseType expenseType, User user, MonthYear monthYear) {
         this.name = name;
         this.price = price;
