@@ -4,7 +4,7 @@ import com.monthlyexpenses.server.dto.request.auth.LoginRequest;
 import com.monthlyexpenses.server.dto.request.auth.SignUpRequest;
 import com.monthlyexpenses.server.dto.response.auth.JwtResponse;
 import com.monthlyexpenses.server.dto.response.MessageResponse;
-import com.monthlyexpenses.server.error.ResourceNotFoundException;
+import com.monthlyexpenses.server.error.exception.ResourceNotFoundException;
 import com.monthlyexpenses.server.message.MessagesComponent;
 import com.monthlyexpenses.server.model.ERole;
 import com.monthlyexpenses.server.model.Role;

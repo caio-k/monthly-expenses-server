@@ -1,4 +1,4 @@
-package com.monthlyexpenses.server.error;
+package com.monthlyexpenses.server.error.response;
 
 public class ErrorObject {
 

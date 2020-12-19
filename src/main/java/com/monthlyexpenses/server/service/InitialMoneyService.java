@@ -1,8 +1,8 @@
 package com.monthlyexpenses.server.service;
 
 import com.monthlyexpenses.server.dto.response.initialMoney.InitialMoneyResponse;
-import com.monthlyexpenses.server.error.ResourceNotFoundException;
-import com.monthlyexpenses.server.error.UniqueViolationException;
+import com.monthlyexpenses.server.error.exception.ResourceNotFoundException;
+import com.monthlyexpenses.server.error.exception.UniqueViolationException;
 import com.monthlyexpenses.server.message.MessagesComponent;
 import com.monthlyexpenses.server.model.*;
 import com.monthlyexpenses.server.repository.*;
@@ -30,7 +30,9 @@ public class InitialMoneyService {
     private final MessagesComponent messages;
 
     @Autowired
-    public InitialMoneyService(UserRepository userRepository, InitialMoneyRepository initialMoneyRepository, YearRepository yearRepository, MonthRepository monthRepository, MonthYearRepository monthYearRepository, MessagesComponent messages) {
+    public InitialMoneyService(UserRepository userRepository, InitialMoneyRepository initialMoneyRepository,
+                               YearRepository yearRepository, MonthRepository monthRepository,
+                               MonthYearRepository monthYearRepository, MessagesComponent messages) {
         this.userRepository = userRepository;
         this.initialMoneyRepository = initialMoneyRepository;
         this.yearRepository = yearRepository;

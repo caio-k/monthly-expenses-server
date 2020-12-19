@@ -1,5 +1,10 @@
 package com.monthlyexpenses.server.error;
 
+import com.monthlyexpenses.server.error.exception.ResourceNotFoundException;
+import com.monthlyexpenses.server.error.exception.UniqueViolationException;
+import com.monthlyexpenses.server.error.response.ErrorDetails;
+import com.monthlyexpenses.server.error.response.ErrorObject;
+import com.monthlyexpenses.server.error.response.ErrorResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.monthlyexpenses.server.error;
+package com.monthlyexpenses.server.error.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
 

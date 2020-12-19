@@ -2,8 +2,8 @@ package com.monthlyexpenses.server.service;
 
 import com.monthlyexpenses.server.dto.response.MessageResponse;
 import com.monthlyexpenses.server.dto.response.year.YearResponse;
-import com.monthlyexpenses.server.error.ResourceNotFoundException;
-import com.monthlyexpenses.server.error.UniqueViolationException;
+import com.monthlyexpenses.server.error.exception.ResourceNotFoundException;
+import com.monthlyexpenses.server.error.exception.UniqueViolationException;
 import com.monthlyexpenses.server.message.MessagesComponent;
 import com.monthlyexpenses.server.model.Month;
 import com.monthlyexpenses.server.model.MonthYear;
