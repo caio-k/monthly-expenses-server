@@ -17,7 +17,6 @@ public class Expense {
     private String name;
 
     @Min(0)
-    @NotNull
     private float price;
 
     @NotNull
@@ -42,7 +41,7 @@ public class Expense {
 
     }
 
-    public Expense(@NotBlank String name, @Min(0) @NotNull float price, @NotNull boolean paid,
+    public Expense(@NotBlank String name, @Min(0) float price, @NotNull boolean paid,
                    ExpenseType expenseType, User user, MonthYear monthYear) {
         this.name = name;
         this.price = price;
