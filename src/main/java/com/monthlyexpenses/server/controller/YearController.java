@@ -1,7 +1,5 @@
 package com.monthlyexpenses.server.controller;
 
-import com.monthlyexpenses.server.dto.request.utils.UserIdRequest;
-import com.monthlyexpenses.server.dto.request.year.YearDeleteRequest;
 import com.monthlyexpenses.server.dto.request.year.YearPostRequest;
 import com.monthlyexpenses.server.dto.request.year.YearPutRequest;
 import com.monthlyexpenses.server.service.YearService;
@@ -24,8 +22,8 @@ public class YearController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> getYears(@Valid @RequestBody UserIdRequest userIdRequest) {
-        return yearService.getAllYearsByUserId(userIdRequest.getUserId());
+    public ResponseEntity<?> getYears(@RequestParam Long userId) {
+        return yearService.getAllYearsByUserId(userId);
     }
 
     @PostMapping("/create")
@@ -39,7 +37,7 @@ public class YearController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteYear(@Valid @RequestBody YearDeleteRequest yearDeleteRequest) {
-        return yearService.deleteYear(yearDeleteRequest.getUserId(), yearDeleteRequest.getYearId());
+    public ResponseEntity<?> deleteYear(@RequestParam Long userId, @RequestParam Long yearId) {
+        return yearService.deleteYear(userId, yearId);
     }
 }
