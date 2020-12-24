@@ -1,9 +1,7 @@
 package com.monthlyexpenses.server.controller;
 
-import com.monthlyexpenses.server.dto.request.expenseType.ExpenseTypeDeleteRequest;
 import com.monthlyexpenses.server.dto.request.expenseType.ExpenseTypePostRequest;
 import com.monthlyexpenses.server.dto.request.expenseType.ExpenseTypePutRequest;
-import com.monthlyexpenses.server.dto.request.utils.UserIdRequest;
 import com.monthlyexpenses.server.service.ExpenseTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +22,8 @@ public class ExpenseTypeController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> getExpenseTypes(@Valid @RequestBody UserIdRequest userIdRequest) {
-        return expenseTypeService.getAllExpenseTypes(userIdRequest.getUserId());
+    public ResponseEntity<?> getExpenseTypes(@RequestParam Long userId) {
+        return expenseTypeService.getAllExpenseTypes(userId);
     }
 
     @PostMapping("/create")
@@ -39,7 +37,7 @@ public class ExpenseTypeController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteExpenseType(@Valid @RequestBody ExpenseTypeDeleteRequest expenseTypeDeleteRequest) {
-        return expenseTypeService.delete(expenseTypeDeleteRequest.getUserId(), expenseTypeDeleteRequest.getId());
+    public ResponseEntity<?> deleteExpenseType(@RequestParam Long userId, @RequestParam Long expenseTypeId) {
+        return expenseTypeService.delete(userId, expenseTypeId);
     }
 }
