@@ -11,9 +11,6 @@ public class YearPutRequest {
     @NotNull(message = "{yearId.not.null}")
     private Long yearId;
 
-    @NotNull(message = "{userId.not.null}")
-    private Long userId;
-
     public Integer getYearNumber() {
         return yearNumber;
     }
@@ -28,13 +25,5 @@ public class YearPutRequest {
 
     public void setYearId(Long yearId) {
         this.yearId = yearId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 }

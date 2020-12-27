@@ -22,17 +22,19 @@ public class YearController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createYear(@Valid @RequestBody YearPostRequest yearPostRequest) {
-        return yearService.createYear(yearPostRequest.getUserId(), yearPostRequest.getYearNumber());
+    public ResponseEntity<?> createYear(@RequestHeader(value = "userId") Long userId,
+                                        @Valid @RequestBody YearPostRequest yearPostRequest) {
+        return yearService.createYear(userId, yearPostRequest.getYearNumber());
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateYear(@Valid @RequestBody YearPutRequest yearPutRequest) {
-        return yearService.updateYear(yearPutRequest.getUserId(), yearPutRequest.getYearId(), yearPutRequest.getYearNumber());
+    public ResponseEntity<?> updateYear(@RequestHeader(value = "userId") Long userId,
+                                        @Valid @RequestBody YearPutRequest yearPutRequest) {
+        return yearService.updateYear(userId, yearPutRequest.getYearId(), yearPutRequest.getYearNumber());
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteYear(@RequestParam Long userId, @RequestParam Long yearId) {
+    public ResponseEntity<?> deleteYear(@RequestHeader(value = "userId") Long userId, @RequestParam Long yearId) {
         return yearService.deleteYear(userId, yearId);
     }
 }
