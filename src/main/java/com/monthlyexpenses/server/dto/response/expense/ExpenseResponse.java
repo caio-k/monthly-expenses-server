@@ -1,78 +1,56 @@
 package com.monthlyexpenses.server.dto.response.expense;
 
+import com.monthlyexpenses.server.dto.response.expenseInfo.ExpenseInfoResponse;
+import com.monthlyexpenses.server.dto.response.expenseType.ExpenseTypeResponse;
+import com.monthlyexpenses.server.dto.response.initialMoney.InitialMoneyResponse;
+import com.monthlyexpenses.server.dto.response.year.YearResponse;
+
+import java.util.List;
+
 public class ExpenseResponse {
 
-    private Long id;
-    private String name;
-    private float price;
-    private boolean paid;
-    private Integer month;
-    private Integer year;
-    private Long expenseTypeId;
+    List<YearResponse> years;
+    List<ExpenseTypeResponse> expenseTypes;
+    List<ExpenseInfoResponse> expenseInfos;
+    List<InitialMoneyResponse> initialMoneys;
 
-    public ExpenseResponse(Long id, String name, float price, boolean paid, Integer month, Integer year, Long expenseTypeId) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.paid = paid;
-        this.month = month;
-        this.year = year;
-        this.expenseTypeId = expenseTypeId;
+    public ExpenseResponse(List<YearResponse> years, List<ExpenseTypeResponse> expenseTypes,
+                           List<ExpenseInfoResponse> expenseInfos, List<InitialMoneyResponse> initialMoneys) {
+        this.years = years;
+        this.expenseTypes = expenseTypes;
+        this.expenseInfos = expenseInfos;
+        this.initialMoneys = initialMoneys;
     }
 
-    public Long getId() {
-        return id;
+    public List<YearResponse> getYears() {
+        return years;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setYears(List<YearResponse> years) {
+        this.years = years;
     }
 
-    public String getName() {
-        return name;
+    public List<ExpenseTypeResponse> getExpenseTypes() {
+        return expenseTypes;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setExpenseTypes(List<ExpenseTypeResponse> expenseTypes) {
+        this.expenseTypes = expenseTypes;
     }
 
-    public float getPrice() {
-        return price;
+    public List<ExpenseInfoResponse> getExpenseInfos() {
+        return expenseInfos;
     }
 
-    public void setPrice(float price) {
-        this.price = price;
+    public void setExpenseInfos(List<ExpenseInfoResponse> expenseInfos) {
+        this.expenseInfos = expenseInfos;
     }
 
-    public boolean isPaid() {
-        return paid;
+    public List<InitialMoneyResponse> getInitialMoneys() {
+        return initialMoneys;
     }
 
-    public void setPaid(boolean paid) {
-        this.paid = paid;
-    }
-
-    public Integer getMonth() {
-        return month;
-    }
-
-    public void setMonth(Integer month) {
-        this.month = month;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
-    }
-
-    public Long getExpenseTypeId() {
-        return expenseTypeId;
-    }
-
-    public void setExpenseTypeId(Long expenseTypeId) {
-        this.expenseTypeId = expenseTypeId;
+    public void setInitialMoneys(List<InitialMoneyResponse> initialMoneys) {
+        this.initialMoneys = initialMoneys;
     }
 }

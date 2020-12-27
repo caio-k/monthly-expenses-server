@@ -42,6 +42,10 @@ public class InitialMoneyService {
     }
 
     public ResponseEntity<?> getInitialMoneyByYear(Long userId, Long yearId) {
+        return ResponseEntity.ok(getInitialMoneyByYearLogic(userId, yearId));
+    }
+
+    public List<InitialMoneyResponse> getInitialMoneyByYearLogic(Long userId, Long yearId) {
         Year year = getYearByUserIdAndYearId(userId, yearId);
         List<InitialMoneyResponse> initialMoneyResponses = new ArrayList<>();
         List<InitialMoney> initialMoneyList = initialMoneyRepository.findAllByMonthYear_YearAndUserId(year, userId);
@@ -55,7 +59,7 @@ public class InitialMoneyService {
                 )
         ));
 
-        return ResponseEntity.ok(initialMoneyResponses);
+        return initialMoneyResponses;
     }
 
     public ResponseEntity<?> createInitialMoney(Long userId, Long yearId, Integer monthNumber, float initialMoneyValue) {

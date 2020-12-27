@@ -1,7 +1,7 @@
 package com.monthlyexpenses.server.service;
 
 import com.monthlyexpenses.server.dto.response.MessageResponse;
-import com.monthlyexpenses.server.dto.response.expense.ExpenseResponse;
+import com.monthlyexpenses.server.dto.response.expenseInfo.ExpenseInfoResponse;
 import com.monthlyexpenses.server.error.exception.ResourceNotFoundException;
 import com.monthlyexpenses.server.message.MessagesComponent;
 import com.monthlyexpenses.server.model.*;
@@ -44,13 +44,17 @@ public class ExpenseInfoService {
     }
 
     public ResponseEntity<?> getExpensesByMonthAndYear(Long userId, Integer monthNumber, Long yearId) {
+        return ResponseEntity.ok(getExpensesByMonthAndYearLogic(userId, monthNumber, yearId));
+    }
+
+    public List<ExpenseInfoResponse> getExpensesByMonthAndYearLogic(Long userId, Integer monthNumber, Long yearId) {
         MonthYear monthYear = getMonthYearByMonthNumberAndYearId(monthNumber, yearId, userId);
 
-        List<ExpenseResponse> expenseResponses = new ArrayList<>();
+        List<ExpenseInfoResponse> expenseInfoResponses = new ArrayList<>();
         List<Expense> expenses = expenseInfoRepository.findAllByMonthYearAndUserId(monthYear, userId);
 
-        expenses.forEach(expense -> expenseResponses.add(
-                new ExpenseResponse(
+        expenses.forEach(expense -> expenseInfoResponses.add(
+                new ExpenseInfoResponse(
                         expense.getId(),
                         expense.getName(),
                         expense.getPrice(),
@@ -61,7 +65,7 @@ public class ExpenseInfoService {
                 )
         ));
 
-        return ResponseEntity.ok(expenseResponses);
+        return expenseInfoResponses;
     }
 
     public ResponseEntity<?> createExpense(Long userId, String name, float price, boolean paid, Long expenseTypeId,
@@ -73,7 +77,7 @@ public class ExpenseInfoService {
         Expense expense = new Expense(name, price, paid, expenseType, user, monthYear);
         expenseInfoRepository.save(expense);
 
-        ExpenseResponse expenseResponse = new ExpenseResponse(
+        ExpenseInfoResponse expenseInfoResponse = new ExpenseInfoResponse(
                 expense.getId(),
                 expense.getName(),
                 expense.getPrice(),
@@ -83,7 +87,7 @@ public class ExpenseInfoService {
                 expense.getExpenseType().getId()
         );
 
-        return ResponseEntity.ok(expenseResponse);
+        return ResponseEntity.ok(expenseInfoResponse);
     }
 
     public ResponseEntity<?> updateExpense(Long userId, Long expenseId, String name, float price, boolean paid,
@@ -99,7 +103,7 @@ public class ExpenseInfoService {
         expense.setMonthYear(monthYear);
         expenseInfoRepository.save(expense);
 
-        ExpenseResponse expenseResponse = new ExpenseResponse(
+        ExpenseInfoResponse expenseInfoResponse = new ExpenseInfoResponse(
                 expense.getId(),
                 expense.getName(),
                 expense.getPrice(),
@@ -109,7 +113,7 @@ public class ExpenseInfoService {
                 expense.getExpenseType().getId()
         );
 
-        return ResponseEntity.ok(expenseResponse);
+        return ResponseEntity.ok(expenseInfoResponse);
     }
 
     public ResponseEntity<?> deleteExpense(Long userId, Long expenseId) {

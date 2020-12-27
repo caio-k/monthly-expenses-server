@@ -18,8 +18,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class YearService {
@@ -84,6 +83,24 @@ public class YearService {
         Year year = getYearByYearIdAndUserId(yearId, userId);
         yearRepository.delete(year);
         return ResponseEntity.ok(new MessageResponse(messages.get("YEAR_DELETED")));
+    }
+
+    public Optional<Year> getNearestYearFromNow(Long userId) {
+        List<Year> years = yearRepository.findAllByUserIdOrderByYearNumberDesc(userId);
+        Integer actualYear = GregorianCalendar.getInstance().get(Calendar.YEAR);
+        int index = years.size() - 1;
+
+        while (index >= 0) {
+            if (years.get(index).getYearNumber().equals(actualYear)) {
+                return Optional.of(years.get(index));
+            } else if (years.get(index).getYearNumber().compareTo(actualYear) < 0) {
+                int auxIndex = index == years.size() - 1 ? index : index + 1;
+                return Optional.of(years.get(auxIndex));
+            } else {
+                index--;
+            }
+        }
+        return Optional.empty();
     }
 
     private User getUserByUserId(Long userId) {
