@@ -9,17 +9,38 @@ import java.util.List;
 
 public class ExpenseResponse {
 
+    Long selectedYearId;
+    Integer selectedMonth;
     List<YearResponse> years;
     List<ExpenseTypeResponse> expenseTypes;
     List<ExpenseInfoResponse> expenseInfos;
     List<InitialMoneyResponse> initialMoneys;
 
-    public ExpenseResponse(List<YearResponse> years, List<ExpenseTypeResponse> expenseTypes,
-                           List<ExpenseInfoResponse> expenseInfos, List<InitialMoneyResponse> initialMoneys) {
+    public ExpenseResponse(Long selectedYearId, Integer selectedMonth, List<YearResponse> years,
+                           List<ExpenseTypeResponse> expenseTypes, List<ExpenseInfoResponse> expenseInfos,
+                           List<InitialMoneyResponse> initialMoneys) {
+        this.selectedYearId = selectedYearId;
+        this.selectedMonth = selectedMonth;
         this.years = years;
         this.expenseTypes = expenseTypes;
         this.expenseInfos = expenseInfos;
         this.initialMoneys = initialMoneys;
+    }
+
+    public Long getSelectedYearId() {
+        return selectedYearId;
+    }
+
+    public void setSelectedYearId(Long selectedYearId) {
+        this.selectedYearId = selectedYearId;
+    }
+
+    public Integer getSelectedMonth() {
+        return selectedMonth;
+    }
+
+    public void setSelectedMonth(Integer selectedMonth) {
+        this.selectedMonth = selectedMonth;
     }
 
     public List<YearResponse> getYears() {

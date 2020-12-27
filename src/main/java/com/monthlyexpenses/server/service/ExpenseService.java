@@ -33,6 +33,8 @@ public class ExpenseService {
     }
 
     public ResponseEntity<?> getInitializationData(Long userId) {
+        int selectedMonth = -1;
+        Long selectedYearId = -1L;
         Optional<Year> yearOptional = yearService.getNearestYearFromNow(userId);
 
         List<YearResponse> yearResponses = yearService.getAllYearsByUserId(userId);
@@ -42,22 +44,28 @@ public class ExpenseService {
         List<InitialMoneyResponse> initialMoneyResponses = new ArrayList<>();
 
         if (yearOptional.isPresent()) {
+            selectedYearId = yearOptional.get().getId();
             initialMoneyResponses = initialMoneyService.getInitialMoneyByYearLogic(userId, yearOptional.get().getId());
             Integer nearestYear = yearOptional.get().getYearNumber();
             Integer actualYear = GregorianCalendar.getInstance().get(Calendar.YEAR);
             int januaryNumber = 0;
             int decemberNumber = 11;
 
-            int month = nearestYear.equals(actualYear) ?
+            selectedMonth = nearestYear.equals(actualYear) ?
                     GregorianCalendar.getInstance().get(Calendar.MONTH) :
                     nearestYear.compareTo(actualYear) < 0 ? decemberNumber : januaryNumber;
 
             expenseInfoResponses =
-                    expenseInfoService.getExpensesByMonthAndYearLogic(userId, month, yearOptional.get().getId());
+                    expenseInfoService.getExpensesByMonthAndYearLogic(userId, selectedMonth, yearOptional.get().getId());
         }
 
-        return ResponseEntity.ok(
-                new ExpenseResponse(yearResponses, expenseTypeResponses, expenseInfoResponses, initialMoneyResponses)
+        return ResponseEntity.ok(new ExpenseResponse(
+                selectedYearId,
+                selectedMonth,
+                yearResponses,
+                expenseTypeResponses,
+                expenseInfoResponses,
+                initialMoneyResponses)
         );
     }
 }
