@@ -88,19 +88,13 @@ public class YearService {
     public Optional<Year> getNearestYearFromNow(Long userId) {
         List<Year> years = yearRepository.findAllByUserIdOrderByYearNumberDesc(userId);
         Integer actualYear = GregorianCalendar.getInstance().get(Calendar.YEAR);
-        int index = years.size() - 1;
+        int index = 0;
 
-        while (index >= 0) {
-            if (years.get(index).getYearNumber().equals(actualYear)) {
-                return Optional.of(years.get(index));
-            } else if (years.get(index).getYearNumber().compareTo(actualYear) < 0) {
-                int auxIndex = index == years.size() - 1 ? index : index + 1;
-                return Optional.of(years.get(auxIndex));
-            } else {
-                index--;
-            }
+        while (index < years.size() && years.get(index).getYearNumber().compareTo(actualYear) > 0) {
+            index++;
         }
-        return Optional.empty();
+
+        return years.isEmpty() ? Optional.empty() : Optional.of(years.get(index));
     }
 
     private User getUserByUserId(Long userId) {

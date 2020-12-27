@@ -45,13 +45,19 @@ public class ExpenseService {
             initialMoneyResponses = initialMoneyService.getInitialMoneyByYearLogic(userId, yearOptional.get().getId());
             Integer nearestYear = yearOptional.get().getYearNumber();
             Integer actualYear = GregorianCalendar.getInstance().get(Calendar.YEAR);
+            int januaryNumber = 0;
+            int decemberNumber = 11;
+
             int month = nearestYear.equals(actualYear) ?
                     GregorianCalendar.getInstance().get(Calendar.MONTH) :
-                    nearestYear.compareTo(actualYear) < 0 ? 11 : 0;
+                    nearestYear.compareTo(actualYear) < 0 ? decemberNumber : januaryNumber;
 
-            expenseInfoResponses = expenseInfoService.getExpensesByMonthAndYearLogic(userId, month, yearOptional.get().getId());
+            expenseInfoResponses =
+                    expenseInfoService.getExpensesByMonthAndYearLogic(userId, month, yearOptional.get().getId());
         }
 
-        return ResponseEntity.ok(new ExpenseResponse(yearResponses, expenseTypeResponses, expenseInfoResponses, initialMoneyResponses));
+        return ResponseEntity.ok(
+                new ExpenseResponse(yearResponses, expenseTypeResponses, expenseInfoResponses, initialMoneyResponses)
+        );
     }
 }
