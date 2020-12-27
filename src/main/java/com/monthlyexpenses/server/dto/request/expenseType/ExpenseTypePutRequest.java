@@ -11,9 +11,6 @@ public class ExpenseTypePutRequest {
     @NotBlank(message = "{expenseTypeName.not.blank}")
     private String expenseTypeName;
 
-    @NotNull(message = "{userId.not.null}")
-    private Long userId;
-
     public Long getId() {
         return id;
     }
@@ -28,13 +25,5 @@ public class ExpenseTypePutRequest {
 
     public void setExpenseTypeName(String expenseTypeName) {
         this.expenseTypeName = expenseTypeName;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 }

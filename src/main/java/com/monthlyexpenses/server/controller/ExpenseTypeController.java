@@ -22,17 +22,20 @@ public class ExpenseTypeController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createExpenseType(@Valid @RequestBody ExpenseTypePostRequest expenseTypePostRequest) {
-        return expenseTypeService.create(expenseTypePostRequest.getUserId(), expenseTypePostRequest.getExpenseTypeName());
+    public ResponseEntity<?> createExpenseType(@RequestHeader(value = "userId") Long userId,
+                                               @Valid @RequestBody ExpenseTypePostRequest expenseTypePostRequest) {
+        return expenseTypeService.create(userId, expenseTypePostRequest.getExpenseTypeName());
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateExpenseType(@Valid @RequestBody ExpenseTypePutRequest expenseTypePutRequest) {
-        return expenseTypeService.update(expenseTypePutRequest.getUserId(), expenseTypePutRequest.getExpenseTypeName(), expenseTypePutRequest.getId());
+    public ResponseEntity<?> updateExpenseType(@RequestHeader(value = "userId") Long userId,
+                                               @Valid @RequestBody ExpenseTypePutRequest expenseTypePutRequest) {
+        return expenseTypeService.update(userId, expenseTypePutRequest.getExpenseTypeName(), expenseTypePutRequest.getId());
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteExpenseType(@RequestParam Long userId, @RequestParam Long expenseTypeId) {
+    public ResponseEntity<?> deleteExpenseType(@RequestHeader(value = "userId") Long userId,
+                                               @RequestParam Long expenseTypeId) {
         return expenseTypeService.delete(userId, expenseTypeId);
     }
 }
