@@ -44,7 +44,7 @@ public class YearService {
         this.messages = messages;
     }
 
-    public ResponseEntity<?> getAllYearsByUserId(Long userId) {
+    public List<YearResponse> getAllYearsByUserId(Long userId) {
         List<YearResponse> yearResponses = new ArrayList<>();
         List<Year> years = yearRepository.findAllByUserIdOrderByYearNumberDesc(userId);
 
@@ -52,7 +52,7 @@ public class YearService {
             yearResponses.add(new YearResponse(year.getId(), year.getYearNumber()));
         }
 
-        return ResponseEntity.ok(yearResponses);
+        return yearResponses;
     }
 
     public ResponseEntity<?> createYear(Long userId, Integer yearNumber) {

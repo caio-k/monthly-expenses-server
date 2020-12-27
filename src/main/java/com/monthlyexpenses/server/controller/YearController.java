@@ -21,11 +21,6 @@ public class YearController {
         this.yearService = yearService;
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<?> getYears(@RequestParam Long userId) {
-        return yearService.getAllYearsByUserId(userId);
-    }
-
     @PostMapping("/create")
     public ResponseEntity<?> createYear(@Valid @RequestBody YearPostRequest yearPostRequest) {
         return yearService.createYear(yearPostRequest.getUserId(), yearPostRequest.getYearNumber());

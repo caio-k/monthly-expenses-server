@@ -33,15 +33,15 @@ public class ExpenseTypeService {
         this.messages = messages;
     }
 
-    public ResponseEntity<?> getAllExpenseTypes(Long userId) {
+    public List<ExpenseTypeResponse> getAllExpenseTypes(Long userId) {
         List<ExpenseTypeResponse> expenseTypeResponses = new ArrayList<>();
-        List<ExpenseType> expenseTypes = expenseTypeRepository.findAllByUserId(userId);
+        List<ExpenseType> expenseTypes = expenseTypeRepository.findAllByUserIdOrderByNameAsc(userId);
 
         for (ExpenseType expenseType : expenseTypes) {
             expenseTypeResponses.add(new ExpenseTypeResponse(expenseType.getId(), expenseType.getName()));
         }
 
-        return ResponseEntity.ok(expenseTypeResponses);
+        return expenseTypeResponses;
     }
 
     public ResponseEntity<?> create(Long userId, String expenseTypeName) {

@@ -21,11 +21,6 @@ public class ExpenseTypeController {
         this.expenseTypeService = expenseTypeService;
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<?> getExpenseTypes(@RequestParam Long userId) {
-        return expenseTypeService.getAllExpenseTypes(userId);
-    }
-
     @PostMapping("/create")
     public ResponseEntity<?> createExpenseType(@Valid @RequestBody ExpenseTypePostRequest expenseTypePostRequest) {
         return expenseTypeService.create(expenseTypePostRequest.getUserId(), expenseTypePostRequest.getExpenseTypeName());

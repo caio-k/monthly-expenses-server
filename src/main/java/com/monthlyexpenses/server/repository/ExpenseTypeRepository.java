@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface ExpenseTypeRepository extends JpaRepository<ExpenseType, Long> {
 
-    List<ExpenseType> findAllByUserId(Long userId);
+    List<ExpenseType> findAllByUserIdOrderByNameAsc(Long userId);
 
     Optional<ExpenseType> findByIdAndUserId(Long id, Long userId);
 }
