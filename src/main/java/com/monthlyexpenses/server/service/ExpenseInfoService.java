@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ExpenseService {
+public class ExpenseInfoService {
 
-    private final ExpenseRepository expenseRepository;
+    private final ExpenseInfoRepository expenseInfoRepository;
 
     private final MonthYearRepository monthYearRepository;
 
@@ -31,10 +31,10 @@ public class ExpenseService {
     private final MessagesComponent messages;
 
     @Autowired
-    public ExpenseService(ExpenseRepository expenseRepository, MonthYearRepository monthYearRepository,
-                          MonthRepository monthRepository, YearRepository yearRepository, UserRepository userRepository,
-                          ExpenseTypeRepository expenseTypeRepository, MessagesComponent messages) {
-        this.expenseRepository = expenseRepository;
+    public ExpenseInfoService(ExpenseInfoRepository expenseInfoRepository, MonthYearRepository monthYearRepository,
+                              MonthRepository monthRepository, YearRepository yearRepository, UserRepository userRepository,
+                              ExpenseTypeRepository expenseTypeRepository, MessagesComponent messages) {
+        this.expenseInfoRepository = expenseInfoRepository;
         this.monthYearRepository = monthYearRepository;
         this.monthRepository = monthRepository;
         this.yearRepository = yearRepository;
@@ -47,7 +47,7 @@ public class ExpenseService {
         MonthYear monthYear = getMonthYearByMonthNumberAndYearId(monthNumber, yearId, userId);
 
         List<ExpenseResponse> expenseResponses = new ArrayList<>();
-        List<Expense> expenses = expenseRepository.findAllByMonthYearAndUserId(monthYear, userId);
+        List<Expense> expenses = expenseInfoRepository.findAllByMonthYearAndUserId(monthYear, userId);
 
         expenses.forEach(expense -> expenseResponses.add(
                 new ExpenseResponse(
@@ -71,7 +71,7 @@ public class ExpenseService {
         ExpenseType expenseType = getExpenseTypeById(expenseTypeId, userId);
 
         Expense expense = new Expense(name, price, paid, expenseType, user, monthYear);
-        expenseRepository.save(expense);
+        expenseInfoRepository.save(expense);
 
         ExpenseResponse expenseResponse = new ExpenseResponse(
                 expense.getId(),
@@ -97,7 +97,7 @@ public class ExpenseService {
         expense.setPaid(paid);
         expense.setExpenseType(expenseType);
         expense.setMonthYear(monthYear);
-        expenseRepository.save(expense);
+        expenseInfoRepository.save(expense);
 
         ExpenseResponse expenseResponse = new ExpenseResponse(
                 expense.getId(),
@@ -114,7 +114,7 @@ public class ExpenseService {
 
     public ResponseEntity<?> deleteExpense(Long userId, Long expenseId) {
         Expense expense = getExpenseById(expenseId, userId);
-        expenseRepository.delete(expense);
+        expenseInfoRepository.delete(expense);
         return ResponseEntity.ok(new MessageResponse(messages.get("EXPENSE_DELETED")));
     }
 
@@ -144,7 +144,7 @@ public class ExpenseService {
     }
 
     private Expense getExpenseById(Long id, Long userId) {
-        return expenseRepository.findByIdAndUserId(id, userId)
+        return expenseInfoRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("EXPENSE_NOT_FOUND")));
     }
 

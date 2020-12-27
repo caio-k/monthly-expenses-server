@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ExpenseRepository extends JpaRepository<Expense, Long> {
+public interface ExpenseInfoRepository extends JpaRepository<Expense, Long> {
 
     List<Expense> findAllByMonthYearAndUserId(MonthYear monthYear, Long userId);
 
