@@ -17,38 +17,24 @@ import java.util.List;
 public class ExpenseInfoService {
 
     private final ExpenseInfoRepository expenseInfoRepository;
-
-    private final MonthYearRepository monthYearRepository;
-
-    private final MonthRepository monthRepository;
-
-    private final YearRepository yearRepository;
-
-    private final UserRepository userRepository;
-
-    private final ExpenseTypeRepository expenseTypeRepository;
-
+    private final UserService userService;
+    private final MonthYearService monthYearService;
+    private final ExpenseTypeService expenseTypeService;
     private final MessagesComponent messages;
 
     @Autowired
-    public ExpenseInfoService(ExpenseInfoRepository expenseInfoRepository, MonthYearRepository monthYearRepository,
-                              MonthRepository monthRepository, YearRepository yearRepository, UserRepository userRepository,
-                              ExpenseTypeRepository expenseTypeRepository, MessagesComponent messages) {
+    public ExpenseInfoService(ExpenseInfoRepository expenseInfoRepository, UserService userService,
+                              MonthYearService monthYearService, ExpenseTypeService expenseTypeService,
+                              MessagesComponent messages) {
         this.expenseInfoRepository = expenseInfoRepository;
-        this.monthYearRepository = monthYearRepository;
-        this.monthRepository = monthRepository;
-        this.yearRepository = yearRepository;
-        this.userRepository = userRepository;
-        this.expenseTypeRepository = expenseTypeRepository;
+        this.userService = userService;
+        this.monthYearService = monthYearService;
+        this.expenseTypeService = expenseTypeService;
         this.messages = messages;
     }
 
-    public ResponseEntity<?> getExpensesByMonthAndYear(Long userId, Integer monthNumber, Long yearId) {
-        return ResponseEntity.ok(getExpensesByMonthAndYearLogic(userId, monthNumber, yearId));
-    }
-
-    public List<ExpenseInfoResponse> getExpensesByMonthAndYearLogic(Long userId, Integer monthNumber, Long yearId) {
-        MonthYear monthYear = getMonthYearByMonthNumberAndYearId(monthNumber, yearId, userId);
+    public List<ExpenseInfoResponse> getExpensesByMonthAndYearLogic(Long userId, Month month, Year year) {
+        MonthYear monthYear = monthYearService.findMonthYearByMonthAndYear(month, year);
 
         List<ExpenseInfoResponse> expenseInfoResponses = new ArrayList<>();
         List<Expense> expenses = expenseInfoRepository.findAllByMonthYearAndUserId(monthYear, userId);
@@ -70,9 +56,9 @@ public class ExpenseInfoService {
 
     public ResponseEntity<?> createExpense(Long userId, String name, float price, boolean paid, Long expenseTypeId,
                                            Integer monthNumber, Long yearId) {
-        User user = getUserByUserId(userId);
-        MonthYear monthYear = getMonthYearByMonthNumberAndYearId(monthNumber, yearId, userId);
-        ExpenseType expenseType = getExpenseTypeById(expenseTypeId, userId);
+        User user = userService.getUserByUserId(userId);
+        MonthYear monthYear = monthYearService.findMonthYearByMonthNumberAndYearId(monthNumber, yearId, userId);
+        ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndUserId(expenseTypeId, userId);
 
         Expense expense = new Expense(name, price, paid, expenseType, user, monthYear);
         expenseInfoRepository.save(expense);
@@ -92,8 +78,8 @@ public class ExpenseInfoService {
 
     public ResponseEntity<?> updateExpense(Long userId, Long expenseId, String name, float price, boolean paid,
                                            Long expenseTypeId, Integer monthNumber, Long yearId) {
-        MonthYear monthYear = getMonthYearByMonthNumberAndYearId(monthNumber, yearId, userId);
-        ExpenseType expenseType = getExpenseTypeById(expenseTypeId, userId);
+        MonthYear monthYear = monthYearService.findMonthYearByMonthNumberAndYearId(monthNumber, yearId, userId);
+        ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndUserId(expenseTypeId, userId);
         Expense expense = getExpenseById(expenseId, userId);
 
         expense.setName(name);
@@ -122,39 +108,8 @@ public class ExpenseInfoService {
         return ResponseEntity.ok(new MessageResponse(messages.get("EXPENSE_DELETED")));
     }
 
-    private User getUserByUserId(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(messages.get("USER_NOT_FOUND")));
-    }
-
-    private Month getMonthByMonthNumber(Integer monthNumber) {
-        return monthRepository.findByMonthNumber(monthNumber)
-                .orElseThrow(() -> new ResourceNotFoundException(messages.get("MONTH_NOT_FOUND")));
-    }
-
-    private Year getYearByUserIdAndYearId(Long userId, Long yearId) {
-        return yearRepository.findByIdAndUserId(yearId, userId)
-                .orElseThrow(() -> new ResourceNotFoundException(messages.get("YEAR_NOT_FOUND")));
-    }
-
-    private MonthYear getMonthYearByMonthAndYear(Month month, Year year) {
-        return monthYearRepository.findByMonthAndYear(month, year)
-                .orElseThrow(() -> new ResourceNotFoundException(messages.get("MONTH_NOT_FOUND")));
-    }
-
-    private ExpenseType getExpenseTypeById(Long id, Long userId) {
-        return expenseTypeRepository.findByIdAndUserId(id, userId)
-                .orElseThrow(() -> new ResourceNotFoundException(messages.get("EXPENSE_TYPE_NOT_FOUND")));
-    }
-
     private Expense getExpenseById(Long id, Long userId) {
         return expenseInfoRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("EXPENSE_NOT_FOUND")));
-    }
-
-    private MonthYear getMonthYearByMonthNumberAndYearId(Integer monthNumber, Long yearId, Long userId) {
-        Month month = getMonthByMonthNumber(monthNumber);
-        Year year = getYearByUserIdAndYearId(userId, yearId);
-        return getMonthYearByMonthAndYear(month, year);
     }
 }

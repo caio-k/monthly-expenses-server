@@ -13,4 +13,6 @@ public interface YearRepository  extends JpaRepository<Year, Long> {
     List<Year> findAllByUserIdOrderByYearNumberDesc(Long userId);
 
     Optional<Year> findByIdAndUserId(Long id, Long userId);
+
+    Optional<Year> findByYearNumberAndUserId(Integer yearNumber, Long userId);
 }

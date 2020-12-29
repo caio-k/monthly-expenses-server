@@ -32,15 +32,10 @@ import java.util.stream.Collectors;
 public class AuthService {
 
     private final UserRepository userRepository;
-
     private final RoleRepository roleRepository;
-
     private final PasswordEncoder encoder;
-
     private final AuthenticationManager authenticationManager;
-
     private final JwtUtils jwtUtils;
-
     private final MessagesComponent messages;
 
     @Autowired

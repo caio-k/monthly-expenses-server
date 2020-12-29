@@ -13,60 +13,54 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InitialMoneyService {
 
-    private final UserRepository userRepository;
-
     private final InitialMoneyRepository initialMoneyRepository;
-
-    private final YearRepository yearRepository;
-
-    private final MonthRepository monthRepository;
-
-    private final MonthYearRepository monthYearRepository;
-
+    private final UserService userService;
+    private final YearService yearService;
+    private final MonthService monthService;
+    private final MonthYearService monthYearService;
     private final MessagesComponent messages;
 
     @Autowired
-    public InitialMoneyService(UserRepository userRepository, InitialMoneyRepository initialMoneyRepository,
-                               YearRepository yearRepository, MonthRepository monthRepository,
-                               MonthYearRepository monthYearRepository, MessagesComponent messages) {
-        this.userRepository = userRepository;
+    public InitialMoneyService(InitialMoneyRepository initialMoneyRepository, UserService userService,
+                               YearService yearService, MonthService monthService, MonthYearService monthYearService,
+                               MessagesComponent messages) {
         this.initialMoneyRepository = initialMoneyRepository;
-        this.yearRepository = yearRepository;
-        this.monthRepository = monthRepository;
-        this.monthYearRepository = monthYearRepository;
+        this.userService = userService;
+        this.yearService = yearService;
+        this.monthService = monthService;
+        this.monthYearService = monthYearService;
         this.messages = messages;
     }
 
-    public ResponseEntity<?> getInitialMoneyByYear(Long userId, Long yearId) {
-        return ResponseEntity.ok(getInitialMoneyByYearLogic(userId, yearId));
-    }
+    public List<InitialMoneyResponse> getInitialMoneyByMonthAndYearLogic(Long userId, Month month, Year year) {
+        Optional<InitialMoney> initialMoneyOptional =
+                initialMoneyRepository.findByMonthYear_MonthAndMonthYear_YearAndUserId(month, year, userId);
+        List<InitialMoneyResponse> initialMoneyResponse = new ArrayList<>();
 
-    public List<InitialMoneyResponse> getInitialMoneyByYearLogic(Long userId, Long yearId) {
-        Year year = getYearByUserIdAndYearId(userId, yearId);
-        List<InitialMoneyResponse> initialMoneyResponses = new ArrayList<>();
-        List<InitialMoney> initialMoneyList = initialMoneyRepository.findAllByMonthYear_YearAndUserId(year, userId);
+        if (initialMoneyOptional.isPresent()) {
+            InitialMoney initialMoney = initialMoneyOptional.get();
 
-        initialMoneyList.forEach(initialMoney -> initialMoneyResponses.add(
-                new InitialMoneyResponse(
-                        initialMoney.getId(),
-                        initialMoney.getMonthYear().getMonth().getMonthNumber(),
-                        initialMoney.getMonthYear().getYear().getYearNumber(),
-                        initialMoney.getInitialMoney()
-                )
-        ));
+            initialMoneyResponse.add(new InitialMoneyResponse(
+                    initialMoney.getId(),
+                    initialMoney.getMonthYear().getMonth().getMonthNumber(),
+                    initialMoney.getMonthYear().getYear().getYearNumber(),
+                    initialMoney.getInitialMoney()
+            ));
+        }
 
-        return initialMoneyResponses;
+        return initialMoneyResponse;
     }
 
     public ResponseEntity<?> createInitialMoney(Long userId, Long yearId, Integer monthNumber, float initialMoneyValue) {
-        Year year = getYearByUserIdAndYearId(userId, yearId);
-        Month month = getMonthByMonthNumber(monthNumber);
-        MonthYear monthYear = getMonthYearByMonthAndYear(month, year);
-        User user = getUserByUserId(userId);
+        Year year = yearService.findYearByYearIdAndUserId(yearId, userId);
+        Month month = monthService.findMonthByMonthNumber(monthNumber);
+        MonthYear monthYear = monthYearService.findMonthYearByMonthAndYear(month, year);
+        User user = userService.getUserByUserId(userId);
 
         try {
             InitialMoney initialMoney = new InitialMoney(initialMoneyValue, user, monthYear);
@@ -86,7 +80,7 @@ public class InitialMoneyService {
     }
 
     public ResponseEntity<?> updateInitialMoney(Long userId, Long initialMoneyId, float initialMoneyValue) {
-        InitialMoney initialMoney = getInitialMoneyById(initialMoneyId, userId);
+        InitialMoney initialMoney = findInitialMoneyById(initialMoneyId, userId);
         initialMoney.setInitialMoney(initialMoneyValue);
         initialMoneyRepository.save(initialMoney);
 
@@ -100,28 +94,8 @@ public class InitialMoneyService {
         return ResponseEntity.ok(initialMoneyResponse);
     }
 
-    private User getUserByUserId(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(messages.get("USER_NOT_FOUND")));
-    }
-
-    private InitialMoney getInitialMoneyById(Long initialMoneyId, Long userId) {
+    private InitialMoney findInitialMoneyById(Long initialMoneyId, Long userId) {
         return initialMoneyRepository.findByIdAndUserId(initialMoneyId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("INITIAL_MONEY_NOT_FOUND")));
-    }
-
-    private Year getYearByUserIdAndYearId(Long userId, Long yearId) {
-        return yearRepository.findByIdAndUserId(yearId, userId)
-                .orElseThrow(() -> new ResourceNotFoundException(messages.get("YEAR_NOT_FOUND")));
-    }
-
-    private Month getMonthByMonthNumber(Integer monthNumber) {
-        return monthRepository.findByMonthNumber(monthNumber)
-                .orElseThrow(() -> new ResourceNotFoundException(messages.get("MONTH_NOT_FOUND")));
-    }
-
-    private MonthYear getMonthYearByMonthAndYear(Month month, Year year) {
-        return monthYearRepository.findByMonthAndYear(month, year)
-                .orElseThrow(() -> new ResourceNotFoundException(messages.get("MONTH_NOT_FOUND")));
     }
 }

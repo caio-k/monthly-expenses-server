@@ -1,7 +1,5 @@
 package com.monthlyexpenses.server.controller;
 
-import com.monthlyexpenses.server.dto.request.expense.ExpenseDeleteRequest;
-import com.monthlyexpenses.server.dto.request.expense.ExpenseGetRequest;
 import com.monthlyexpenses.server.dto.request.expense.ExpensePostRequest;
 import com.monthlyexpenses.server.dto.request.expense.ExpensePutRequest;
 import com.monthlyexpenses.server.service.ExpenseInfoService;
@@ -23,28 +21,25 @@ public class ExpenseInfoController {
         this.expenseInfoService = expenseInfoService;
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<?> getExpensesByMonthAndYear(@Valid @RequestBody ExpenseGetRequest expenseGetRequest) {
-        return expenseInfoService.getExpensesByMonthAndYear(expenseGetRequest.getUserId(),
-                expenseGetRequest.getMonthNumber(), expenseGetRequest.getYearId());
-    }
-
     @PostMapping("/post")
-    public ResponseEntity<?> createExpense(@Valid @RequestBody ExpensePostRequest expensePostRequest) {
-        return expenseInfoService.createExpense(expensePostRequest.getUserId(), expensePostRequest.getName(),
-                expensePostRequest.getPrice(), expensePostRequest.isPaid(), expensePostRequest.getExpenseTypeId(),
-                expensePostRequest.getMonthNumber(), expensePostRequest.getYearId());
+    public ResponseEntity<?> createExpense(@RequestHeader(value = "userId") Long userId,
+                                           @Valid @RequestBody ExpensePostRequest expensePostRequest) {
+        return expenseInfoService.createExpense(userId, expensePostRequest.getName(), expensePostRequest.getPrice(),
+                expensePostRequest.isPaid(), expensePostRequest.getExpenseTypeId(), expensePostRequest.getMonthNumber(),
+                expensePostRequest.getYearId());
     }
 
     @PutMapping("/put")
-    public ResponseEntity<?> updateExpense(@Valid @RequestBody ExpensePutRequest expensePutRequest) {
-        return expenseInfoService.updateExpense(expensePutRequest.getUserId(), expensePutRequest.getExpenseId(),
-                expensePutRequest.getName(), expensePutRequest.getPrice(), expensePutRequest.isPaid(),
-                expensePutRequest.getExpenseTypeId(), expensePutRequest.getMonthNumber(), expensePutRequest.getYearId());
+    public ResponseEntity<?> updateExpense(@RequestHeader(value = "userId") Long userId,
+                                           @Valid @RequestBody ExpensePutRequest expensePutRequest) {
+        return expenseInfoService.updateExpense(userId, expensePutRequest.getExpenseId(), expensePutRequest.getName(),
+                expensePutRequest.getPrice(), expensePutRequest.isPaid(), expensePutRequest.getExpenseTypeId(),
+                expensePutRequest.getMonthNumber(), expensePutRequest.getYearId());
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteExpense(@Valid @RequestBody ExpenseDeleteRequest expenseDeleteRequest) {
-        return expenseInfoService.deleteExpense(expenseDeleteRequest.getUserId(), expenseDeleteRequest.getExpenseId());
+    public ResponseEntity<?> deleteExpense(@RequestHeader(value = "userId") Long userId,
+                                           @RequestParam Long expenseId) {
+        return expenseInfoService.deleteExpense(userId, expenseId);
     }
 }

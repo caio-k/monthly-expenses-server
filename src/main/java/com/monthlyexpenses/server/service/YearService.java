@@ -9,9 +9,7 @@ import com.monthlyexpenses.server.model.Month;
 import com.monthlyexpenses.server.model.MonthYear;
 import com.monthlyexpenses.server.model.User;
 import com.monthlyexpenses.server.model.Year;
-import com.monthlyexpenses.server.repository.MonthRepository;
 import com.monthlyexpenses.server.repository.MonthYearRepository;
-import com.monthlyexpenses.server.repository.UserRepository;
 import com.monthlyexpenses.server.repository.YearRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,22 +22,19 @@ import java.util.*;
 public class YearService {
 
     private final YearRepository yearRepository;
-
-    private final UserRepository userRepository;
-
-    private final MonthRepository monthRepository;
-
     private final MonthYearRepository monthYearRepository;
-
+    private final UserService userService;
+    private final MonthService monthService;
     private final MessagesComponent messages;
 
     @Autowired
-    public YearService(YearRepository yearRepository, UserRepository userRepository, MonthRepository monthRepository,
-                       MonthYearRepository monthYearRepository, MessagesComponent messages) {
+    public YearService(YearRepository yearRepository, MonthYearRepository monthYearRepository,
+                       UserService userService, MonthService monthService,
+                       MessagesComponent messages) {
         this.yearRepository = yearRepository;
-        this.userRepository = userRepository;
-        this.monthRepository = monthRepository;
         this.monthYearRepository = monthYearRepository;
+        this.userService = userService;
+        this.monthService = monthService;
         this.messages = messages;
     }
 
@@ -55,11 +50,12 @@ public class YearService {
     }
 
     public ResponseEntity<?> createYear(Long userId, Integer yearNumber) {
-        Year year = new Year(yearNumber, getUserByUserId(userId));
+        User user = userService.getUserByUserId(userId);
+        Year year = new Year(yearNumber, user);
 
         try {
             yearRepository.save(year);
-            List<Month> months = monthRepository.findAll();
+            List<Month> months = monthService.findAll();
             months.forEach(month -> monthYearRepository.save(new MonthYear(month, year)));
             return ResponseEntity.ok(new YearResponse(year.getId(), year.getYearNumber()));
         } catch (DataIntegrityViolationException exception) {
@@ -68,7 +64,7 @@ public class YearService {
     }
 
     public ResponseEntity<?> updateYear(Long userId, Long yearId, Integer yearNumber) {
-        Year year = getYearByYearIdAndUserId(yearId, userId);
+        Year year = findYearByYearIdAndUserId(yearId, userId);
 
         try {
             year.setYearNumber(yearNumber);
@@ -80,7 +76,7 @@ public class YearService {
     }
 
     public ResponseEntity<?> deleteYear(Long userId, Long yearId) {
-        Year year = getYearByYearIdAndUserId(yearId, userId);
+        Year year = findYearByYearIdAndUserId(yearId, userId);
         yearRepository.delete(year);
         return ResponseEntity.ok(new MessageResponse(messages.get("YEAR_DELETED")));
     }
@@ -97,13 +93,13 @@ public class YearService {
         return years.isEmpty() ? Optional.empty() : Optional.of(years.get(index));
     }
 
-    private User getUserByUserId(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(messages.get("USER_NOT_FOUND")));
+    public Year findYearByYearIdAndUserId(Long id, Long userId) {
+        return yearRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException(messages.get("YEAR_NOT_FOUND")));
     }
 
-    private Year getYearByYearIdAndUserId(Long id, Long userId) {
-        return yearRepository.findByIdAndUserId(id, userId)
+    public Year findByYearNumberAndUserId(Integer yearNumber, Long userId) {
+        return yearRepository.findByYearNumberAndUserId(yearNumber, userId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("YEAR_NOT_FOUND")));
     }
 }

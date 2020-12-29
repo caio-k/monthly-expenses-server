@@ -5,9 +5,6 @@ import javax.validation.constraints.NotNull;
 
 public class ExpensePutRequest {
 
-    @NotNull(message = "{userId.not.null}")
-    private Long userId;
-
     @NotNull(message = "{expenseId.not.null}")
     private Long expenseId;
 
@@ -28,14 +25,6 @@ public class ExpensePutRequest {
 
     @NotNull(message = "{expenseTypeId.not.null}")
     private Long expenseTypeId;
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 
     public Long getExpenseId() {
         return expenseId;

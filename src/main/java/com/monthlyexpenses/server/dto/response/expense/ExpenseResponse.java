@@ -9,30 +9,30 @@ import java.util.List;
 
 public class ExpenseResponse {
 
-    Long selectedYearId;
+    Integer selectedYearNumber;
     Integer selectedMonth;
     List<YearResponse> years;
     List<ExpenseTypeResponse> expenseTypes;
     List<ExpenseInfoResponse> expenseInfos;
-    List<InitialMoneyResponse> initialMoneys;
+    List<InitialMoneyResponse> initialMoney;
 
-    public ExpenseResponse(Long selectedYearId, Integer selectedMonth, List<YearResponse> years,
+    public ExpenseResponse(Integer selectedYearNumber, Integer selectedMonth, List<YearResponse> years,
                            List<ExpenseTypeResponse> expenseTypes, List<ExpenseInfoResponse> expenseInfos,
-                           List<InitialMoneyResponse> initialMoneys) {
-        this.selectedYearId = selectedYearId;
+                           List<InitialMoneyResponse> initialMoney) {
+        this.selectedYearNumber = selectedYearNumber;
         this.selectedMonth = selectedMonth;
         this.years = years;
         this.expenseTypes = expenseTypes;
         this.expenseInfos = expenseInfos;
-        this.initialMoneys = initialMoneys;
+        this.initialMoney = initialMoney;
     }
 
-    public Long getSelectedYearId() {
-        return selectedYearId;
+    public Integer getSelectedYearNumber() {
+        return selectedYearNumber;
     }
 
-    public void setSelectedYearId(Long selectedYearId) {
-        this.selectedYearId = selectedYearId;
+    public void setSelectedYearNumber(Integer selectedYearNumber) {
+        this.selectedYearNumber = selectedYearNumber;
     }
 
     public Integer getSelectedMonth() {
@@ -67,11 +67,11 @@ public class ExpenseResponse {
         this.expenseInfos = expenseInfos;
     }
 
-    public List<InitialMoneyResponse> getInitialMoneys() {
-        return initialMoneys;
+    public List<InitialMoneyResponse> getInitialMoney() {
+        return initialMoney;
     }
 
-    public void setInitialMoneys(List<InitialMoneyResponse> initialMoneys) {
-        this.initialMoneys = initialMoneys;
+    public void setInitialMoney(List<InitialMoneyResponse> initialMoney) {
+        this.initialMoney = initialMoney;
     }
 }

@@ -1,6 +1,5 @@
 package com.monthlyexpenses.server.controller;
 
-import com.monthlyexpenses.server.dto.request.initialMoney.InitialMoneyGetRequest;
 import com.monthlyexpenses.server.dto.request.initialMoney.InitialMoneyPostRequest;
 import com.monthlyexpenses.server.dto.request.initialMoney.InitialMoneyPutRequest;
 import com.monthlyexpenses.server.service.InitialMoneyService;
@@ -22,20 +21,17 @@ public class InitialMoneyController {
         this.initialMoneyService = initialMoneyService;
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<?> getInitialMoneyByYear(@Valid @RequestBody InitialMoneyGetRequest initialMoneyGetRequest) {
-        return initialMoneyService.getInitialMoneyByYear(initialMoneyGetRequest.getUserId(), initialMoneyGetRequest.getYearId());
-    }
-
     @PostMapping("/create")
-    public ResponseEntity<?> createInitialMoney(@Valid @RequestBody InitialMoneyPostRequest initialMoneyPostRequest) {
-        return initialMoneyService.createInitialMoney(initialMoneyPostRequest.getUserId(), initialMoneyPostRequest.getYearId(),
+    public ResponseEntity<?> createInitialMoney(@RequestHeader(value = "userId") Long userId,
+                                                @Valid @RequestBody InitialMoneyPostRequest initialMoneyPostRequest) {
+        return initialMoneyService.createInitialMoney(userId, initialMoneyPostRequest.getYearId(),
                 initialMoneyPostRequest.getMonth(), initialMoneyPostRequest.getInitialMoney());
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateInitialMoney(@Valid @RequestBody InitialMoneyPutRequest initialMoneyPutRequest) {
-        return initialMoneyService.updateInitialMoney(initialMoneyPutRequest.getUserId(), initialMoneyPutRequest.getInitialMoneyId(),
+    public ResponseEntity<?> updateInitialMoney(@RequestHeader(value = "userId") Long userId,
+                                                @Valid @RequestBody InitialMoneyPutRequest initialMoneyPutRequest) {
+        return initialMoneyService.updateInitialMoney(userId, initialMoneyPutRequest.getInitialMoneyId(),
                 initialMoneyPutRequest.getInitialMoney());
     }
 }

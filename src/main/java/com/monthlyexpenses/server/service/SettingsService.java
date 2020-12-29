@@ -13,7 +13,6 @@ import java.util.List;
 public class SettingsService {
 
     private final YearService yearService;
-
     private final ExpenseTypeService expenseTypeService;
 
     @Autowired

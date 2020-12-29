@@ -4,9 +4,6 @@ import javax.validation.constraints.NotNull;
 
 public class InitialMoneyPostRequest {
 
-    @NotNull(message = "{userId.not.null}")
-    private Long userId;
-
     @NotNull(message = "{yearId.not.null}")
     private Long yearId;
 
@@ -15,14 +12,6 @@ public class InitialMoneyPostRequest {
 
     @NotNull(message = "{initialMoney.not.null}")
     private float initialMoney;
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 
     public Long getYearId() {
         return yearId;
