@@ -37,20 +37,21 @@ public class InitialMoneyService {
         this.messages = messages;
     }
 
-    public List<InitialMoneyResponse> getInitialMoneyByMonthAndYearLogic(Long userId, Month month, Year year) {
+    public InitialMoneyResponse getInitialMoneyByMonthAndYearLogic(Long userId, Month month, Year year) {
         Optional<InitialMoney> initialMoneyOptional =
                 initialMoneyRepository.findByMonthYear_MonthAndMonthYear_YearAndUserId(month, year, userId);
-        List<InitialMoneyResponse> initialMoneyResponse = new ArrayList<>();
+
+        InitialMoneyResponse initialMoneyResponse = null;
 
         if (initialMoneyOptional.isPresent()) {
             InitialMoney initialMoney = initialMoneyOptional.get();
 
-            initialMoneyResponse.add(new InitialMoneyResponse(
+            initialMoneyResponse = new InitialMoneyResponse(
                     initialMoney.getId(),
                     initialMoney.getMonthYear().getMonth().getMonthNumber(),
                     initialMoney.getMonthYear().getYear().getYearNumber(),
                     initialMoney.getInitialMoney()
-            ));
+            );
         }
 
         return initialMoneyResponse;

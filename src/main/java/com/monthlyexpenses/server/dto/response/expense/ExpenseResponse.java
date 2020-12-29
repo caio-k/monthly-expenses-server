@@ -14,11 +14,11 @@ public class ExpenseResponse {
     List<YearResponse> years;
     List<ExpenseTypeResponse> expenseTypes;
     List<ExpenseInfoResponse> expenseInfos;
-    List<InitialMoneyResponse> initialMoney;
+    InitialMoneyResponse initialMoney;
 
     public ExpenseResponse(Integer selectedYearNumber, Integer selectedMonth, List<YearResponse> years,
                            List<ExpenseTypeResponse> expenseTypes, List<ExpenseInfoResponse> expenseInfos,
-                           List<InitialMoneyResponse> initialMoney) {
+                           InitialMoneyResponse initialMoney) {
         this.selectedYearNumber = selectedYearNumber;
         this.selectedMonth = selectedMonth;
         this.years = years;
@@ -67,11 +67,11 @@ public class ExpenseResponse {
         this.expenseInfos = expenseInfos;
     }
 
-    public List<InitialMoneyResponse> getInitialMoney() {
+    public InitialMoneyResponse getInitialMoney() {
         return initialMoney;
     }
 
-    public void setInitialMoney(List<InitialMoneyResponse> initialMoney) {
+    public void setInitialMoney(InitialMoneyResponse initialMoney) {
         this.initialMoney = initialMoney;
     }
 }

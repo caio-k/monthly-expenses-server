@@ -8,9 +8,9 @@ import java.util.List;
 public class ExpenseResponseUpdate {
 
     List<ExpenseInfoResponse> expenseInfos;
-    List<InitialMoneyResponse> initialMoney;
+    InitialMoneyResponse initialMoney;
 
-    public ExpenseResponseUpdate(List<ExpenseInfoResponse> expenseInfos, List<InitialMoneyResponse> initialMoney) {
+    public ExpenseResponseUpdate(List<ExpenseInfoResponse> expenseInfos, InitialMoneyResponse initialMoney) {
         this.expenseInfos = expenseInfos;
         this.initialMoney = initialMoney;
     }
@@ -23,11 +23,11 @@ public class ExpenseResponseUpdate {
         this.expenseInfos = expenseInfos;
     }
 
-    public List<InitialMoneyResponse> getInitialMoney() {
+    public InitialMoneyResponse getInitialMoney() {
         return initialMoney;
     }
 
-    public void setInitialMoney(List<InitialMoneyResponse> initialMoney) {
+    public void setInitialMoney(InitialMoneyResponse initialMoney) {
         this.initialMoney = initialMoney;
     }
 }

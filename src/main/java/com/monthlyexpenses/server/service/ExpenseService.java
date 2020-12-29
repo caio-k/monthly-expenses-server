@@ -43,7 +43,7 @@ public class ExpenseService {
         List<ExpenseTypeResponse> expenseTypeResponses = expenseTypeService.getAllExpenseTypes(userId);
 
         List<ExpenseInfoResponse> expenseInfoResponses = new ArrayList<>();
-        List<InitialMoneyResponse> initialMoneyResponses = new ArrayList<>();
+        InitialMoneyResponse initialMoneyResponse = null;
 
         if (yearOptional.isPresent()) {
             selectedYearNumber = yearOptional.get().getYearNumber();
@@ -56,7 +56,7 @@ public class ExpenseService {
                     selectedYearNumber.compareTo(actualYear) < 0 ? decemberNumber : januaryNumber;
 
             Month month = monthService.findMonthByMonthNumber(selectedMonth);
-            initialMoneyResponses = initialMoneyService.getInitialMoneyByMonthAndYearLogic(userId, month, yearOptional.get());
+            initialMoneyResponse = initialMoneyService.getInitialMoneyByMonthAndYearLogic(userId, month, yearOptional.get());
             expenseInfoResponses = expenseInfoService.getExpensesByMonthAndYearLogic(userId, month, yearOptional.get());
         }
 
@@ -66,19 +66,19 @@ public class ExpenseService {
                 yearResponses,
                 expenseTypeResponses,
                 expenseInfoResponses,
-                initialMoneyResponses)
+                initialMoneyResponse)
         );
     }
 
     public ResponseEntity<?> getByMonthAndYear(Long userId, int monthNumber, int yearNumber) {
         Year year = yearService.findByYearNumberAndUserId(yearNumber, userId);
         Month month = monthService.findMonthByMonthNumber(monthNumber);
-        List<InitialMoneyResponse> initialMoneyResponses = initialMoneyService.getInitialMoneyByMonthAndYearLogic(userId, month, year);
+        InitialMoneyResponse initialMoneyResponse = initialMoneyService.getInitialMoneyByMonthAndYearLogic(userId, month, year);
         List<ExpenseInfoResponse> expenseInfoResponses = expenseInfoService.getExpensesByMonthAndYearLogic(userId, month, year);
 
         return ResponseEntity.ok(new ExpenseResponseUpdate(
                 expenseInfoResponses,
-                initialMoneyResponses
+                initialMoneyResponse
         ));
     }
 }
