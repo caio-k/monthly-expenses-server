@@ -57,8 +57,8 @@ public class InitialMoneyService {
         return initialMoneyResponse;
     }
 
-    public ResponseEntity<?> createInitialMoney(Long userId, Long yearId, Integer monthNumber, float initialMoneyValue) {
-        Year year = yearService.findYearByYearIdAndUserId(yearId, userId);
+    public ResponseEntity<?> createInitialMoney(Long userId, Integer yearNumber, Integer monthNumber, float initialMoneyValue) {
+        Year year = yearService.findByYearNumberAndUserId(yearNumber, userId);
         Month month = monthService.findMonthByMonthNumber(monthNumber);
         MonthYear monthYear = monthYearService.findMonthYearByMonthAndYear(month, year);
         User user = userService.getUserByUserId(userId);

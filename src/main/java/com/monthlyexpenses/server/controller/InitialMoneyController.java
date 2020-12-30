@@ -24,7 +24,7 @@ public class InitialMoneyController {
     @PostMapping("/create")
     public ResponseEntity<?> createInitialMoney(@RequestHeader(value = "userId") Long userId,
                                                 @Valid @RequestBody InitialMoneyPostRequest initialMoneyPostRequest) {
-        return initialMoneyService.createInitialMoney(userId, initialMoneyPostRequest.getYearId(),
+        return initialMoneyService.createInitialMoney(userId, initialMoneyPostRequest.getYearNumber(),
                 initialMoneyPostRequest.getMonth(), initialMoneyPostRequest.getInitialMoney());
     }
 
