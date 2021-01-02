@@ -1,5 +1,6 @@
 package com.monthlyexpenses.server.dto.request.expense;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -8,8 +9,8 @@ public class ExpensePutRequest {
     @NotNull(message = "{expenseId.not.null}")
     private Long expenseId;
 
-    @NotNull(message = "{yearId.not.null}")
-    private Long yearId;
+    @Min(value = 0, message = "{yearNumber.min.zero}")
+    private Integer yearNumber;
 
     @NotNull(message = "{month.not.null}")
     private Integer monthNumber;
@@ -34,12 +35,12 @@ public class ExpensePutRequest {
         this.expenseId = expenseId;
     }
 
-    public Long getYearId() {
-        return yearId;
+    public Integer getYearNumber() {
+        return yearNumber;
     }
 
-    public void setYearId(Long yearId) {
-        this.yearId = yearId;
+    public void setYearNumber(Integer yearNumber) {
+        this.yearNumber = yearNumber;
     }
 
     public Integer getMonthNumber() {

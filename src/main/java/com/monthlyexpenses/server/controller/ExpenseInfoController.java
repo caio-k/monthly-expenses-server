@@ -26,7 +26,7 @@ public class ExpenseInfoController {
                                            @Valid @RequestBody ExpensePostRequest expensePostRequest) {
         return expenseInfoService.createExpense(userId, expensePostRequest.getName(), expensePostRequest.getPrice(),
                 expensePostRequest.isPaid(), expensePostRequest.getExpenseTypeId(), expensePostRequest.getMonthNumber(),
-                expensePostRequest.getYearId());
+                expensePostRequest.getYearNumber());
     }
 
     @PutMapping("/put")
@@ -34,7 +34,7 @@ public class ExpenseInfoController {
                                            @Valid @RequestBody ExpensePutRequest expensePutRequest) {
         return expenseInfoService.updateExpense(userId, expensePutRequest.getExpenseId(), expensePutRequest.getName(),
                 expensePutRequest.getPrice(), expensePutRequest.isPaid(), expensePutRequest.getExpenseTypeId(),
-                expensePutRequest.getMonthNumber(), expensePutRequest.getYearId());
+                expensePutRequest.getMonthNumber(), expensePutRequest.getYearNumber());
     }
 
     @DeleteMapping("/delete")

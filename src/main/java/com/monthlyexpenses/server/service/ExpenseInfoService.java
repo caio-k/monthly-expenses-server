@@ -19,16 +19,18 @@ public class ExpenseInfoService {
     private final ExpenseInfoRepository expenseInfoRepository;
     private final UserService userService;
     private final MonthYearService monthYearService;
+    private final YearService yearService;
     private final ExpenseTypeService expenseTypeService;
     private final MessagesComponent messages;
 
     @Autowired
     public ExpenseInfoService(ExpenseInfoRepository expenseInfoRepository, UserService userService,
-                              MonthYearService monthYearService, ExpenseTypeService expenseTypeService,
-                              MessagesComponent messages) {
+                              MonthYearService monthYearService, YearService yearService,
+                              ExpenseTypeService expenseTypeService, MessagesComponent messages) {
         this.expenseInfoRepository = expenseInfoRepository;
         this.userService = userService;
         this.monthYearService = monthYearService;
+        this.yearService = yearService;
         this.expenseTypeService = expenseTypeService;
         this.messages = messages;
     }
@@ -55,9 +57,10 @@ public class ExpenseInfoService {
     }
 
     public ResponseEntity<?> createExpense(Long userId, String name, float price, boolean paid, Long expenseTypeId,
-                                           Integer monthNumber, Long yearId) {
+                                           Integer monthNumber, Integer yearNumber) {
         User user = userService.getUserByUserId(userId);
-        MonthYear monthYear = monthYearService.findMonthYearByMonthNumberAndYearId(monthNumber, yearId, userId);
+        Year year = yearService.findByYearNumberAndUserId(yearNumber, userId);
+        MonthYear monthYear = monthYearService.findMonthYearByMonthNumberAndYearId(monthNumber, year.getId(), userId);
         ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndUserId(expenseTypeId, userId);
 
         Expense expense = new Expense(name, price, paid, expenseType, user, monthYear);
@@ -77,8 +80,9 @@ public class ExpenseInfoService {
     }
 
     public ResponseEntity<?> updateExpense(Long userId, Long expenseId, String name, float price, boolean paid,
-                                           Long expenseTypeId, Integer monthNumber, Long yearId) {
-        MonthYear monthYear = monthYearService.findMonthYearByMonthNumberAndYearId(monthNumber, yearId, userId);
+                                           Long expenseTypeId, Integer monthNumber, Integer yearNumber) {
+        Year year = yearService.findByYearNumberAndUserId(yearNumber, userId);
+        MonthYear monthYear = monthYearService.findMonthYearByMonthNumberAndYearId(monthNumber, year.getId(), userId);
         ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndUserId(expenseTypeId, userId);
         Expense expense = getExpenseById(expenseId, userId);
 
