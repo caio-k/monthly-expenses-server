@@ -80,9 +80,7 @@ public class ExpenseInfoService {
     }
 
     public ResponseEntity<?> updateExpense(Long userId, Long expenseId, String name, float price, boolean paid,
-                                           Long expenseTypeId, Integer monthNumber, Integer yearNumber) {
-        Year year = yearService.findByYearNumberAndUserId(yearNumber, userId);
-        MonthYear monthYear = monthYearService.findMonthYearByMonthNumberAndYearId(monthNumber, year.getId(), userId);
+                                           Long expenseTypeId) {
         ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndUserId(expenseTypeId, userId);
         Expense expense = getExpenseById(expenseId, userId);
 
@@ -90,7 +88,6 @@ public class ExpenseInfoService {
         expense.setPrice(price);
         expense.setPaid(paid);
         expense.setExpenseType(expenseType);
-        expense.setMonthYear(monthYear);
         expenseInfoRepository.save(expense);
 
         ExpenseInfoResponse expenseInfoResponse = new ExpenseInfoResponse(

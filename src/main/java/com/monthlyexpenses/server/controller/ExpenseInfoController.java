@@ -33,8 +33,7 @@ public class ExpenseInfoController {
     public ResponseEntity<?> updateExpense(@RequestHeader(value = "userId") Long userId,
                                            @Valid @RequestBody ExpensePutRequest expensePutRequest) {
         return expenseInfoService.updateExpense(userId, expensePutRequest.getExpenseId(), expensePutRequest.getName(),
-                expensePutRequest.getPrice(), expensePutRequest.isPaid(), expensePutRequest.getExpenseTypeId(),
-                expensePutRequest.getMonthNumber(), expensePutRequest.getYearNumber());
+                expensePutRequest.getPrice(), expensePutRequest.isPaid(), expensePutRequest.getExpenseTypeId());
     }
 
     @DeleteMapping("/delete")
