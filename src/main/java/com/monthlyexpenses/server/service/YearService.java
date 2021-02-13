@@ -86,11 +86,12 @@ public class YearService {
         Integer actualYear = GregorianCalendar.getInstance().get(Calendar.YEAR);
         int index = 0;
 
-        while (index < years.size() && years.get(index).getYearNumber().compareTo(actualYear) > 0) {
+        while (index < years.size() && years.get(index).getYearNumber().compareTo(actualYear) < 0) {
             index++;
         }
 
-        return years.isEmpty() ? Optional.empty() : Optional.of(years.get(index));
+        if (years.isEmpty()) return Optional.empty();
+        return index < years.size() ? Optional.of(years.get(index)) : Optional.of(years.get(index - 1));
     }
 
     public Year findYearByYearIdAndUserId(Long id, Long userId) {
