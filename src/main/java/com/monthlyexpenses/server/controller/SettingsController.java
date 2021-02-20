@@ -19,6 +19,6 @@ public class SettingsController {
 
     @GetMapping("/get")
     public ResponseEntity<?> getInitializationData(@RequestHeader(value = "userId") Long userId) {
-        return settingsService.getInitializationData(userId);
+        return ResponseEntity.ok(settingsService.getInitializationData(userId));
     }
 }

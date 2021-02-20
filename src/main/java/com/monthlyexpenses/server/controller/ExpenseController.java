@@ -17,13 +17,13 @@ public class ExpenseController {
 
     @GetMapping("/getInitializationData")
     public ResponseEntity<?> getInitializationData(@RequestHeader(value = "userId") Long userId) {
-        return expenseService.getInitializationData(userId);
+        return ResponseEntity.ok(expenseService.getInitializationData(userId));
     }
 
     @GetMapping("/getByMonthAndYear")
     public ResponseEntity<?> getByMonthAndYear(@RequestHeader(value = "userId") Long userId,
                                                @RequestParam int monthNumber,
                                                @RequestParam int yearNumber) {
-        return expenseService.getByMonthAndYear(userId, monthNumber, yearNumber);
+        return ResponseEntity.ok(expenseService.getByMonthAndYear(userId, monthNumber, yearNumber));
     }
 }

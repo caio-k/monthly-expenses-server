@@ -7,7 +7,6 @@ import com.monthlyexpenses.server.message.MessagesComponent;
 import com.monthlyexpenses.server.model.*;
 import com.monthlyexpenses.server.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -56,8 +55,8 @@ public class ExpenseInfoService {
         return expenseInfoResponses;
     }
 
-    public ResponseEntity<?> createExpense(Long userId, String name, float price, boolean paid, Long expenseTypeId,
-                                           Integer monthNumber, Integer yearNumber) {
+    public ExpenseInfoResponse createExpense(Long userId, String name, float price, boolean paid, Long expenseTypeId,
+                                             Integer monthNumber, Integer yearNumber) {
         User user = userService.getUserByUserId(userId);
         Year year = yearService.findByYearNumberAndUserId(yearNumber, userId);
         MonthYear monthYear = monthYearService.findMonthYearByMonthNumberAndYearId(monthNumber, year.getId(), userId);
@@ -66,7 +65,7 @@ public class ExpenseInfoService {
         Expense expense = new Expense(name, price, paid, expenseType, user, monthYear);
         expenseInfoRepository.save(expense);
 
-        ExpenseInfoResponse expenseInfoResponse = new ExpenseInfoResponse(
+        return new ExpenseInfoResponse(
                 expense.getId(),
                 expense.getName(),
                 expense.getPrice(),
@@ -75,12 +74,10 @@ public class ExpenseInfoService {
                 expense.getMonthYear().getYear().getYearNumber(),
                 expense.getExpenseType().getId()
         );
-
-        return ResponseEntity.ok(expenseInfoResponse);
     }
 
-    public ResponseEntity<?> updateExpense(Long userId, Long expenseId, String name, float price, boolean paid,
-                                           Long expenseTypeId) {
+    public ExpenseInfoResponse updateExpense(Long userId, Long expenseId, String name, float price, boolean paid,
+                                             Long expenseTypeId) {
         ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndUserId(expenseTypeId, userId);
         Expense expense = getExpenseById(expenseId, userId);
 
@@ -90,7 +87,7 @@ public class ExpenseInfoService {
         expense.setExpenseType(expenseType);
         expenseInfoRepository.save(expense);
 
-        ExpenseInfoResponse expenseInfoResponse = new ExpenseInfoResponse(
+        return new ExpenseInfoResponse(
                 expense.getId(),
                 expense.getName(),
                 expense.getPrice(),
@@ -99,14 +96,12 @@ public class ExpenseInfoService {
                 expense.getMonthYear().getYear().getYearNumber(),
                 expense.getExpenseType().getId()
         );
-
-        return ResponseEntity.ok(expenseInfoResponse);
     }
 
-    public ResponseEntity<?> deleteExpense(Long userId, Long expenseId) {
+    public MessageResponse deleteExpense(Long userId, Long expenseId) {
         Expense expense = getExpenseById(expenseId, userId);
         expenseInfoRepository.delete(expense);
-        return ResponseEntity.ok(new MessageResponse(messages.get("EXPENSE_DELETED")));
+        return new MessageResponse(messages.get("EXPENSE_DELETED"));
     }
 
     private Expense getExpenseById(Long id, Long userId) {

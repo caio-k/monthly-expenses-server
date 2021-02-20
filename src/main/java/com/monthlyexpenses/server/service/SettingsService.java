@@ -4,7 +4,6 @@ import com.monthlyexpenses.server.dto.response.expenseType.ExpenseTypeResponse;
 import com.monthlyexpenses.server.dto.response.settings.SettingsResponse;
 import com.monthlyexpenses.server.dto.response.year.YearResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,9 +20,9 @@ public class SettingsService {
         this.expenseTypeService = expenseTypeService;
     }
 
-    public ResponseEntity<?> getInitializationData(Long userId) {
+    public SettingsResponse getInitializationData(Long userId) {
         List<YearResponse> yearResponses = yearService.getAllYearsByUserId(userId);
         List<ExpenseTypeResponse> expenseTypeResponses = expenseTypeService.getAllExpenseTypes(userId);
-        return ResponseEntity.ok(new SettingsResponse(expenseTypeResponses, yearResponses));
+        return new SettingsResponse(expenseTypeResponses, yearResponses);
     }
 }

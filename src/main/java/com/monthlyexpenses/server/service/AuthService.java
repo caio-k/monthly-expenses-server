@@ -5,6 +5,7 @@ import com.monthlyexpenses.server.dto.request.auth.SignUpRequest;
 import com.monthlyexpenses.server.dto.response.auth.JwtResponse;
 import com.monthlyexpenses.server.dto.response.MessageResponse;
 import com.monthlyexpenses.server.error.exception.ResourceNotFoundException;
+import com.monthlyexpenses.server.error.exception.UniqueViolationException;
 import com.monthlyexpenses.server.message.MessagesComponent;
 import com.monthlyexpenses.server.model.ERole;
 import com.monthlyexpenses.server.model.Role;
@@ -14,7 +15,6 @@ import com.monthlyexpenses.server.repository.UserRepository;
 import com.monthlyexpenses.server.security.jwt.JwtUtils;
 import com.monthlyexpenses.server.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -49,7 +49,7 @@ public class AuthService {
         this.messages = messages;
     }
 
-    public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
+    public JwtResponse authenticateUser(LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -62,24 +62,16 @@ public class AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles));
+        return new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles);
     }
 
-    public ResponseEntity<?> registerUser(SignUpRequest signUpRequest) {
+    public MessageResponse registerUser(SignUpRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse(messages.get("USERNAME_ALREADY_TAKEN")));
+            throw new UniqueViolationException(messages.get("USERNAME_ALREADY_TAKEN"));
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse(messages.get("EMAIL_ALREADY_TAKEN")));
+            throw new UniqueViolationException(messages.get("EMAIL_ALREADY_TAKEN"));
         }
 
         User user = new User(signUpRequest.getUsername(),
@@ -95,6 +87,6 @@ public class AuthService {
         user.setRoles(roles);
         userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse(messages.get("USER_REGISTERED_SUCCESSFULLY")));
+        return new MessageResponse(messages.get("USER_REGISTERED_SUCCESSFULLY"));
     }
 }

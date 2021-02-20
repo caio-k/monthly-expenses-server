@@ -13,7 +13,6 @@ import com.monthlyexpenses.server.repository.MonthYearRepository;
 import com.monthlyexpenses.server.repository.YearRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -49,7 +48,7 @@ public class YearService {
         return yearResponses;
     }
 
-    public ResponseEntity<?> createYear(Long userId, Integer yearNumber) {
+    public YearResponse createYear(Long userId, Integer yearNumber) {
         User user = userService.getUserByUserId(userId);
         Year year = new Year(yearNumber, user);
 
@@ -57,28 +56,28 @@ public class YearService {
             yearRepository.save(year);
             List<Month> months = monthService.findAll();
             months.forEach(month -> monthYearRepository.save(new MonthYear(month, year)));
-            return ResponseEntity.ok(new YearResponse(year.getId(), year.getYearNumber()));
+            return new YearResponse(year.getId(), year.getYearNumber());
         } catch (DataIntegrityViolationException exception) {
             throw new UniqueViolationException(messages.get("YEAR_ALREADY_EXISTS"));
         }
     }
 
-    public ResponseEntity<?> updateYear(Long userId, Long yearId, Integer yearNumber) {
+    public YearResponse updateYear(Long userId, Long yearId, Integer yearNumber) {
         Year year = findYearByYearIdAndUserId(yearId, userId);
 
         try {
             year.setYearNumber(yearNumber);
             yearRepository.save(year);
-            return ResponseEntity.ok(new YearResponse(year.getId(), year.getYearNumber()));
+            return new YearResponse(year.getId(), year.getYearNumber());
         } catch (DataIntegrityViolationException exception) {
             throw new UniqueViolationException(messages.get("YEAR_ALREADY_EXISTS"));
         }
     }
 
-    public ResponseEntity<?> deleteYear(Long userId, Long yearId) {
+    public MessageResponse deleteYear(Long userId, Long yearId) {
         Year year = findYearByYearIdAndUserId(yearId, userId);
         yearRepository.delete(year);
-        return ResponseEntity.ok(new MessageResponse(messages.get("YEAR_DELETED")));
+        return new MessageResponse(messages.get("YEAR_DELETED"));
     }
 
     public Optional<Year> getNearestYearFromNow(Long userId) {

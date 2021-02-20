@@ -9,7 +9,6 @@ import com.monthlyexpenses.server.dto.response.year.YearResponse;
 import com.monthlyexpenses.server.model.Month;
 import com.monthlyexpenses.server.model.Year;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -34,7 +33,7 @@ public class ExpenseService {
         this.monthService = monthService;
     }
 
-    public ResponseEntity<?> getInitializationData(Long userId) {
+    public ExpenseResponse getInitializationData(Long userId) {
         int selectedMonth = -1;
         Integer selectedYearNumber = -1;
         Optional<Year> yearOptional = yearService.getNearestYearFromNow(userId);
@@ -60,25 +59,25 @@ public class ExpenseService {
             expenseInfoResponses = expenseInfoService.getExpensesByMonthAndYearLogic(userId, month, yearOptional.get());
         }
 
-        return ResponseEntity.ok(new ExpenseResponse(
+        return new ExpenseResponse(
                 selectedYearNumber,
                 selectedMonth,
                 yearResponses,
                 expenseTypeResponses,
                 expenseInfoResponses,
-                initialMoneyResponse)
+                initialMoneyResponse
         );
     }
 
-    public ResponseEntity<?> getByMonthAndYear(Long userId, int monthNumber, int yearNumber) {
+    public ExpenseResponseUpdate getByMonthAndYear(Long userId, int monthNumber, int yearNumber) {
         Year year = yearService.findByYearNumberAndUserId(yearNumber, userId);
         Month month = monthService.findMonthByMonthNumber(monthNumber);
         InitialMoneyResponse initialMoneyResponse = initialMoneyService.getInitialMoneyByMonthAndYearLogic(userId, month, year);
         List<ExpenseInfoResponse> expenseInfoResponses = expenseInfoService.getExpensesByMonthAndYearLogic(userId, month, year);
 
-        return ResponseEntity.ok(new ExpenseResponseUpdate(
+        return new ExpenseResponseUpdate(
                 expenseInfoResponses,
                 initialMoneyResponse
-        ));
+        );
     }
 }

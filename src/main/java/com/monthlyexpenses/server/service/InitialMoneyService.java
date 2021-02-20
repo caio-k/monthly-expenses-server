@@ -8,7 +8,6 @@ import com.monthlyexpenses.server.model.*;
 import com.monthlyexpenses.server.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -55,7 +54,7 @@ public class InitialMoneyService {
         return initialMoneyResponse;
     }
 
-    public ResponseEntity<?> createInitialMoney(Long userId, Integer yearNumber, Integer monthNumber, float initialMoneyValue) {
+    public InitialMoneyResponse createInitialMoney(Long userId, Integer yearNumber, Integer monthNumber, float initialMoneyValue) {
         Year year = yearService.findByYearNumberAndUserId(yearNumber, userId);
         Month month = monthService.findMonthByMonthNumber(monthNumber);
         MonthYear monthYear = monthYearService.findMonthYearByMonthAndYear(month, year);
@@ -65,32 +64,28 @@ public class InitialMoneyService {
             InitialMoney initialMoney = new InitialMoney(initialMoneyValue, user, monthYear);
             initialMoneyRepository.save(initialMoney);
 
-            InitialMoneyResponse initialMoneyResponse = new InitialMoneyResponse(
+            return new InitialMoneyResponse(
                     initialMoney.getId(),
                     initialMoney.getMonthYear().getMonth().getMonthNumber(),
                     initialMoney.getMonthYear().getYear().getYearNumber(),
                     initialMoney.getInitialMoney()
             );
-
-            return ResponseEntity.ok(initialMoneyResponse);
         } catch (DataIntegrityViolationException exception) {
             throw new UniqueViolationException(messages.get("INITIAL_MONEY_ALREADY_EXISTS"));
         }
     }
 
-    public ResponseEntity<?> updateInitialMoney(Long userId, Long initialMoneyId, float initialMoneyValue) {
+    public InitialMoneyResponse updateInitialMoney(Long userId, Long initialMoneyId, float initialMoneyValue) {
         InitialMoney initialMoney = findInitialMoneyById(initialMoneyId, userId);
         initialMoney.setInitialMoney(initialMoneyValue);
         initialMoneyRepository.save(initialMoney);
 
-        InitialMoneyResponse initialMoneyResponse = new InitialMoneyResponse(
+        return new InitialMoneyResponse(
                 initialMoney.getId(),
                 initialMoney.getMonthYear().getMonth().getMonthNumber(),
                 initialMoney.getMonthYear().getYear().getYearNumber(),
                 initialMoney.getInitialMoney()
         );
-
-        return ResponseEntity.ok(initialMoneyResponse);
     }
 
     private InitialMoney findInitialMoneyById(Long initialMoneyId, Long userId) {

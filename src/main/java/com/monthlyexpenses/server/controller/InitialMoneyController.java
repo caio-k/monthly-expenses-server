@@ -24,14 +24,14 @@ public class InitialMoneyController {
     @PostMapping("/create")
     public ResponseEntity<?> createInitialMoney(@RequestHeader(value = "userId") Long userId,
                                                 @Valid @RequestBody InitialMoneyPostRequest initialMoneyPostRequest) {
-        return initialMoneyService.createInitialMoney(userId, initialMoneyPostRequest.getYearNumber(),
-                initialMoneyPostRequest.getMonth(), initialMoneyPostRequest.getInitialMoney());
+        return ResponseEntity.ok(initialMoneyService.createInitialMoney(userId, initialMoneyPostRequest.getYearNumber(),
+                initialMoneyPostRequest.getMonth(), initialMoneyPostRequest.getInitialMoney()));
     }
 
     @PutMapping("/update")
     public ResponseEntity<?> updateInitialMoney(@RequestHeader(value = "userId") Long userId,
                                                 @Valid @RequestBody InitialMoneyPutRequest initialMoneyPutRequest) {
-        return initialMoneyService.updateInitialMoney(userId, initialMoneyPutRequest.getInitialMoneyId(),
-                initialMoneyPutRequest.getInitialMoney());
+        return ResponseEntity.ok(initialMoneyService.updateInitialMoney(userId, initialMoneyPutRequest.getInitialMoneyId(),
+                initialMoneyPutRequest.getInitialMoney()));
     }
 }

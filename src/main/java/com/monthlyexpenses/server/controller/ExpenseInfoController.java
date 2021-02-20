@@ -24,21 +24,22 @@ public class ExpenseInfoController {
     @PostMapping("/post")
     public ResponseEntity<?> createExpense(@RequestHeader(value = "userId") Long userId,
                                            @Valid @RequestBody ExpensePostRequest expensePostRequest) {
-        return expenseInfoService.createExpense(userId, expensePostRequest.getName(), expensePostRequest.getPrice(),
-                expensePostRequest.isPaid(), expensePostRequest.getExpenseTypeId(), expensePostRequest.getMonthNumber(),
-                expensePostRequest.getYearNumber());
+        return ResponseEntity.ok(expenseInfoService.createExpense(userId, expensePostRequest.getName(),
+                expensePostRequest.getPrice(), expensePostRequest.isPaid(), expensePostRequest.getExpenseTypeId(),
+                expensePostRequest.getMonthNumber(), expensePostRequest.getYearNumber()));
     }
 
     @PutMapping("/put")
     public ResponseEntity<?> updateExpense(@RequestHeader(value = "userId") Long userId,
                                            @Valid @RequestBody ExpensePutRequest expensePutRequest) {
-        return expenseInfoService.updateExpense(userId, expensePutRequest.getExpenseId(), expensePutRequest.getName(),
-                expensePutRequest.getPrice(), expensePutRequest.isPaid(), expensePutRequest.getExpenseTypeId());
+        return ResponseEntity.ok(expenseInfoService.updateExpense(userId, expensePutRequest.getExpenseId(),
+                expensePutRequest.getName(), expensePutRequest.getPrice(), expensePutRequest.isPaid(),
+                expensePutRequest.getExpenseTypeId()));
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteExpense(@RequestHeader(value = "userId") Long userId,
                                            @RequestParam Long expenseId) {
-        return expenseInfoService.deleteExpense(userId, expenseId);
+        return ResponseEntity.ok(expenseInfoService.deleteExpense(userId, expenseId));
     }
 }
