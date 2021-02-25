@@ -54,15 +54,15 @@ class YearRepositoryTest {
         assertThat(yearUpdated.getYearNumber()).isEqualTo(newYearNumber);
     }
 
-//    @Test
-//    void save_Should_ThrowConstraintViolationException_When_UpdatingYearWithYearNumberNull() {
-//        Year yearToBeSaved = createYear1();
-//        Year yearSaved = yearRepository.save(yearToBeSaved);
-//
-//        yearSaved.setYearNumber(null);
-//        assertThatThrownBy(() -> yearRepository.save(yearSaved))
-//                .isInstanceOf(ConstraintViolationException.class);
-//    }
+    @Test
+    void save_Should_ThrowConstraintViolationException_When_UpdatingYearWithYearNumberNull() {
+        Year yearToBeSaved = createYear1();
+        Year yearSaved = yearRepository.save(yearToBeSaved);
+
+        yearSaved.setYearNumber(null);
+        assertThatThrownBy(() -> yearRepository.saveAndFlush(yearSaved))
+                .isInstanceOf(ConstraintViolationException.class);
+    }
 
     @Test
     void delete_Should_DeleteYear_When_Successful() {
