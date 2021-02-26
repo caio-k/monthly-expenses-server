@@ -5,6 +5,7 @@ import com.monthlyexpenses.server.model.Year;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
@@ -41,6 +42,15 @@ class YearRepositoryTest {
     }
 
     @Test
+    void save_Should_ThrowDataIntegrityViolationException_When_SavingYearWithYearNumberExistent() {
+        List<Year> years = createTwoYearsForTheSameUser(2021, 2021);
+        yearRepository.save(years.get(0));
+
+        assertThatThrownBy(() -> yearRepository.save(years.get(1)))
+                .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
     void save_Should_UpdateYear_When_Successful() {
         Year yearToBeSaved = createYear1();
         Year yearSaved = yearRepository.save(yearToBeSaved);
@@ -62,6 +72,17 @@ class YearRepositoryTest {
         yearSaved.setYearNumber(null);
         assertThatThrownBy(() -> yearRepository.saveAndFlush(yearSaved))
                 .isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    void save_Should_ThrowDataIntegrityViolationException_When_UpdatingYearWithYearNumberExistent() {
+        List<Year> years = createTwoYearsForTheSameUser(2020, 2021);
+        yearRepository.save(years.get(0));
+        yearRepository.save(years.get(1));
+
+        years.get(1).setYearNumber(2020);
+        assertThatThrownBy(() -> yearRepository.saveAndFlush(years.get(1)))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
@@ -186,7 +207,7 @@ class YearRepositoryTest {
 
     @Test
     void findAllByUserIdOrderByYearNumberDesc_Should_FindAllYears_When_Successful() {
-        List<Year> years = createTwoYearsForTheSameUser();
+        List<Year> years = createTwoYearsForTheSameUser(2020, 2021);
         Year yearSaved1 = yearRepository.save(years.get(0));
         Year yearSaved2 = yearRepository.save(years.get(1));
 
@@ -201,7 +222,7 @@ class YearRepositoryTest {
 
     @Test
     void findAllByUserIdOrderByYearNumberDesc_Should_FindAllYears_When_ExitsYearsOfOtherUsers() {
-        List<Year> years = createTwoYearsForTheSameUser();
+        List<Year> years = createTwoYearsForTheSameUser(2020, 2022);
         Year yearToBeSaved = createYear1();
         Year yearSaved1 = yearRepository.save(years.get(0));
         Year yearSaved2 = yearRepository.save(years.get(1));
@@ -235,11 +256,11 @@ class YearRepositoryTest {
         return new Year(2020, user);
     }
 
-    private List<Year> createTwoYearsForTheSameUser() {
+    private List<Year> createTwoYearsForTheSameUser(Integer firstYear, Integer secondYear) {
         List<Year> years = new ArrayList<>();
         User user = userRepository.save(new User("username3", "email3@monthlyexpenses.com", "password3"));
-        years.add(new Year(2020, user));
-        years.add(new Year(2021, user));
+        years.add(new Year(firstYear, user));
+        years.add(new Year(secondYear, user));
         return years;
     }
 }
