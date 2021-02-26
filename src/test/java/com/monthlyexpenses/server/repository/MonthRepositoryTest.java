@@ -39,6 +39,22 @@ class MonthRepositoryTest {
     }
 
     @Test
+    void save_Should_ThrowConstraintViolationException_When_CreatingMonthWithMonthNumberSmallerThan0() {
+        Month monthToBeSaved = createMonth(-1);
+
+        assertThatThrownBy(() -> monthRepository.save(monthToBeSaved))
+                .isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    void save_Should_ThrowConstraintViolationException_When_CreatingMonthWithMonthNumberGreaterThan11() {
+        Month monthToBeSaved = createMonth(12);
+
+        assertThatThrownBy(() -> monthRepository.save(monthToBeSaved))
+                .isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
     void save_Should_ThrowConstraintViolationException_When_CreatingMonthWithMonthNumberNull() {
         Month monthToBeSaved = createMonth(null);
 
@@ -70,6 +86,28 @@ class MonthRepositoryTest {
 
         assertThatThrownBy(() -> monthRepository.saveAndFlush(monthSaved1))
                 .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void save_Should_ThrowConstraintViolationException_When_UpdatingMonthWithMonthNumberSmallerThan0() {
+        Month monthToBeSaved = createMonth(5);
+        Month monthSaved = monthRepository.save(monthToBeSaved);
+
+        monthSaved.setMonthNumber(-1);
+
+        assertThatThrownBy(() -> monthRepository.saveAndFlush(monthSaved))
+                .isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    void save_Should_ThrowConstraintViolationException_When_UpdatingMonthWithMonthNumberGreaterThan11() {
+        Month monthToBeSaved = createMonth(5);
+        Month monthSaved = monthRepository.save(monthToBeSaved);
+
+        monthSaved.setMonthNumber(12);
+
+        assertThatThrownBy(() -> monthRepository.saveAndFlush(monthSaved))
+                .isInstanceOf(ConstraintViolationException.class);
     }
 
     @Test
