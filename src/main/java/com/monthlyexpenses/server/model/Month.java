@@ -1,6 +1,8 @@
 package com.monthlyexpenses.server.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +18,7 @@ public class Month {
     private Long id;
 
     @NotNull
+    @Min(0) @Max(11)
     @Column(name = "month_number")
     private Integer monthNumber;
 
