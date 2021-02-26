@@ -6,6 +6,7 @@ import com.monthlyexpenses.server.model.Month;
 import com.monthlyexpenses.server.model.MonthYear;
 import com.monthlyexpenses.server.model.Year;
 import com.monthlyexpenses.server.repository.MonthYearRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +17,7 @@ public class MonthYearService {
     private final MonthService monthService;
     private final MessagesComponent messages;
 
+    @Autowired
     public MonthYearService(MonthYearRepository monthYearRepository, YearService yearService,
                             MonthService monthService, MessagesComponent messages) {
         this.monthYearRepository = monthYearRepository;
