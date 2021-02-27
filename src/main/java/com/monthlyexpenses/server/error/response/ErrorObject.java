@@ -1,5 +1,8 @@
 package com.monthlyexpenses.server.error.response;
 
+import lombok.Getter;
+
+@Getter
 public class ErrorObject {
 
     private final String message;
@@ -10,17 +13,5 @@ public class ErrorObject {
         this.message = message;
         this.field = field;
         this.parameter = parameter;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getField() {
-        return field;
-    }
-
-    public Object getParameter() {
-        return parameter;
     }
 }

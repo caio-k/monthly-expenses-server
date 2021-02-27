@@ -1,9 +1,13 @@
 package com.monthlyexpenses.server.error.response;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 import java.util.Date;
 
+@Getter
+@Setter
 public class ErrorDetails {
 
     private Date timestamp;
@@ -16,37 +20,5 @@ public class ErrorDetails {
         this.message = message;
         this.details = details;
         this.status = status.value();
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 }

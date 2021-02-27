@@ -1,7 +1,10 @@
 package com.monthlyexpenses.server.error.response;
 
+import lombok.Getter;
+
 import java.util.List;
 
+@Getter
 public class ErrorResponse {
 
     private final String message;
@@ -16,25 +19,5 @@ public class ErrorResponse {
         this.status = status;
         this.objectName = objectName;
         this.errors = errors;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public String getObjectName() {
-        return objectName;
-    }
-
-    public List<ErrorObject> getErrors() {
-        return errors;
     }
 }
