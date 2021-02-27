@@ -79,6 +79,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/initialMoney/**").permitAll()
                 .antMatchers("/api/expenseInfo/**").permitAll()
                 .antMatchers("/api/expense/**").permitAll()
+                .antMatchers("/api/startHeroku/**").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
