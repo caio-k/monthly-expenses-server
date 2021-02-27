@@ -1,7 +1,12 @@
 package com.monthlyexpenses.server.dto.request.initialMoney;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.validation.constraints.NotNull;
 
+@Getter
+@Setter
 public class InitialMoneyPutRequest {
 
     @NotNull(message = "{initialMoneyId.not.null}")
@@ -9,20 +14,4 @@ public class InitialMoneyPutRequest {
 
     @NotNull(message = "{initialMoney.not.null}")
     private float initialMoney;
-
-    public Long getInitialMoneyId() {
-        return initialMoneyId;
-    }
-
-    public void setInitialMoneyId(Long initialMoneyId) {
-        this.initialMoneyId = initialMoneyId;
-    }
-
-    public float getInitialMoney() {
-        return initialMoney;
-    }
-
-    public void setInitialMoney(float initialMoney) {
-        this.initialMoney = initialMoney;
-    }
 }

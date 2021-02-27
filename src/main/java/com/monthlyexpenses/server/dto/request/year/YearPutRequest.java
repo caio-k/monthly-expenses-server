@@ -1,8 +1,13 @@
 package com.monthlyexpenses.server.dto.request.year;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+@Getter
+@Setter
 public class YearPutRequest {
 
     @Min(value = 0, message = "{yearNumber.min.zero}")
@@ -10,20 +15,4 @@ public class YearPutRequest {
 
     @NotNull(message = "{yearId.not.null}")
     private Long yearId;
-
-    public Integer getYearNumber() {
-        return yearNumber;
-    }
-
-    public void setYearNumber(Integer yearNumber) {
-        this.yearNumber = yearNumber;
-    }
-
-    public Long getYearId() {
-        return yearId;
-    }
-
-    public void setYearId(Long yearId) {
-        this.yearId = yearId;
-    }
 }

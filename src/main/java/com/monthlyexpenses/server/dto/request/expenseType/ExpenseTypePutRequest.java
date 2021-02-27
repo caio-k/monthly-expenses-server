@@ -1,8 +1,13 @@
 package com.monthlyexpenses.server.dto.request.expenseType;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+@Getter
+@Setter
 public class ExpenseTypePutRequest {
 
     @NotNull(message = "{expenseTypeId.not.null}")
@@ -10,20 +15,4 @@ public class ExpenseTypePutRequest {
 
     @NotBlank(message = "{expenseTypeName.not.blank}")
     private String expenseTypeName;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getExpenseTypeName() {
-        return expenseTypeName;
-    }
-
-    public void setExpenseTypeName(String expenseTypeName) {
-        this.expenseTypeName = expenseTypeName;
-    }
 }
