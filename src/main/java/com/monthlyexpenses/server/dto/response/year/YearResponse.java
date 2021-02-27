@@ -1,5 +1,10 @@
 package com.monthlyexpenses.server.dto.response.year;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class YearResponse {
 
     private Long id;
@@ -7,22 +12,6 @@ public class YearResponse {
 
     public YearResponse(Long id, Integer yearNumber) {
         this.id = id;
-        this.yearNumber = yearNumber;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getYearNumber() {
-        return yearNumber;
-    }
-
-    public void setYearNumber(Integer yearNumber) {
         this.yearNumber = yearNumber;
     }
 }
