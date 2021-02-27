@@ -1,10 +1,17 @@
 package com.monthlyexpenses.server.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "expense")
 public class Expense {
@@ -37,10 +44,6 @@ public class Expense {
     })
     private MonthYear monthYear;
 
-    public Expense() {
-
-    }
-
     public Expense(@NotBlank String name, @Min(0) float price, @NotNull boolean paid,
                    ExpenseType expenseType, User user, MonthYear monthYear) {
         this.name = name;
@@ -48,62 +51,6 @@ public class Expense {
         this.paid = paid;
         this.expenseType = expenseType;
         this.user = user;
-        this.monthYear = monthYear;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
-    public boolean isPaid() {
-        return paid;
-    }
-
-    public void setPaid(boolean paid) {
-        this.paid = paid;
-    }
-
-    public ExpenseType getExpenseType() {
-        return expenseType;
-    }
-
-    public void setExpenseType(ExpenseType expenseType) {
-        this.expenseType = expenseType;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public MonthYear getMonthYear() {
-        return monthYear;
-    }
-
-    public void setMonthYear(MonthYear monthYear) {
         this.monthYear = monthYear;
     }
 }
