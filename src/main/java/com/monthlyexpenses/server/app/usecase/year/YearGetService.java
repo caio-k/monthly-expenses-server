@@ -24,6 +24,11 @@ public class YearGetService {
         return yearRepository.findYearByNumberAndUserId(number, userId);
     }
 
+    public Year findYearByNumberAndUserIdOrElseThrow(Integer number, Long userId) {
+        return yearRepository.findYearByNumberAndUserId(number, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Não foi possível encontrar o ano desejado."));
+    }
+
     public Year findYearByIdAndUserIdOrElseThrow(Long id, Long userId) {
         return yearRepository.findYearByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Não foi possível encontrar o ano desejado."));
