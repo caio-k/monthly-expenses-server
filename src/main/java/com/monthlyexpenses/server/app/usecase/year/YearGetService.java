@@ -1,5 +1,6 @@
 package com.monthlyexpenses.server.app.usecase.year;
 
+import com.monthlyexpenses.server.app.exception.ResourceNotFoundException;
 import com.monthlyexpenses.server.app.repository.YearRepository;
 import com.monthlyexpenses.server.domain.User;
 import com.monthlyexpenses.server.domain.Year;
@@ -16,5 +17,10 @@ public class YearGetService {
 
     public Optional<Year> findYearByNumberAndUser(Integer number, User user) {
         return yearRepository.findYearByNumberAndUser(number, user);
+    }
+
+    public Year findYearByIdAndUserOrElseThrow(Long id, User user) {
+        return yearRepository.findYearByIdAndUser(id, user)
+                .orElseThrow(() -> new ResourceNotFoundException("Não foi possível encontrar o ano desejado."));
     }
 }

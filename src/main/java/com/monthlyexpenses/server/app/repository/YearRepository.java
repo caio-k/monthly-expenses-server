@@ -10,4 +10,6 @@ public interface YearRepository {
     Year save(Year year);
 
     Optional<Year> findYearByNumberAndUser(Integer yearNumber, User user);
+
+    Optional<Year> findYearByIdAndUser(Long id, User user);
 }

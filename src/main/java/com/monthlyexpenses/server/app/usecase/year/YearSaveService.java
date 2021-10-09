@@ -31,6 +31,16 @@ public class YearSaveService {
         return yearRepository.save(year);
     }
 
+    public Year updateYear(Long userId, Long yearId, Integer newYearNumber) {
+        User user = userGetService.findUserByIdOrElseThrow(userId);
+        Year year = yearGetService.findYearByIdAndUserOrElseThrow(yearId, user);
+
+        validateYearExistence(newYearNumber, user);
+
+        year.setNumber(newYearNumber);
+        return yearRepository.save(year);
+    }
+
     private void validateYearExistence(Integer yearNumber, User user) {
         Optional<Year> yearOptional = yearGetService.findYearByNumberAndUser(yearNumber, user);
 
