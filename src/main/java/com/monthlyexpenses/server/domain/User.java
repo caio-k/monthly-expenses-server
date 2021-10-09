@@ -6,6 +6,7 @@ import static java.util.Objects.isNull;
 
 public class User {
 
+    private Long id;
     private String username;
     private String email;
     private String password;
@@ -16,11 +17,26 @@ public class User {
         this.setPassword(password);
     }
 
+    public User(Long id, String username, String email, String password) {
+        this.setId(id);
+        this.setUsername(username);
+        this.setEmail(email);
+        this.setPassword(password);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getUsername() {
         return username;
     }
 
-    private void setUsername(String username) {
+    public void setUsername(String username) {
         validateUsername(username);
         this.username = username;
     }
@@ -29,7 +45,7 @@ public class User {
         return email;
     }
 
-    private void setEmail(String email) {
+    public void setEmail(String email) {
         validateEmail(email);
         this.email = email;
     }
@@ -38,7 +54,7 @@ public class User {
         return password;
     }
 
-    private void setPassword(String password) {
+    public void setPassword(String password) {
         validatePassword(password);
         this.password = password;
     }

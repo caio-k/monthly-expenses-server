@@ -20,9 +20,7 @@ public class UserSaveService {
         validateUsernameExistence(user.getUsername());
         validateEmailExistence(user.getEmail());
 
-        userRepository.save(user);
-
-        return user;
+        return userRepository.save(user);
     }
 
     private void validateUsernameExistence(String username) {
