@@ -1,9 +1,13 @@
 package com.monthlyexpenses.server.domain;
 
+import com.monthlyexpenses.server.app.exception.InvalidArgumentException;
 import com.monthlyexpenses.server.domain.enums.Month;
+
+import static java.util.Objects.isNull;
 
 public class Expense {
 
+    private Long id;
     private String name;
     private Float price;
     private Boolean paid;
@@ -13,13 +17,32 @@ public class Expense {
     private Year year;
 
     public Expense(String name, Float price, Boolean paid, User user, ExpenseType expenseType, Month month, Year year) {
-        this.name = name;
-        this.price = price;
-        this.paid = paid;
-        this.user = user;
-        this.expenseType = expenseType;
-        this.month = month;
-        this.year = year;
+        this.setName(name);
+        this.setPrice(price);
+        this.setPaid(paid);
+        this.setUser(user);
+        this.setExpenseType(expenseType);
+        this.setMonth(month);
+        this.setYear(year);
+    }
+
+    public Expense(Long id, String name, Float price, Boolean paid, User user, ExpenseType expenseType, Month month, Year year) {
+        this.setId(id);
+        this.setName(name);
+        this.setPrice(price);
+        this.setPaid(paid);
+        this.setUser(user);
+        this.setExpenseType(expenseType);
+        this.setMonth(month);
+        this.setYear(year);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -27,6 +50,7 @@ public class Expense {
     }
 
     public void setName(String name) {
+        validateName(name);
         this.name = name;
     }
 
@@ -35,6 +59,7 @@ public class Expense {
     }
 
     public void setPrice(Float price) {
+        validatePrice(price);
         this.price = price;
     }
 
@@ -43,6 +68,7 @@ public class Expense {
     }
 
     public void setPaid(Boolean paid) {
+        validatePaid(paid);
         this.paid = paid;
     }
 
@@ -76,5 +102,23 @@ public class Expense {
 
     public void setYear(Year year) {
         this.year = year;
+    }
+
+    private void validateName(String name) {
+        if (isNull(name) || name.isEmpty()) {
+            throw new InvalidArgumentException("O nome da despensa não pode estar em branco.");
+        }
+    }
+
+    private void validatePrice(Float price) {
+        if (isNull(price) || price.toString().isEmpty()) {
+            throw new InvalidArgumentException("O valor de despesa deve estar preenchido.");
+        }
+    }
+
+    private void validatePaid(Boolean paid) {
+        if (isNull(paid)) {
+            throw new InvalidArgumentException("A flag de já estar pago não pode estar vazia.");
+        }
     }
 }
