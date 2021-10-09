@@ -26,23 +26,22 @@ public class YearSaveService {
         User user = userGetService.findUserByIdOrElseThrow(userId);
         Year year = new Year(yearNumber, user);
 
-        validateYearExistence(yearNumber, user);
+        validateYearExistence(yearNumber, userId);
 
         return yearRepository.save(year);
     }
 
     public Year updateYear(Long userId, Long yearId, Integer newYearNumber) {
-        User user = userGetService.findUserByIdOrElseThrow(userId);
-        Year year = yearGetService.findYearByIdAndUserOrElseThrow(yearId, user);
+        Year year = yearGetService.findYearByIdAndUserIdOrElseThrow(yearId, userId);
 
-        validateYearExistence(newYearNumber, user);
+        validateYearExistence(newYearNumber, userId);
 
         year.setNumber(newYearNumber);
         return yearRepository.save(year);
     }
 
-    private void validateYearExistence(Integer yearNumber, User user) {
-        Optional<Year> yearOptional = yearGetService.findYearByNumberAndUser(yearNumber, user);
+    private void validateYearExistence(Integer yearNumber, Long userId) {
+        Optional<Year> yearOptional = yearGetService.findYearByNumberAndUserId(yearNumber, userId);
 
         if (yearOptional.isPresent()) {
             throw new ResourceAlreadyExistsException(format("O ano %d já foi cadastrado.", yearNumber));
