@@ -33,10 +33,10 @@ public class YearSaveService {
 
     public Year updateYear(Long userId, Long yearId, Integer newYearNumber) {
         Year year = yearGetService.findYearByIdAndUserIdOrElseThrow(yearId, userId);
+        year.setNumber(newYearNumber);
 
         validateYearExistence(newYearNumber, userId);
 
-        year.setNumber(newYearNumber);
         return yearRepository.save(year);
     }
 

@@ -29,9 +29,10 @@ public class RevenueSaveService {
     public Revenue createRevenue(Long userId, Integer yearNumber, Month month, Float value) {
         User user = userGetService.findUserByIdOrElseThrow(userId);
         Year year = yearGetService.findYearByNumberAndUserIdOrElseThrow(yearNumber, userId);
+        Revenue revenue = new Revenue(user, value, month, year);
 
         validateRevenueExistence(month, year, user);
-        return revenueRepository.save(new Revenue(user, value, month, year));
+        return revenueRepository.save(revenue);
     }
 
     public Revenue updateRevenue(Long userId, Long revenueId, Float value) {
