@@ -14,4 +14,6 @@ public interface YearRepository {
     Optional<Year> findYearByIdAndUserId(Long id, Long userId);
 
     List<Year> findAllByUserIdOrderByYearNumberDesc(Long userId);
+
+    void delete(Year year);
 }
