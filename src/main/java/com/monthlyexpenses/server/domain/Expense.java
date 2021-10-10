@@ -9,14 +9,14 @@ public class Expense {
 
     private Long id;
     private String name;
-    private Float price;
-    private Boolean paid;
+    private float price;
+    private boolean paid;
     private User user;
     private ExpenseType expenseType;
     private Month month;
     private Year year;
 
-    public Expense(String name, Float price, Boolean paid, User user, ExpenseType expenseType, Month month, Year year) {
+    public Expense(String name, float price, boolean paid, User user, ExpenseType expenseType, Month month, Year year) {
         this.setName(name);
         this.setPrice(price);
         this.setPaid(paid);
@@ -26,7 +26,7 @@ public class Expense {
         this.setYear(year);
     }
 
-    public Expense(Long id, String name, Float price, Boolean paid, User user, ExpenseType expenseType, Month month, Year year) {
+    public Expense(Long id, String name, float price, boolean paid, User user, ExpenseType expenseType, Month month, Year year) {
         this.setId(id);
         this.setName(name);
         this.setPrice(price);
@@ -54,21 +54,19 @@ public class Expense {
         this.name = name;
     }
 
-    public Float getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
-        validatePrice(price);
+    public void setPrice(float price) {
         this.price = price;
     }
 
-    public Boolean isPaid() {
+    public boolean isPaid() {
         return paid;
     }
 
-    public void setPaid(Boolean paid) {
-        validatePaid(paid);
+    public void setPaid(boolean paid) {
         this.paid = paid;
     }
 
@@ -107,18 +105,6 @@ public class Expense {
     private void validateName(String name) {
         if (isNull(name) || name.isEmpty()) {
             throw new InvalidArgumentException("O nome da despensa não pode estar em branco.");
-        }
-    }
-
-    private void validatePrice(Float price) {
-        if (isNull(price) || price.toString().isEmpty()) {
-            throw new InvalidArgumentException("O valor de despesa deve estar preenchido.");
-        }
-    }
-
-    private void validatePaid(Boolean paid) {
-        if (isNull(paid)) {
-            throw new InvalidArgumentException("A flag de já estar pago não pode estar vazia.");
         }
     }
 }
