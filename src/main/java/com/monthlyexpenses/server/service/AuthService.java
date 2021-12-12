@@ -32,12 +32,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuthService {
 
+    private final JwtUtils jwtUtils;
+    private final PasswordEncoder encoder;
+    private final MessagesComponent messages;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final PasswordEncoder encoder;
     private final AuthenticationManager authenticationManager;
-    private final JwtUtils jwtUtils;
-    private final MessagesComponent messages;
 
     public JwtResponse authenticateUser(LoginRequest loginRequest) {
 
@@ -52,7 +52,13 @@ public class AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        return new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles);
+        return JwtResponse.builder()
+                .accessToken(jwt)
+                .id(userDetails.getId())
+                .username(userDetails.getUsername())
+                .email(userDetails.getEmail())
+                .roles(roles)
+                .build();
     }
 
     public MessageResponse registerUser(SignUpRequest signUpRequest) {
