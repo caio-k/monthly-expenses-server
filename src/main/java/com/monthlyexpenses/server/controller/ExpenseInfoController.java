@@ -3,7 +3,7 @@ package com.monthlyexpenses.server.controller;
 import com.monthlyexpenses.server.dto.request.expense.ExpensePostRequest;
 import com.monthlyexpenses.server.dto.request.expense.ExpensePutRequest;
 import com.monthlyexpenses.server.service.ExpenseInfoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,16 +11,12 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/expenseInfo")
+@RequiredArgsConstructor
 public class ExpenseInfoController {
 
     private final ExpenseInfoService expenseInfoService;
 
-    @Autowired
-    public ExpenseInfoController(ExpenseInfoService expenseInfoService) {
-        this.expenseInfoService = expenseInfoService;
-    }
-
-    @PostMapping("/post")
+    @PostMapping
     public ResponseEntity<?> createExpense(@RequestHeader(value = "userId") Long userId,
                                            @Valid @RequestBody ExpensePostRequest expensePostRequest) {
         return ResponseEntity.ok(expenseInfoService.createExpense(userId, expensePostRequest.getName(),
@@ -28,7 +24,7 @@ public class ExpenseInfoController {
                 expensePostRequest.getMonthNumber(), expensePostRequest.getYearNumber()));
     }
 
-    @PutMapping("/put")
+    @PutMapping
     public ResponseEntity<?> updateExpense(@RequestHeader(value = "userId") Long userId,
                                            @Valid @RequestBody ExpensePutRequest expensePutRequest) {
         return ResponseEntity.ok(expenseInfoService.updateExpense(userId, expensePutRequest.getExpenseId(),
@@ -36,7 +32,7 @@ public class ExpenseInfoController {
                 expensePutRequest.getExpenseTypeId()));
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping
     public ResponseEntity<?> deleteExpense(@RequestHeader(value = "userId") Long userId,
                                            @RequestParam Long expenseId) {
         return ResponseEntity.ok(expenseInfoService.deleteExpense(userId, expenseId));
