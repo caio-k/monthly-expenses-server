@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface YearRepository  extends JpaRepository<Year, Long> {
+public interface YearRepository extends JpaRepository<Year, Long> {
 
     List<Year> findAllByUserIdOrderByYearNumberDesc(Long userId);
 

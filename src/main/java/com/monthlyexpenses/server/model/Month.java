@@ -25,7 +25,8 @@ public class Month {
     private Long id;
 
     @NotNull
-    @Min(0) @Max(11)
+    @Min(0)
+    @Max(11)
     @Column(name = "month_number")
     private Integer monthNumber;
 
