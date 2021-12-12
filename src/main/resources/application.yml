@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/monthlyexpensesdb
+    username: postgres
+    password: root
+    tomcat:
+      test-while-idle: true
+      validation-query: SELECT 1
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+    hibernate:
+      ddl-auto: update
+
+  profiles:
+    active: prod
+
+dev:
+  app:
+    jwtSecret: secretKey
+    jwtExpirationMs: 86400000
