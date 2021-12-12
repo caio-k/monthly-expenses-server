@@ -2,8 +2,8 @@ package com.monthlyexpenses.server.service;
 
 import com.monthlyexpenses.server.dto.request.auth.LoginRequest;
 import com.monthlyexpenses.server.dto.request.auth.SignUpRequest;
-import com.monthlyexpenses.server.dto.response.auth.JwtResponse;
 import com.monthlyexpenses.server.dto.response.MessageResponse;
+import com.monthlyexpenses.server.dto.response.auth.JwtResponse;
 import com.monthlyexpenses.server.error.exception.ResourceNotFoundException;
 import com.monthlyexpenses.server.error.exception.UniqueViolationException;
 import com.monthlyexpenses.server.message.MessagesComponent;
@@ -14,7 +14,7 @@ import com.monthlyexpenses.server.repository.RoleRepository;
 import com.monthlyexpenses.server.repository.UserRepository;
 import com.monthlyexpenses.server.security.jwt.JwtUtils;
 import com.monthlyexpenses.server.security.services.UserDetailsImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -37,17 +38,6 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final MessagesComponent messages;
-
-    @Autowired
-    public AuthService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder,
-                       AuthenticationManager authenticationManager, JwtUtils jwtUtils, MessagesComponent messages) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.encoder = encoder;
-        this.authenticationManager = authenticationManager;
-        this.jwtUtils = jwtUtils;
-        this.messages = messages;
-    }
 
     public JwtResponse authenticateUser(LoginRequest loginRequest) {
 

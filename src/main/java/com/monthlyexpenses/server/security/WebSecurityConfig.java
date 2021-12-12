@@ -3,7 +3,7 @@ package com.monthlyexpenses.server.security;
 import com.monthlyexpenses.server.security.jwt.AuthEntryPointJwt;
 import com.monthlyexpenses.server.security.jwt.AuthTokenFilter;
 import com.monthlyexpenses.server.security.services.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,17 +24,16 @@ import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 @EnableGlobalMethodSecurity(
         // securedEnabled = true,
         // jsr250Enabled = true,
         prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
+    private final AuthEntryPointJwt unauthorizedHandler;
 
     @Value("${webapp.url}")
     private String webappURL;
@@ -79,7 +78,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/initialMoney/**").permitAll()
                 .antMatchers("/api/expenseInfo/**").permitAll()
                 .antMatchers("/api/expense/**").permitAll()
-                .antMatchers("/api/startHeroku/**").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

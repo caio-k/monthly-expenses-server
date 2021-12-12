@@ -5,14 +5,15 @@ import com.monthlyexpenses.server.dto.response.expenseInfo.ExpenseInfoResponse;
 import com.monthlyexpenses.server.error.exception.ResourceNotFoundException;
 import com.monthlyexpenses.server.message.MessagesComponent;
 import com.monthlyexpenses.server.model.*;
-import com.monthlyexpenses.server.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.monthlyexpenses.server.repository.ExpenseInfoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ExpenseInfoService {
 
     private final ExpenseInfoRepository expenseInfoRepository;
@@ -21,18 +22,6 @@ public class ExpenseInfoService {
     private final YearService yearService;
     private final ExpenseTypeService expenseTypeService;
     private final MessagesComponent messages;
-
-    @Autowired
-    public ExpenseInfoService(ExpenseInfoRepository expenseInfoRepository, UserService userService,
-                              MonthYearService monthYearService, YearService yearService,
-                              ExpenseTypeService expenseTypeService, MessagesComponent messages) {
-        this.expenseInfoRepository = expenseInfoRepository;
-        this.userService = userService;
-        this.monthYearService = monthYearService;
-        this.yearService = yearService;
-        this.expenseTypeService = expenseTypeService;
-        this.messages = messages;
-    }
 
     public List<ExpenseInfoResponse> getExpensesByMonthAndYearLogic(Long userId, Month month, Year year) {
         MonthYear monthYear = monthYearService.findMonthYearByMonthAndYear(month, year);

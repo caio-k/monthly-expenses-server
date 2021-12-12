@@ -8,7 +8,7 @@ import com.monthlyexpenses.server.message.MessagesComponent;
 import com.monthlyexpenses.server.model.ExpenseType;
 import com.monthlyexpenses.server.model.User;
 import com.monthlyexpenses.server.repository.ExpenseTypeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -16,19 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ExpenseTypeService {
 
     private final ExpenseTypeRepository expenseTypeRepository;
     private final UserService userService;
     private final MessagesComponent messages;
-
-    @Autowired
-    public ExpenseTypeService(ExpenseTypeRepository expenseTypeRepository, UserService userService,
-                              MessagesComponent messages) {
-        this.expenseTypeRepository = expenseTypeRepository;
-        this.userService = userService;
-        this.messages = messages;
-    }
 
     public List<ExpenseTypeResponse> getAllExpenseTypes(Long userId) {
         List<ExpenseTypeResponse> expenseTypeResponses = new ArrayList<>();

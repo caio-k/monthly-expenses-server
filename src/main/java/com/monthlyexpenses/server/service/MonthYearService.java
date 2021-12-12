@@ -6,25 +6,17 @@ import com.monthlyexpenses.server.model.Month;
 import com.monthlyexpenses.server.model.MonthYear;
 import com.monthlyexpenses.server.model.Year;
 import com.monthlyexpenses.server.repository.MonthYearRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class MonthYearService {
 
     private final MonthYearRepository monthYearRepository;
     private final YearService yearService;
     private final MonthService monthService;
     private final MessagesComponent messages;
-
-    @Autowired
-    public MonthYearService(MonthYearRepository monthYearRepository, YearService yearService,
-                            MonthService monthService, MessagesComponent messages) {
-        this.monthYearRepository = monthYearRepository;
-        this.yearService = yearService;
-        this.monthService = monthService;
-        this.messages = messages;
-    }
 
     public MonthYear findMonthYearByMonthAndYear(Month month, Year year) {
         return monthYearRepository.findByMonthAndYear(month, year)

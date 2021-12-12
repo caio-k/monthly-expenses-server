@@ -11,13 +11,14 @@ import com.monthlyexpenses.server.model.User;
 import com.monthlyexpenses.server.model.Year;
 import com.monthlyexpenses.server.repository.MonthYearRepository;
 import com.monthlyexpenses.server.repository.YearRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class YearService {
 
     private final YearRepository yearRepository;
@@ -25,17 +26,6 @@ public class YearService {
     private final UserService userService;
     private final MonthService monthService;
     private final MessagesComponent messages;
-
-    @Autowired
-    public YearService(YearRepository yearRepository, MonthYearRepository monthYearRepository,
-                       UserService userService, MonthService monthService,
-                       MessagesComponent messages) {
-        this.yearRepository = yearRepository;
-        this.monthYearRepository = monthYearRepository;
-        this.userService = userService;
-        this.monthService = monthService;
-        this.messages = messages;
-    }
 
     public List<YearResponse> getAllYearsByUserId(Long userId) {
         List<YearResponse> yearResponses = new ArrayList<>();

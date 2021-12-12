@@ -5,14 +5,15 @@ import com.monthlyexpenses.server.error.exception.ResourceNotFoundException;
 import com.monthlyexpenses.server.error.exception.UniqueViolationException;
 import com.monthlyexpenses.server.message.MessagesComponent;
 import com.monthlyexpenses.server.model.*;
-import com.monthlyexpenses.server.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.monthlyexpenses.server.repository.InitialMoneyRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class InitialMoneyService {
 
     private final InitialMoneyRepository initialMoneyRepository;
@@ -21,18 +22,6 @@ public class InitialMoneyService {
     private final MonthService monthService;
     private final MonthYearService monthYearService;
     private final MessagesComponent messages;
-
-    @Autowired
-    public InitialMoneyService(InitialMoneyRepository initialMoneyRepository, UserService userService,
-                               YearService yearService, MonthService monthService, MonthYearService monthYearService,
-                               MessagesComponent messages) {
-        this.initialMoneyRepository = initialMoneyRepository;
-        this.userService = userService;
-        this.yearService = yearService;
-        this.monthService = monthService;
-        this.monthYearService = monthYearService;
-        this.messages = messages;
-    }
 
     public InitialMoneyResponse getInitialMoneyByMonthAndYearLogic(Long userId, Month month, Year year) {
         Optional<InitialMoney> initialMoneyOptional =

@@ -8,12 +8,13 @@ import com.monthlyexpenses.server.dto.response.initialMoney.InitialMoneyResponse
 import com.monthlyexpenses.server.dto.response.year.YearResponse;
 import com.monthlyexpenses.server.model.Month;
 import com.monthlyexpenses.server.model.Year;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class ExpenseService {
 
     private final YearService yearService;
@@ -21,17 +22,6 @@ public class ExpenseService {
     private final InitialMoneyService initialMoneyService;
     private final ExpenseInfoService expenseInfoService;
     private final MonthService monthService;
-
-    @Autowired
-    public ExpenseService(YearService yearService, ExpenseTypeService expenseTypeService,
-                          InitialMoneyService initialMoneyService, ExpenseInfoService expenseInfoService,
-                          MonthService monthService) {
-        this.yearService = yearService;
-        this.expenseTypeService = expenseTypeService;
-        this.initialMoneyService = initialMoneyService;
-        this.expenseInfoService = expenseInfoService;
-        this.monthService = monthService;
-    }
 
     public ExpenseResponse getInitializationData(Long userId) {
         int selectedMonth = -1;
