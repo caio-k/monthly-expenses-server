@@ -1,10 +1,10 @@
 package com.monthlyexpenses.server.dto.response.expenseInfo;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
+@Builder
 public class ExpenseInfoResponse {
 
     private Long id;
@@ -14,14 +14,4 @@ public class ExpenseInfoResponse {
     private Integer month;
     private Integer year;
     private Long expenseTypeId;
-
-    public ExpenseInfoResponse(Long id, String name, float price, boolean paid, Integer month, Integer year, Long expenseTypeId) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.paid = paid;
-        this.month = month;
-        this.year = year;
-        this.expenseTypeId = expenseTypeId;
-    }
 }

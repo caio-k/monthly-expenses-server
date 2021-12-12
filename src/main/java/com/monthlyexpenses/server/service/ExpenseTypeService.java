@@ -12,8 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,14 +24,9 @@ public class ExpenseTypeService {
     private final MessagesComponent messages;
 
     public List<ExpenseTypeResponse> getAllExpenseTypes(Long userId) {
-        List<ExpenseTypeResponse> expenseTypeResponses = new ArrayList<>();
         List<ExpenseType> expenseTypes = expenseTypeRepository.findAllByUserIdOrderByNameAsc(userId);
 
-        for (ExpenseType expenseType : expenseTypes) {
-            expenseTypeResponses.add(new ExpenseTypeResponse(expenseType.getId(), expenseType.getName()));
-        }
-
-        return expenseTypeResponses;
+        return expenseTypes.stream().map(this::buildExpenseInfoResponse).collect(Collectors.toList());
     }
 
     public ExpenseTypeResponse create(Long userId, String expenseTypeName) {
@@ -40,7 +35,7 @@ public class ExpenseTypeService {
 
         try {
             expenseTypeRepository.save(expenseType);
-            return new ExpenseTypeResponse(expenseType.getId(), expenseType.getName());
+            return buildExpenseInfoResponse(expenseType);
         } catch (DataIntegrityViolationException exception) {
             throw new UniqueViolationException(messages.get("EXPENSE_TYPE_NAME_ALREADY_EXISTS"));
         }
@@ -52,7 +47,7 @@ public class ExpenseTypeService {
         try {
             expenseType.setName(expenseTypeName);
             expenseTypeRepository.save(expenseType);
-            return new ExpenseTypeResponse(expenseType.getId(), expenseType.getName());
+            return buildExpenseInfoResponse(expenseType);
         } catch (DataIntegrityViolationException exception) {
             throw new UniqueViolationException(messages.get("EXPENSE_TYPE_NAME_ALREADY_EXISTS"));
         }
@@ -61,11 +56,18 @@ public class ExpenseTypeService {
     public MessageResponse delete(Long userId, Long expenseTypeId) {
         ExpenseType expenseType = findExpenseTypeByIdAndUserId(expenseTypeId, userId);
         expenseTypeRepository.delete(expenseType);
-        return new MessageResponse(messages.get("EXPENSE_TYPE_DELETED"));
+        return MessageResponse.builder().message(messages.get("EXPENSE_TYPE_DELETED")).build();
     }
 
     public ExpenseType findExpenseTypeByIdAndUserId(Long expenseTypeId, Long userId) {
         return expenseTypeRepository.findByIdAndUserId(expenseTypeId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("EXPENSE_TYPE_NOT_FOUND")));
+    }
+
+    private ExpenseTypeResponse buildExpenseInfoResponse(ExpenseType expenseType) {
+        return ExpenseTypeResponse.builder()
+                .id(expenseType.getId())
+                .name(expenseType.getName())
+                .build();
     }
 }

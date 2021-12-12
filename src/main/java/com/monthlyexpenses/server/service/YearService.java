@@ -16,6 +16,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,14 +29,9 @@ public class YearService {
     private final MessagesComponent messages;
 
     public List<YearResponse> getAllYearsByUserId(Long userId) {
-        List<YearResponse> yearResponses = new ArrayList<>();
         List<Year> years = yearRepository.findAllByUserIdOrderByYearNumberDesc(userId);
 
-        for (Year year : years) {
-            yearResponses.add(new YearResponse(year.getId(), year.getYearNumber()));
-        }
-
-        return yearResponses;
+        return years.stream().map(this::buildYearResponse).collect(Collectors.toList());
     }
 
     public YearResponse createYear(Long userId, Integer yearNumber) {
@@ -46,7 +42,7 @@ public class YearService {
             yearRepository.save(year);
             List<Month> months = monthService.findAll();
             months.forEach(month -> monthYearRepository.save(new MonthYear(month, year)));
-            return new YearResponse(year.getId(), year.getYearNumber());
+            return buildYearResponse(year);
         } catch (DataIntegrityViolationException exception) {
             throw new UniqueViolationException(messages.get("YEAR_ALREADY_EXISTS"));
         }
@@ -58,7 +54,7 @@ public class YearService {
         try {
             year.setYearNumber(yearNumber);
             yearRepository.save(year);
-            return new YearResponse(year.getId(), year.getYearNumber());
+            return buildYearResponse(year);
         } catch (DataIntegrityViolationException exception) {
             throw new UniqueViolationException(messages.get("YEAR_ALREADY_EXISTS"));
         }
@@ -67,7 +63,7 @@ public class YearService {
     public MessageResponse deleteYear(Long userId, Long yearId) {
         Year year = findYearByYearIdAndUserId(yearId, userId);
         yearRepository.delete(year);
-        return new MessageResponse(messages.get("YEAR_DELETED"));
+        return MessageResponse.builder().message(messages.get("YEAR_DELETED")).build();
     }
 
     public Optional<Year> getNearestYearFromNow(Long userId) {
@@ -100,5 +96,12 @@ public class YearService {
     public Year findByYearNumberAndUserId(Integer yearNumber, Long userId) {
         return yearRepository.findByYearNumberAndUserId(yearNumber, userId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("YEAR_NOT_FOUND")));
+    }
+
+    private YearResponse buildYearResponse(Year year) {
+        return YearResponse.builder()
+                .id(year.getId())
+                .yearNumber(year.getYearNumber())
+                .build();
     }
 }

@@ -9,8 +9,8 @@ import com.monthlyexpenses.server.repository.ExpenseInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,23 +25,9 @@ public class ExpenseInfoService {
 
     public List<ExpenseInfoResponse> getExpensesByMonthAndYearLogic(Long userId, Month month, Year year) {
         MonthYear monthYear = monthYearService.findMonthYearByMonthAndYear(month, year);
-
-        List<ExpenseInfoResponse> expenseInfoResponses = new ArrayList<>();
         List<Expense> expenses = expenseInfoRepository.findAllByMonthYearAndUserId(monthYear, userId);
 
-        expenses.forEach(expense -> expenseInfoResponses.add(
-                new ExpenseInfoResponse(
-                        expense.getId(),
-                        expense.getName(),
-                        expense.getPrice(),
-                        expense.isPaid(),
-                        expense.getMonthYear().getMonth().getMonthNumber(),
-                        expense.getMonthYear().getYear().getYearNumber(),
-                        expense.getExpenseType().getId()
-                )
-        ));
-
-        return expenseInfoResponses;
+        return expenses.stream().map(this::buildExpenseInfoResponse).collect(Collectors.toList());
     }
 
     public ExpenseInfoResponse createExpense(Long userId, String name, float price, boolean paid, Long expenseTypeId,
@@ -54,15 +40,7 @@ public class ExpenseInfoService {
         Expense expense = new Expense(name, price, paid, expenseType, user, monthYear);
         expenseInfoRepository.save(expense);
 
-        return new ExpenseInfoResponse(
-                expense.getId(),
-                expense.getName(),
-                expense.getPrice(),
-                expense.isPaid(),
-                expense.getMonthYear().getMonth().getMonthNumber(),
-                expense.getMonthYear().getYear().getYearNumber(),
-                expense.getExpenseType().getId()
-        );
+        return buildExpenseInfoResponse(expense);
     }
 
     public ExpenseInfoResponse updateExpense(Long userId, Long expenseId, String name, float price, boolean paid,
@@ -76,25 +54,29 @@ public class ExpenseInfoService {
         expense.setExpenseType(expenseType);
         expenseInfoRepository.save(expense);
 
-        return new ExpenseInfoResponse(
-                expense.getId(),
-                expense.getName(),
-                expense.getPrice(),
-                expense.isPaid(),
-                expense.getMonthYear().getMonth().getMonthNumber(),
-                expense.getMonthYear().getYear().getYearNumber(),
-                expense.getExpenseType().getId()
-        );
+        return buildExpenseInfoResponse(expense);
     }
 
     public MessageResponse deleteExpense(Long userId, Long expenseId) {
         Expense expense = getExpenseById(expenseId, userId);
         expenseInfoRepository.delete(expense);
-        return new MessageResponse(messages.get("EXPENSE_DELETED"));
+        return MessageResponse.builder().message(messages.get("EXPENSE_DELETED")).build();
     }
 
     private Expense getExpenseById(Long id, Long userId) {
         return expenseInfoRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("EXPENSE_NOT_FOUND")));
+    }
+
+    private ExpenseInfoResponse buildExpenseInfoResponse(Expense expense) {
+        return ExpenseInfoResponse.builder()
+                .id(expense.getId())
+                .name(expense.getName())
+                .price(expense.getPrice())
+                .paid(expense.isPaid())
+                .month(expense.getMonthYear().getMonth().getMonthNumber())
+                .year(expense.getMonthYear().getYear().getYearNumber())
+                .expenseTypeId(expense.getExpenseType().getId())
+                .build();
     }
 }

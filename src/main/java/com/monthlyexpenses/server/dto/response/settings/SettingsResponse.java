@@ -2,20 +2,15 @@ package com.monthlyexpenses.server.dto.response.settings;
 
 import com.monthlyexpenses.server.dto.response.expenseType.ExpenseTypeResponse;
 import com.monthlyexpenses.server.dto.response.year.YearResponse;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@Builder
 public class SettingsResponse {
 
-    List<ExpenseTypeResponse> expenseTypes;
-    List<YearResponse> years;
-
-    public SettingsResponse(List<ExpenseTypeResponse> expenseTypes, List<YearResponse> years) {
-        this.expenseTypes = expenseTypes;
-        this.years = years;
-    }
+    private List<ExpenseTypeResponse> expenseTypes;
+    private List<YearResponse> years;
 }

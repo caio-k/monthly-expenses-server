@@ -27,20 +27,7 @@ public class InitialMoneyService {
         Optional<InitialMoney> initialMoneyOptional =
                 initialMoneyRepository.findByMonthYear_MonthAndMonthYear_YearAndUserId(month, year, userId);
 
-        InitialMoneyResponse initialMoneyResponse = null;
-
-        if (initialMoneyOptional.isPresent()) {
-            InitialMoney initialMoney = initialMoneyOptional.get();
-
-            initialMoneyResponse = new InitialMoneyResponse(
-                    initialMoney.getId(),
-                    initialMoney.getMonthYear().getMonth().getMonthNumber(),
-                    initialMoney.getMonthYear().getYear().getYearNumber(),
-                    initialMoney.getInitialMoney()
-            );
-        }
-
-        return initialMoneyResponse;
+        return initialMoneyOptional.map(this::buildInitialMoneyResponse).orElse(null);
     }
 
     public InitialMoneyResponse createInitialMoney(Long userId, Integer yearNumber, Integer monthNumber, float initialMoneyValue) {
@@ -53,12 +40,7 @@ public class InitialMoneyService {
             InitialMoney initialMoney = new InitialMoney(initialMoneyValue, user, monthYear);
             initialMoneyRepository.save(initialMoney);
 
-            return new InitialMoneyResponse(
-                    initialMoney.getId(),
-                    initialMoney.getMonthYear().getMonth().getMonthNumber(),
-                    initialMoney.getMonthYear().getYear().getYearNumber(),
-                    initialMoney.getInitialMoney()
-            );
+            return buildInitialMoneyResponse(initialMoney);
         } catch (DataIntegrityViolationException exception) {
             throw new UniqueViolationException(messages.get("INITIAL_MONEY_ALREADY_EXISTS"));
         }
@@ -69,16 +51,20 @@ public class InitialMoneyService {
         initialMoney.setInitialMoney(initialMoneyValue);
         initialMoneyRepository.save(initialMoney);
 
-        return new InitialMoneyResponse(
-                initialMoney.getId(),
-                initialMoney.getMonthYear().getMonth().getMonthNumber(),
-                initialMoney.getMonthYear().getYear().getYearNumber(),
-                initialMoney.getInitialMoney()
-        );
+        return buildInitialMoneyResponse(initialMoney);
     }
 
     private InitialMoney findInitialMoneyById(Long initialMoneyId, Long userId) {
         return initialMoneyRepository.findByIdAndUserId(initialMoneyId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("INITIAL_MONEY_NOT_FOUND")));
+    }
+
+    private InitialMoneyResponse buildInitialMoneyResponse(InitialMoney initialMoney) {
+        return InitialMoneyResponse.builder()
+                .initialMoneyId(initialMoney.getId())
+                .month(initialMoney.getMonthYear().getMonth().getMonthNumber())
+                .year(initialMoney.getMonthYear().getYear().getYearNumber())
+                .initialMoney(initialMoney.getInitialMoney())
+                .build();
     }
 }

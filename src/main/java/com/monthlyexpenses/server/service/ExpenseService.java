@@ -49,14 +49,14 @@ public class ExpenseService {
             expenseInfoResponses = expenseInfoService.getExpensesByMonthAndYearLogic(userId, month, yearOptional.get());
         }
 
-        return new ExpenseResponse(
-                selectedYearNumber,
-                selectedMonth,
-                yearResponses,
-                expenseTypeResponses,
-                expenseInfoResponses,
-                initialMoneyResponse
-        );
+        return ExpenseResponse.builder()
+                .selectedYearNumber(selectedYearNumber)
+                .selectedMonth(selectedMonth)
+                .years(yearResponses)
+                .expenseTypes(expenseTypeResponses)
+                .expenseInfos(expenseInfoResponses)
+                .initialMoney(initialMoneyResponse)
+                .build();
     }
 
     public ExpenseResponseUpdate getByMonthAndYear(Long userId, int monthNumber, int yearNumber) {
@@ -65,9 +65,9 @@ public class ExpenseService {
         InitialMoneyResponse initialMoneyResponse = initialMoneyService.getInitialMoneyByMonthAndYearLogic(userId, month, year);
         List<ExpenseInfoResponse> expenseInfoResponses = expenseInfoService.getExpensesByMonthAndYearLogic(userId, month, year);
 
-        return new ExpenseResponseUpdate(
-                expenseInfoResponses,
-                initialMoneyResponse
-        );
+        return ExpenseResponseUpdate.builder()
+                .expenseInfos(expenseInfoResponses)
+                .initialMoney(initialMoneyResponse)
+                .build();
     }
 }

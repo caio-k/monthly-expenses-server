@@ -4,30 +4,19 @@ import com.monthlyexpenses.server.dto.response.expenseInfo.ExpenseInfoResponse;
 import com.monthlyexpenses.server.dto.response.expenseType.ExpenseTypeResponse;
 import com.monthlyexpenses.server.dto.response.initialMoney.InitialMoneyResponse;
 import com.monthlyexpenses.server.dto.response.year.YearResponse;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@Builder
 public class ExpenseResponse {
 
-    Integer selectedYearNumber;
-    Integer selectedMonth;
-    List<YearResponse> years;
-    List<ExpenseTypeResponse> expenseTypes;
-    List<ExpenseInfoResponse> expenseInfos;
-    InitialMoneyResponse initialMoney;
-
-    public ExpenseResponse(Integer selectedYearNumber, Integer selectedMonth, List<YearResponse> years,
-                           List<ExpenseTypeResponse> expenseTypes, List<ExpenseInfoResponse> expenseInfos,
-                           InitialMoneyResponse initialMoney) {
-        this.selectedYearNumber = selectedYearNumber;
-        this.selectedMonth = selectedMonth;
-        this.years = years;
-        this.expenseTypes = expenseTypes;
-        this.expenseInfos = expenseInfos;
-        this.initialMoney = initialMoney;
-    }
+    private Integer selectedYearNumber;
+    private Integer selectedMonth;
+    private List<YearResponse> years;
+    private List<ExpenseTypeResponse> expenseTypes;
+    private List<ExpenseInfoResponse> expenseInfos;
+    private InitialMoneyResponse initialMoney;
 }

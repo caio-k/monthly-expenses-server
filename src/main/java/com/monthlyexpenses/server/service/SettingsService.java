@@ -18,6 +18,10 @@ public class SettingsService {
     public SettingsResponse getInitializationData(Long userId) {
         List<YearResponse> yearResponses = yearService.getAllYearsByUserId(userId);
         List<ExpenseTypeResponse> expenseTypeResponses = expenseTypeService.getAllExpenseTypes(userId);
-        return new SettingsResponse(expenseTypeResponses, yearResponses);
+
+        return SettingsResponse.builder()
+                .expenseTypes(expenseTypeResponses)
+                .years(yearResponses)
+                .build();
     }
 }

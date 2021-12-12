@@ -83,6 +83,6 @@ public class AuthService {
         user.setRoles(roles);
         userRepository.save(user);
 
-        return new MessageResponse(messages.get("USER_REGISTERED_SUCCESSFULLY"));
+        return MessageResponse.builder().message(messages.get("USER_REGISTERED_SUCCESSFULLY")).build();
     }
 }
