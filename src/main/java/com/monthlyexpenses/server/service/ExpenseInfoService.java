@@ -25,9 +25,10 @@ public class ExpenseInfoService {
 
     public List<ExpenseInfoResponse> getExpensesByMonthAndYearLogic(Long userId, Month month, Year year) {
         MonthYear monthYear = monthYearService.findMonthYearByMonthAndYear(month, year);
-        List<Expense> expenses = expenseInfoRepository.findAllByMonthYearAndUserId(monthYear, userId);
 
-        return expenses.stream().map(this::buildExpenseInfoResponse).collect(Collectors.toList());
+        return expenseInfoRepository.findAllByMonthYearAndUserId(monthYear, userId)
+                .stream().map(this::buildExpenseInfoResponse)
+                .collect(Collectors.toList());
     }
 
     public ExpenseInfoResponse createExpense(Long userId, String name, float price, boolean paid, Long expenseTypeId,
@@ -38,9 +39,9 @@ public class ExpenseInfoService {
         ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndUserId(expenseTypeId, userId);
 
         Expense expense = new Expense(name, price, paid, expenseType, user, monthYear);
-        expenseInfoRepository.save(expense);
+        Expense expenseSaved = expenseInfoRepository.saveAndFlush(expense);
 
-        return buildExpenseInfoResponse(expense);
+        return buildExpenseInfoResponse(expenseSaved);
     }
 
     public ExpenseInfoResponse updateExpense(Long userId, Long expenseId, String name, float price, boolean paid,
@@ -52,9 +53,9 @@ public class ExpenseInfoService {
         expense.setPrice(price);
         expense.setPaid(paid);
         expense.setExpenseType(expenseType);
-        expenseInfoRepository.save(expense);
 
-        return buildExpenseInfoResponse(expense);
+        Expense expenseSaved = expenseInfoRepository.saveAndFlush(expense);
+        return buildExpenseInfoResponse(expenseSaved);
     }
 
     public MessageResponse deleteExpense(Long userId, Long expenseId) {

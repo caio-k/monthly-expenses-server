@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class InitialMoneyService {
@@ -24,10 +22,9 @@ public class InitialMoneyService {
     private final MessagesComponent messages;
 
     public InitialMoneyResponse getInitialMoneyByMonthAndYearLogic(Long userId, Month month, Year year) {
-        Optional<InitialMoney> initialMoneyOptional =
-                initialMoneyRepository.findByMonthYear_MonthAndMonthYear_YearAndUserId(month, year, userId);
-
-        return initialMoneyOptional.map(this::buildInitialMoneyResponse).orElse(null);
+        return initialMoneyRepository.findByMonthYear_MonthAndMonthYear_YearAndUserId(month, year, userId)
+                .map(this::buildInitialMoneyResponse)
+                .orElse(null);
     }
 
     public InitialMoneyResponse createInitialMoney(Long userId, Integer yearNumber, Integer monthNumber, float initialMoneyValue) {
@@ -37,10 +34,9 @@ public class InitialMoneyService {
         User user = userService.getUserByUserId(userId);
 
         try {
-            InitialMoney initialMoney = new InitialMoney(initialMoneyValue, user, monthYear);
-            initialMoneyRepository.save(initialMoney);
-
-            return buildInitialMoneyResponse(initialMoney);
+            InitialMoney initialMoneyToBeSaved = new InitialMoney(initialMoneyValue, user, monthYear);
+            InitialMoney initialMoneySaved = initialMoneyRepository.saveAndFlush(initialMoneyToBeSaved);
+            return buildInitialMoneyResponse(initialMoneySaved);
         } catch (DataIntegrityViolationException exception) {
             throw new UniqueViolationException(messages.get("INITIAL_MONEY_ALREADY_EXISTS"));
         }

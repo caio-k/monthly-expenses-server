@@ -29,9 +29,9 @@ public class YearService {
     private final MessagesComponent messages;
 
     public List<YearResponse> getAllYearsByUserId(Long userId) {
-        List<Year> years = yearRepository.findAllByUserIdOrderByYearNumberDesc(userId);
-
-        return years.stream().map(this::buildYearResponse).collect(Collectors.toList());
+        return yearRepository.findAllByUserIdOrderByYearNumberDesc(userId)
+                .stream().map(this::buildYearResponse)
+                .collect(Collectors.toList());
     }
 
     public YearResponse createYear(Long userId, Integer yearNumber) {
@@ -39,10 +39,10 @@ public class YearService {
         Year year = new Year(yearNumber, user);
 
         try {
-            yearRepository.save(year);
+            Year yearSaved = yearRepository.saveAndFlush(year);
             List<Month> months = monthService.findAll();
-            months.forEach(month -> monthYearRepository.save(new MonthYear(month, year)));
-            return buildYearResponse(year);
+            months.forEach(month -> monthYearRepository.save(new MonthYear(month, yearSaved)));
+            return buildYearResponse(yearSaved);
         } catch (DataIntegrityViolationException exception) {
             throw new UniqueViolationException(messages.get("YEAR_ALREADY_EXISTS"));
         }
@@ -53,8 +53,8 @@ public class YearService {
 
         try {
             year.setYearNumber(yearNumber);
-            yearRepository.save(year);
-            return buildYearResponse(year);
+            Year yearSaved = yearRepository.saveAndFlush(year);
+            return buildYearResponse(yearSaved);
         } catch (DataIntegrityViolationException exception) {
             throw new UniqueViolationException(messages.get("YEAR_ALREADY_EXISTS"));
         }
