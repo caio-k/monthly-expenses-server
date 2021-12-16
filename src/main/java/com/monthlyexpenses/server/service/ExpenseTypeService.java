@@ -24,9 +24,9 @@ public class ExpenseTypeService {
     private final MessagesComponent messages;
 
     public List<ExpenseTypeResponse> getAllExpenseTypes(Long userId) {
-        List<ExpenseType> expenseTypes = expenseTypeRepository.findAllByUserIdOrderByNameAsc(userId);
-
-        return expenseTypes.stream().map(this::buildExpenseInfoResponse).collect(Collectors.toList());
+        return expenseTypeRepository.findAllByUserIdOrderByNameAsc(userId)
+                .stream().map(this::buildExpenseInfoResponse)
+                .collect(Collectors.toList());
     }
 
     public ExpenseTypeResponse create(Long userId, String expenseTypeName) {
@@ -34,8 +34,8 @@ public class ExpenseTypeService {
         ExpenseType expenseType = new ExpenseType(expenseTypeName, user);
 
         try {
-            expenseTypeRepository.save(expenseType);
-            return buildExpenseInfoResponse(expenseType);
+            ExpenseType expenseTypeSaved = expenseTypeRepository.saveAndFlush(expenseType);
+            return buildExpenseInfoResponse(expenseTypeSaved);
         } catch (DataIntegrityViolationException exception) {
             throw new UniqueViolationException(messages.get("EXPENSE_TYPE_NAME_ALREADY_EXISTS"));
         }
@@ -46,8 +46,8 @@ public class ExpenseTypeService {
 
         try {
             expenseType.setName(expenseTypeName);
-            expenseTypeRepository.save(expenseType);
-            return buildExpenseInfoResponse(expenseType);
+            ExpenseType expenseTypeSaved = expenseTypeRepository.saveAndFlush(expenseType);
+            return buildExpenseInfoResponse(expenseTypeSaved);
         } catch (DataIntegrityViolationException exception) {
             throw new UniqueViolationException(messages.get("EXPENSE_TYPE_NAME_ALREADY_EXISTS"));
         }
