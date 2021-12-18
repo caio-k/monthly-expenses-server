@@ -47,9 +47,9 @@ public class ExpenseTypeService {
 
     public ExpenseTypeResponse update(Long customerId, String expenseTypeName, Long expenseTypeId) {
         ExpenseType expenseType = findExpenseTypeByIdAndUserId(expenseTypeId, customerId);
+        expenseType.setName(expenseTypeName);
 
         try {
-            expenseType.setName(expenseTypeName);
             ExpenseType expenseTypeSaved = expenseTypeRepository.saveAndFlush(expenseType);
             return buildExpenseInfoResponse(expenseTypeSaved);
         } catch (DataIntegrityViolationException exception) {

@@ -1,10 +1,10 @@
 package com.monthlyexpenses.server.service;
 
+import com.monthlyexpenses.server.configuration.MessagesComponent;
 import com.monthlyexpenses.server.dto.response.MessageResponse;
 import com.monthlyexpenses.server.dto.response.year.YearResponse;
 import com.monthlyexpenses.server.exceptions.ResourceNotFoundException;
 import com.monthlyexpenses.server.exceptions.UniqueViolationException;
-import com.monthlyexpenses.server.configuration.MessagesComponent;
 import com.monthlyexpenses.server.model.Customer;
 import com.monthlyexpenses.server.model.Year;
 import com.monthlyexpenses.server.repository.YearRepository;
@@ -49,9 +49,9 @@ public class YearService {
 
     public YearResponse updateYear(Long customerId, Long yearId, Integer yearNumber) {
         Year year = findYearByYearIdAndUserId(yearId, customerId);
+        year.setYearNumber(yearNumber);
 
         try {
-            year.setYearNumber(yearNumber);
             Year yearSaved = yearRepository.saveAndFlush(year);
             return buildYearResponse(yearSaved);
         } catch (DataIntegrityViolationException exception) {
@@ -70,11 +70,11 @@ public class YearService {
         Integer actualYear = GregorianCalendar.getInstance().get(Calendar.YEAR);
         int index = 0;
 
+        if (years.isEmpty()) return Optional.empty();
+
         while (index < years.size() && years.get(index).getYearNumber().compareTo(actualYear) > 0) {
             index++;
         }
-
-        if (years.isEmpty()) return Optional.empty();
 
         if (index < years.size()) {
             if (index > 0 && years.get(index).getYearNumber().compareTo(actualYear) < 0) {

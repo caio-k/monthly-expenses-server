@@ -32,14 +32,14 @@ public class InitialMoneyService {
         Year year = yearService.findByYearNumberAndUserId(yearNumber, customerId);
         Customer customer = userService.getUserByUserId(customerId);
 
-        try {
-            InitialMoney initialMoneyToBeSaved = InitialMoney.builder()
-                    .initialMoney(initialMoneyValue)
-                    .customer(customer)
-                    .year(year)
-                    .month(Month.findByMonthNumber(monthNumber))
-                    .build();
+        InitialMoney initialMoneyToBeSaved = InitialMoney.builder()
+                .initialMoney(initialMoneyValue)
+                .customer(customer)
+                .year(year)
+                .month(Month.findByMonthNumber(monthNumber))
+                .build();
 
+        try {
             InitialMoney initialMoneySaved = initialMoneyRepository.saveAndFlush(initialMoneyToBeSaved);
             return buildInitialMoneyResponse(initialMoneySaved);
         } catch (DataIntegrityViolationException exception) {
