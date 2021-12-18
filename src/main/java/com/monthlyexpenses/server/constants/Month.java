@@ -3,9 +3,11 @@ package com.monthlyexpenses.server.constants;
 import com.monthlyexpenses.server.exceptions.InvalidArgumentException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import static java.util.Arrays.stream;
 
+@Slf4j
 @Getter
 @AllArgsConstructor
 public enum Month {
@@ -27,6 +29,7 @@ public enum Month {
     private final Integer number;
 
     public static Month findByMonthNumber(Integer number) {
+        log.info("============ " + number + " ==============");
         return stream(values())
                 .filter(e -> e.getNumber().equals(number))
                 .findFirst()

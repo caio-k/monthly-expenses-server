@@ -9,6 +9,7 @@ import com.monthlyexpenses.server.dto.response.initialMoney.InitialMoneyResponse
 import com.monthlyexpenses.server.dto.response.year.YearResponse;
 import com.monthlyexpenses.server.model.Year;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 import static java.util.Calendar.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ExpenseService {
@@ -46,7 +48,7 @@ public class ExpenseService {
                     GregorianCalendar.getInstance().get(MONTH) :
                     selectedYearNumber.compareTo(actualYear) < 0 ? DECEMBER : JANUARY;
 
-            System.out.println("============ " + selectedMonth + " ==============");
+            log.info("============ " + selectedMonth + " ==============");
             Month month = Month.findByMonthNumber(selectedYearNumber);
             initialMoneyResponse = initialMoneyService.getInitialMoneyByMonthAndYearLogic(customerId, month, yearOptional.get());
             expenseInfoResponses = expenseInfoService.getExpensesByMonthAndYearLogic(customerId, month, yearOptional.get());
