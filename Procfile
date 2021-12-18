@@ -1,0 +1,1 @@
+web: java -jar -Dspring.profiles.active=prod target/monthly-expenses-server-0.0.1.jar
