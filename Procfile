@@ -1,1 +1,1 @@
-release: ./mvnw flyway:migrate
+migrate: java -cp target/classes:target/dependency/* Migrator
