@@ -81,7 +81,7 @@ public class AuthService {
         roles.add(userRole);
 
         user.setRoles(roles);
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
 
         return MessageResponse.builder().message(messages.get("USER_REGISTERED_SUCCESSFULLY")).build();
     }

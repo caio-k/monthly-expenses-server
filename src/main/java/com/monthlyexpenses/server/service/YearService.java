@@ -15,7 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +44,7 @@ public class YearService {
         try {
             Year yearSaved = yearRepository.saveAndFlush(year);
             List<Month> months = monthService.findAll();
-            months.forEach(month -> monthYearRepository.save(new MonthYear(month, yearSaved)));
+            months.forEach(month -> monthYearRepository.saveAndFlush(new MonthYear(month, yearSaved)));
             return buildYearResponse(yearSaved);
         } catch (DataIntegrityViolationException exception) {
             throw new UniqueViolationException(messages.get("YEAR_ALREADY_EXISTS"));

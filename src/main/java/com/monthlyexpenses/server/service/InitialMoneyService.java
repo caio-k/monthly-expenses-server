@@ -45,7 +45,7 @@ public class InitialMoneyService {
     public InitialMoneyResponse updateInitialMoney(Long userId, Long initialMoneyId, float initialMoneyValue) {
         InitialMoney initialMoney = findInitialMoneyById(initialMoneyId, userId);
         initialMoney.setInitialMoney(initialMoneyValue);
-        initialMoneyRepository.save(initialMoney);
+        initialMoneyRepository.saveAndFlush(initialMoney);
 
         return buildInitialMoneyResponse(initialMoney);
     }

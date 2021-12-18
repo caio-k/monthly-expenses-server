@@ -33,7 +33,7 @@ public class InitializationData implements ApplicationRunner {
 
         if (!optionalRole.isPresent()) {
             Role userRole = new Role(ERole.ROLE_USER);
-            roleRepository.save(userRole);
+            roleRepository.saveAndFlush(userRole);
         }
     }
 
@@ -52,7 +52,7 @@ public class InitializationData implements ApplicationRunner {
             if (existingMonths[monthNumber] == 0) {
                 Month month = new Month();
                 month.setMonthNumber(monthNumber);
-                monthRepository.save(month);
+                monthRepository.saveAndFlush(month);
             }
         }
     }
