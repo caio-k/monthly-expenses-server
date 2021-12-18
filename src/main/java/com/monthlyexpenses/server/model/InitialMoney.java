@@ -1,43 +1,47 @@
 package com.monthlyexpenses.server.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.monthlyexpenses.server.constants.Month;
+import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import static javax.persistence.FetchType.EAGER;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "initial_money", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"monthId", "yearId", "user_id"})
-})
 public class InitialMoney {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IDT_INITIAL_MONEY")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "initialMoneySequence")
+    @SequenceGenerator(name = "initialMoneySequence", sequenceName = "SQ_INITIAL_MONEY_IDT", allocationSize = 1)
     private Long id;
 
     @NotNull
+    @Column(name = "NUM_INITIAL_MONEY")
     private float initialMoney;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToOne(fetch = EAGER)
+    @JoinColumn(name = "IDT_CUSTOMER")
+    private Customer customer;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumns({
-            @JoinColumn(name = "monthId"),
-            @JoinColumn(name = "yearId")
-    })
-    private MonthYear monthYear;
+    @ManyToOne(fetch = EAGER)
+    @JoinColumn(name = "IDT_YEAR")
+    private Year year;
 
-    public InitialMoney(@NotBlank float initialMoney, User user, MonthYear monthYear) {
+    @Enumerated(EnumType.STRING)
+    @Column(name = "COD_MONTH")
+    private Month month;
+
+    public InitialMoney(float initialMoney, Customer customer, Year year, Month month) {
         this.initialMoney = initialMoney;
-        this.user = user;
-        this.monthYear = monthYear;
+        this.customer = customer;
+        this.year = year;
+        this.month = month;
     }
 }

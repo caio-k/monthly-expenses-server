@@ -1,39 +1,36 @@
 package com.monthlyexpenses.server.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.HashSet;
-import java.util.Set;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "expense_type", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"name", "user_id"})
-})
 public class ExpenseType {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IDT_EXPENSE_TYPE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "expenseTypeSequence")
+    @SequenceGenerator(name = "expenseTypeSequence", sequenceName = "SQ_EXPENSE_TYPE_IDT", allocationSize = 1)
     private Long id;
 
     @NotBlank
+    @Column(name = "NAM_EXPENSE_TYPE")
     private String name;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "IDT_CUSTOMER")
+    private Customer customer;
 
-    @OneToMany(mappedBy = "expenseType", cascade = {CascadeType.ALL})
-    private Set<Expense> expenses = new HashSet<>();
-
-    public ExpenseType(@NotBlank String name, User user) {
+    public ExpenseType(String name, Customer customer) {
         this.name = name;
-        this.user = user;
+        this.customer = customer;
     }
 }

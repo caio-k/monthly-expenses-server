@@ -6,7 +6,7 @@ import com.monthlyexpenses.server.exceptions.ResourceNotFoundException;
 import com.monthlyexpenses.server.exceptions.UniqueViolationException;
 import com.monthlyexpenses.server.configuration.MessagesComponent;
 import com.monthlyexpenses.server.model.ExpenseType;
-import com.monthlyexpenses.server.model.User;
+import com.monthlyexpenses.server.model.Customer;
 import com.monthlyexpenses.server.repository.ExpenseTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,15 +23,15 @@ public class ExpenseTypeService {
     private final UserService userService;
     private final MessagesComponent messages;
 
-    public List<ExpenseTypeResponse> getAllExpenseTypes(Long userId) {
-        return expenseTypeRepository.findAllByUserIdOrderByNameAsc(userId)
+    public List<ExpenseTypeResponse> getAllExpenseTypes(Long customerId) {
+        return expenseTypeRepository.findAllByCustomerIdOrderByNameAsc(customerId)
                 .stream().map(this::buildExpenseInfoResponse)
                 .collect(Collectors.toList());
     }
 
-    public ExpenseTypeResponse create(Long userId, String expenseTypeName) {
-        User user = userService.getUserByUserId(userId);
-        ExpenseType expenseType = new ExpenseType(expenseTypeName, user);
+    public ExpenseTypeResponse create(Long customerId, String expenseTypeName) {
+        Customer customer = userService.getUserByUserId(customerId);
+        ExpenseType expenseType = new ExpenseType(expenseTypeName, customer);
 
         try {
             ExpenseType expenseTypeSaved = expenseTypeRepository.saveAndFlush(expenseType);
@@ -41,8 +41,8 @@ public class ExpenseTypeService {
         }
     }
 
-    public ExpenseTypeResponse update(Long userId, String expenseTypeName, Long expenseTypeId) {
-        ExpenseType expenseType = findExpenseTypeByIdAndUserId(expenseTypeId, userId);
+    public ExpenseTypeResponse update(Long customerId, String expenseTypeName, Long expenseTypeId) {
+        ExpenseType expenseType = findExpenseTypeByIdAndUserId(expenseTypeId, customerId);
 
         try {
             expenseType.setName(expenseTypeName);
@@ -53,14 +53,14 @@ public class ExpenseTypeService {
         }
     }
 
-    public MessageResponse delete(Long userId, Long expenseTypeId) {
-        ExpenseType expenseType = findExpenseTypeByIdAndUserId(expenseTypeId, userId);
+    public MessageResponse delete(Long customerId, Long expenseTypeId) {
+        ExpenseType expenseType = findExpenseTypeByIdAndUserId(expenseTypeId, customerId);
         expenseTypeRepository.delete(expenseType);
         return MessageResponse.builder().message(messages.get("EXPENSE_TYPE_DELETED")).build();
     }
 
-    public ExpenseType findExpenseTypeByIdAndUserId(Long expenseTypeId, Long userId) {
-        return expenseTypeRepository.findByIdAndUserId(expenseTypeId, userId)
+    public ExpenseType findExpenseTypeByIdAndUserId(Long expenseTypeId, Long customerId) {
+        return expenseTypeRepository.findByIdAndCustomerId(expenseTypeId, customerId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("EXPENSE_TYPE_NOT_FOUND")));
     }
 

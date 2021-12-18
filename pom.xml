@@ -87,6 +87,12 @@
             <version>1.18.18</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>8.2.2</version>
+        </dependency>
     </dependencies>
 
     <build>

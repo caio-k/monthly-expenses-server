@@ -25,11 +25,11 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        return ok(authService.authenticateUser(loginRequest));
+        return ok(authService.authenticateCustomer(loginRequest));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        return ok(authService.registerUser(signUpRequest));
+        return ok(authService.registerCustomer(signUpRequest));
     }
 }

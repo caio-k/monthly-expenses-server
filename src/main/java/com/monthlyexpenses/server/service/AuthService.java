@@ -6,7 +6,7 @@ import com.monthlyexpenses.server.dto.response.MessageResponse;
 import com.monthlyexpenses.server.dto.response.auth.JwtResponse;
 import com.monthlyexpenses.server.exceptions.UniqueViolationException;
 import com.monthlyexpenses.server.configuration.MessagesComponent;
-import com.monthlyexpenses.server.model.User;
+import com.monthlyexpenses.server.model.Customer;
 import com.monthlyexpenses.server.repository.UserRepository;
 import com.monthlyexpenses.server.security.jwt.JwtUtils;
 import com.monthlyexpenses.server.security.services.UserDetailsImpl;
@@ -32,7 +32,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
 
-    public JwtResponse authenticateUser(LoginRequest loginRequest) {
+    public JwtResponse authenticateCustomer(LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -54,7 +54,7 @@ public class AuthService {
                 .build();
     }
 
-    public MessageResponse registerUser(SignUpRequest signUpRequest) {
+    public MessageResponse registerCustomer(SignUpRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             throw new UniqueViolationException(messages.get("USERNAME_ALREADY_TAKEN"));
         }
@@ -63,9 +63,9 @@ public class AuthService {
             throw new UniqueViolationException(messages.get("EMAIL_ALREADY_TAKEN"));
         }
 
-        User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(), encoder.encode(signUpRequest.getPassword()));
+        Customer customer = new Customer(signUpRequest.getUsername(), signUpRequest.getEmail(), encoder.encode(signUpRequest.getPassword()));
 
-        userRepository.saveAndFlush(user);
+        userRepository.saveAndFlush(customer);
 
         return MessageResponse.builder().message(messages.get("USER_REGISTERED_SUCCESSFULLY")).build();
     }

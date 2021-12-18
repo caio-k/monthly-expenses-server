@@ -1,7 +1,8 @@
 package com.monthlyexpenses.server.repository;
 
+import com.monthlyexpenses.server.constants.Month;
 import com.monthlyexpenses.server.model.Expense;
-import com.monthlyexpenses.server.model.MonthYear;
+import com.monthlyexpenses.server.model.Year;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface ExpenseInfoRepository extends JpaRepository<Expense, Long> {
 
-    List<Expense> findAllByMonthYearAndUserId(MonthYear monthYear, Long userId);
+    List<Expense> findAllByMonthAndYearAndCustomerId(Month month, Year year, Long customerId);
 
-    Optional<Expense> findByIdAndUserId(Long id, Long userId);
+    Optional<Expense> findByIdAndCustomerId(Long id, Long customerId);
 }

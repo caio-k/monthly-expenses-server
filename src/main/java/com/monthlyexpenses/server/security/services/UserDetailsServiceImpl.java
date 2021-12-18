@@ -1,6 +1,6 @@
 package com.monthlyexpenses.server.security.services;
 
-import com.monthlyexpenses.server.model.User;
+import com.monthlyexpenses.server.model.Customer;
 import com.monthlyexpenses.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,9 +16,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
+        Customer customer = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 
-        return UserDetailsImpl.build(user);
+        return UserDetailsImpl.build(customer);
     }
 }

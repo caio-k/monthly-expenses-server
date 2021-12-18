@@ -1,7 +1,7 @@
 package com.monthlyexpenses.server.security.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.monthlyexpenses.server.model.User;
+import com.monthlyexpenses.server.model.Customer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -28,12 +28,12 @@ public class UserDetailsImpl implements UserDetails {
         this.password = password;
     }
 
-    public static UserDetailsImpl build(User user) {
+    public static UserDetailsImpl build(Customer customer) {
         return new UserDetailsImpl(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getPassword());
+                customer.getId(),
+                customer.getUsername(),
+                customer.getEmail(),
+                customer.getPassword());
     }
 
     public Long getId() {

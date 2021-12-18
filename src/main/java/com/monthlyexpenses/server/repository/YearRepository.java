@@ -10,9 +10,9 @@ import java.util.Optional;
 @Repository
 public interface YearRepository extends JpaRepository<Year, Long> {
 
-    List<Year> findAllByUserIdOrderByYearNumberDesc(Long userId);
+    List<Year> findAllByCustomerIdOrderByYearNumberDesc(Long customerId);
 
-    Optional<Year> findByIdAndUserId(Long id, Long userId);
+    Optional<Year> findByIdAndCustomerId(Long id, Long customerId);
 
-    Optional<Year> findByYearNumberAndUserId(Integer yearNumber, Long userId);
+    Optional<Year> findByYearNumberAndCustomerId(Integer yearNumber, Long customerId);
 }

@@ -5,11 +5,8 @@ import com.monthlyexpenses.server.dto.response.year.YearResponse;
 import com.monthlyexpenses.server.exceptions.ResourceNotFoundException;
 import com.monthlyexpenses.server.exceptions.UniqueViolationException;
 import com.monthlyexpenses.server.configuration.MessagesComponent;
-import com.monthlyexpenses.server.model.Month;
-import com.monthlyexpenses.server.model.MonthYear;
-import com.monthlyexpenses.server.model.User;
+import com.monthlyexpenses.server.model.Customer;
 import com.monthlyexpenses.server.model.Year;
-import com.monthlyexpenses.server.repository.MonthYearRepository;
 import com.monthlyexpenses.server.repository.YearRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -26,33 +23,29 @@ import java.util.stream.Collectors;
 public class YearService {
 
     private final YearRepository yearRepository;
-    private final MonthYearRepository monthYearRepository;
     private final UserService userService;
-    private final MonthService monthService;
     private final MessagesComponent messages;
 
-    public List<YearResponse> getAllYearsByUserId(Long userId) {
-        return yearRepository.findAllByUserIdOrderByYearNumberDesc(userId)
+    public List<YearResponse> getAllYearsByUserId(Long customerId) {
+        return yearRepository.findAllByCustomerIdOrderByYearNumberDesc(customerId)
                 .stream().map(this::buildYearResponse)
                 .collect(Collectors.toList());
     }
 
-    public YearResponse createYear(Long userId, Integer yearNumber) {
-        User user = userService.getUserByUserId(userId);
-        Year year = new Year(yearNumber, user);
+    public YearResponse createYear(Long customerId, Integer yearNumber) {
+        Customer customer = userService.getUserByUserId(customerId);
+        Year year = new Year(yearNumber, customer);
 
         try {
             Year yearSaved = yearRepository.saveAndFlush(year);
-            List<Month> months = monthService.findAll();
-            months.forEach(month -> monthYearRepository.saveAndFlush(new MonthYear(month, yearSaved)));
             return buildYearResponse(yearSaved);
         } catch (DataIntegrityViolationException exception) {
             throw new UniqueViolationException(messages.get("YEAR_ALREADY_EXISTS"));
         }
     }
 
-    public YearResponse updateYear(Long userId, Long yearId, Integer yearNumber) {
-        Year year = findYearByYearIdAndUserId(yearId, userId);
+    public YearResponse updateYear(Long customerId, Long yearId, Integer yearNumber) {
+        Year year = findYearByYearIdAndUserId(yearId, customerId);
 
         try {
             year.setYearNumber(yearNumber);
@@ -63,14 +56,14 @@ public class YearService {
         }
     }
 
-    public MessageResponse deleteYear(Long userId, Long yearId) {
-        Year year = findYearByYearIdAndUserId(yearId, userId);
+    public MessageResponse deleteYear(Long customerId, Long yearId) {
+        Year year = findYearByYearIdAndUserId(yearId, customerId);
         yearRepository.delete(year);
         return MessageResponse.builder().message(messages.get("YEAR_DELETED")).build();
     }
 
-    public Optional<Year> getNearestYearFromNow(Long userId) {
-        List<Year> years = yearRepository.findAllByUserIdOrderByYearNumberDesc(userId);
+    public Optional<Year> getNearestYearFromNow(Long customerId) {
+        List<Year> years = yearRepository.findAllByCustomerIdOrderByYearNumberDesc(customerId);
         Integer actualYear = GregorianCalendar.getInstance().get(Calendar.YEAR);
         int index = 0;
 
@@ -91,13 +84,13 @@ public class YearService {
         return Optional.of(years.get(index));
     }
 
-    public Year findYearByYearIdAndUserId(Long id, Long userId) {
-        return yearRepository.findByIdAndUserId(id, userId)
+    public Year findYearByYearIdAndUserId(Long id, Long customerId) {
+        return yearRepository.findByIdAndCustomerId(id, customerId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("YEAR_NOT_FOUND")));
     }
 
     public Year findByYearNumberAndUserId(Integer yearNumber, Long userId) {
-        return yearRepository.findByYearNumberAndUserId(yearNumber, userId)
+        return yearRepository.findByYearNumberAndCustomerId(yearNumber, userId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("YEAR_NOT_FOUND")));
     }
 
