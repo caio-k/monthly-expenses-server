@@ -63,7 +63,11 @@ public class AuthService {
             throw new UniqueViolationException(messages.get("EMAIL_ALREADY_TAKEN"));
         }
 
-        Customer customer = new Customer(signUpRequest.getUsername(), signUpRequest.getEmail(), encoder.encode(signUpRequest.getPassword()));
+        Customer customer = Customer.builder()
+                .username(signUpRequest.getUsername())
+                .email(signUpRequest.getEmail())
+                .password(encoder.encode(signUpRequest.getPassword()))
+                .build();
 
         userRepository.saveAndFlush(customer);
 

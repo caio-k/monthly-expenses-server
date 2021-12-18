@@ -1,12 +1,12 @@
 package com.monthlyexpenses.server.service;
 
+import com.monthlyexpenses.server.configuration.MessagesComponent;
 import com.monthlyexpenses.server.dto.response.MessageResponse;
 import com.monthlyexpenses.server.dto.response.expenseType.ExpenseTypeResponse;
 import com.monthlyexpenses.server.exceptions.ResourceNotFoundException;
 import com.monthlyexpenses.server.exceptions.UniqueViolationException;
-import com.monthlyexpenses.server.configuration.MessagesComponent;
-import com.monthlyexpenses.server.model.ExpenseType;
 import com.monthlyexpenses.server.model.Customer;
+import com.monthlyexpenses.server.model.ExpenseType;
 import com.monthlyexpenses.server.repository.ExpenseTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -31,7 +31,11 @@ public class ExpenseTypeService {
 
     public ExpenseTypeResponse create(Long customerId, String expenseTypeName) {
         Customer customer = userService.getUserByUserId(customerId);
-        ExpenseType expenseType = new ExpenseType(expenseTypeName, customer);
+
+        ExpenseType expenseType = ExpenseType.builder()
+                .name(expenseTypeName)
+                .customer(customer)
+                .build();
 
         try {
             ExpenseType expenseTypeSaved = expenseTypeRepository.saveAndFlush(expenseType);

@@ -5,6 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
+import static javax.persistence.GenerationType.SEQUENCE;
+
 @Getter
 @Setter
 @Builder
@@ -15,7 +17,7 @@ public class Customer {
 
     @Id
     @Column(name = "IDT_CUSTOMER")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customerSequence")
+    @GeneratedValue(strategy = SEQUENCE, generator = "customerSequence")
     @SequenceGenerator(name = "customerSequence", sequenceName = "SQ_CUSTOMER_IDT", allocationSize = 1)
     private Long id;
 
@@ -30,10 +32,4 @@ public class Customer {
     @NotBlank
     @Column(name = "DES_PASSWORD")
     private String password;
-
-    public Customer(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }
 }

@@ -6,7 +6,9 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.GenerationType.SEQUENCE;
 
 @Getter
 @Setter
@@ -18,7 +20,7 @@ public class Expense {
 
     @Id
     @Column(name = "IDT_EXPENSE")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "expenseSequence")
+    @GeneratedValue(strategy = SEQUENCE, generator = "expenseSequence")
     @SequenceGenerator(name = "expenseSequence", sequenceName = "SQ_EXPENSE_IDT", allocationSize = 1)
     private Long id;
 
@@ -32,11 +34,11 @@ public class Expense {
     @Column(name = "FLG_PAID")
     private boolean paid;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "IDT_EXPENSE_TYPE")
     private ExpenseType expenseType;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "IDT_CUSTOMER")
     private Customer customer;
 
@@ -44,18 +46,7 @@ public class Expense {
     @JoinColumn(name = "IDT_YEAR")
     private Year year;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     @Column(name = "COD_MONTH")
     private Month month;
-
-    public Expense(String name, float price, boolean paid,
-                   ExpenseType expenseType, Customer customer, Year year, Month month) {
-        this.name = name;
-        this.price = price;
-        this.paid = paid;
-        this.expenseType = expenseType;
-        this.customer = customer;
-        this.year = year;
-        this.month = month;
-    }
 }

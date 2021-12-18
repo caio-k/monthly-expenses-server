@@ -6,7 +6,9 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.GenerationType.SEQUENCE;
 
 @Getter
 @Setter
@@ -18,7 +20,7 @@ public class InitialMoney {
 
     @Id
     @Column(name = "IDT_INITIAL_MONEY")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "initialMoneySequence")
+    @GeneratedValue(strategy = SEQUENCE, generator = "initialMoneySequence")
     @SequenceGenerator(name = "initialMoneySequence", sequenceName = "SQ_INITIAL_MONEY_IDT", allocationSize = 1)
     private Long id;
 
@@ -34,14 +36,7 @@ public class InitialMoney {
     @JoinColumn(name = "IDT_YEAR")
     private Year year;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     @Column(name = "COD_MONTH")
     private Month month;
-
-    public InitialMoney(float initialMoney, Customer customer, Year year, Month month) {
-        this.initialMoney = initialMoney;
-        this.customer = customer;
-        this.year = year;
-        this.month = month;
-    }
 }

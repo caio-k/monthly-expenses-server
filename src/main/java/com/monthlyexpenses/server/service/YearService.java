@@ -34,7 +34,10 @@ public class YearService {
 
     public YearResponse createYear(Long customerId, Integer yearNumber) {
         Customer customer = userService.getUserByUserId(customerId);
-        Year year = new Year(yearNumber, customer);
+        Year year = Year.builder()
+                .yearNumber(yearNumber)
+                .customer(customer)
+                .build();
 
         try {
             Year yearSaved = yearRepository.saveAndFlush(year);

@@ -5,6 +5,9 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.GenerationType.SEQUENCE;
+
 @Getter
 @Setter
 @Builder
@@ -15,7 +18,7 @@ public class Year {
 
     @Id
     @Column(name = "IDT_YEAR")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "yearSequence")
+    @GeneratedValue(strategy = SEQUENCE, generator = "yearSequence")
     @SequenceGenerator(name = "yearSequence", sequenceName = "SQ_YEAR_IDT", allocationSize = 1)
     private Long id;
 
@@ -24,12 +27,7 @@ public class Year {
     private Integer yearNumber;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "IDT_CUSTOMER")
     private Customer customer;
-
-    public Year(Integer yearNumber, Customer customer) {
-        this.yearNumber = yearNumber;
-        this.customer = customer;
-    }
 }

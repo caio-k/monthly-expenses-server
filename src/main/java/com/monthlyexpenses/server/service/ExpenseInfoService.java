@@ -5,9 +5,9 @@ import com.monthlyexpenses.server.constants.Month;
 import com.monthlyexpenses.server.dto.response.MessageResponse;
 import com.monthlyexpenses.server.dto.response.expenseInfo.ExpenseInfoResponse;
 import com.monthlyexpenses.server.exceptions.ResourceNotFoundException;
+import com.monthlyexpenses.server.model.Customer;
 import com.monthlyexpenses.server.model.Expense;
 import com.monthlyexpenses.server.model.ExpenseType;
-import com.monthlyexpenses.server.model.Customer;
 import com.monthlyexpenses.server.model.Year;
 import com.monthlyexpenses.server.repository.ExpenseInfoRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,16 @@ public class ExpenseInfoService {
         Year year = yearService.findByYearNumberAndUserId(yearNumber, customerId);
         ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndUserId(expenseTypeId, customerId);
 
-        Expense expense = new Expense(name, price, paid, expenseType, customer, year, Month.findByMonthNumber(monthNumber));
+        Expense expense = Expense.builder()
+                .name(name)
+                .price(price)
+                .paid(paid)
+                .expenseType(expenseType)
+                .customer(customer)
+                .year(year)
+                .month(Month.findByMonthNumber(monthNumber))
+                .build();
+
         Expense expenseSaved = expenseInfoRepository.saveAndFlush(expense);
 
         return buildExpenseInfoResponse(expenseSaved);
