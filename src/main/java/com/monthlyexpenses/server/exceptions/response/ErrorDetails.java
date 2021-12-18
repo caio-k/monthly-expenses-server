@@ -1,24 +1,16 @@
 package com.monthlyexpenses.server.exceptions.response;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.http.HttpStatus;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
+@Builder
 public class ErrorDetails {
 
     private Date timestamp;
     private String message;
     private String details;
     private int status;
-
-    public ErrorDetails(Date timestamp, String message, String details, HttpStatus status) {
-        this.timestamp = timestamp;
-        this.message = message;
-        this.details = details;
-        this.status = status.value();
-    }
 }

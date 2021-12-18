@@ -21,33 +21,51 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        List<ErrorObject> errors = getErrors(ex);
-        ErrorResponse errorResponse = getErrorResponse(ex, status, errors);
+        List<ErrorObject> errors = buildErrors(ex);
+        ErrorResponse errorResponse = buildErrorResponse(ex, status, errors);
         return new ResponseEntity<>(errorResponse, status);
     }
 
     @ExceptionHandler(UniqueViolationException.class)
-    public ResponseEntity<?> handleUniqueViolationException(UniqueViolationException ex, WebRequest request) {
+    public ResponseEntity<ErrorDetails> handleUniqueViolationException(UniqueViolationException ex, WebRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false), status);
+        ErrorDetails errorDetails = buildErrorDetails(ex, request, status.value());
         return new ResponseEntity<>(errorDetails, status);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+    public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false), status);
+        ErrorDetails errorDetails = buildErrorDetails(ex, request, status.value());
         return new ResponseEntity<>(errorDetails, status);
     }
 
-    private ErrorResponse getErrorResponse(MethodArgumentNotValidException ex, HttpStatus status, List<ErrorObject> errors) {
-        return new ErrorResponse("Requisição possui campos inválidos", status.value(),
-                status.getReasonPhrase(), ex.getBindingResult().getObjectName(), errors);
+    private ErrorResponse buildErrorResponse(MethodArgumentNotValidException ex, HttpStatus status, List<ErrorObject> errors) {
+        return ErrorResponse.builder()
+                .message("Requisição possui campos inválidos")
+                .code(status.value())
+                .status(status.getReasonPhrase())
+                .objectName(ex.getBindingResult().getObjectName())
+                .errors(errors)
+                .build();
     }
 
-    private List<ErrorObject> getErrors(MethodArgumentNotValidException ex) {
+    private List<ErrorObject> buildErrors(MethodArgumentNotValidException ex) {
         return ex.getBindingResult().getFieldErrors().stream()
-                .map(error -> new ErrorObject(error.getDefaultMessage(), error.getField(), error.getRejectedValue()))
-                .collect(Collectors.toList());
+                .map(error -> ErrorObject.builder()
+                        .message(error.getDefaultMessage())
+                        .field(error.getField())
+                        .parameter(error.getRejectedValue())
+                        .build()
+                ).collect(Collectors.toList());
+    }
+
+    private ErrorDetails buildErrorDetails(Exception ex, WebRequest request, int status) {
+        return ErrorDetails.builder()
+                .timestamp(new Date())
+                .message(ex.getMessage())
+                .details(request.getDescription(false))
+                .status(status)
+                .build();
     }
 }
