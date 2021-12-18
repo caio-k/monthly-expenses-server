@@ -1,7 +1,7 @@
 package com.monthlyexpenses.server.service;
 
-import com.monthlyexpenses.server.error.exception.ResourceNotFoundException;
-import com.monthlyexpenses.server.message.MessagesComponent;
+import com.monthlyexpenses.server.exceptions.ResourceNotFoundException;
+import com.monthlyexpenses.server.configuration.MessagesComponent;
 import com.monthlyexpenses.server.model.Month;
 import com.monthlyexpenses.server.model.MonthYear;
 import com.monthlyexpenses.server.model.Year;

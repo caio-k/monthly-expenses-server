@@ -2,8 +2,8 @@ package com.monthlyexpenses.server.service;
 
 import com.monthlyexpenses.server.dto.response.MessageResponse;
 import com.monthlyexpenses.server.dto.response.expenseInfo.ExpenseInfoResponse;
-import com.monthlyexpenses.server.error.exception.ResourceNotFoundException;
-import com.monthlyexpenses.server.message.MessagesComponent;
+import com.monthlyexpenses.server.exceptions.ResourceNotFoundException;
+import com.monthlyexpenses.server.configuration.MessagesComponent;
 import com.monthlyexpenses.server.model.*;
 import com.monthlyexpenses.server.repository.ExpenseInfoRepository;
 import lombok.RequiredArgsConstructor;

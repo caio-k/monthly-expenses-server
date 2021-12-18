@@ -1,4 +1,4 @@
-package com.monthlyexpenses.server.error.response;
+package com.monthlyexpenses.server.exceptions.response;
 
 import lombok.Getter;
 import lombok.Setter;

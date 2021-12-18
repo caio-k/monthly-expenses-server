@@ -1,4 +1,4 @@
-package com.monthlyexpenses.server.error.exception;
+package com.monthlyexpenses.server.exceptions;
 
 public class UniqueViolationException extends RuntimeException {
 
