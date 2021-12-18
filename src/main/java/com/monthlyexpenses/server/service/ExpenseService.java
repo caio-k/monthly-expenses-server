@@ -11,7 +11,12 @@ import com.monthlyexpenses.server.model.Year;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.Calendar.*;
 
 @Service
 @RequiredArgsConstructor
@@ -35,14 +40,13 @@ public class ExpenseService {
 
         if (yearOptional.isPresent()) {
             selectedYearNumber = yearOptional.get().getYearNumber();
-            Integer actualYear = GregorianCalendar.getInstance().get(Calendar.YEAR);
-            int januaryNumber = 0;
-            int decemberNumber = 11;
+            Integer actualYear = GregorianCalendar.getInstance().get(YEAR);
 
             selectedMonth = selectedYearNumber.equals(actualYear) ?
-                    GregorianCalendar.getInstance().get(Calendar.MONTH) :
-                    selectedYearNumber.compareTo(actualYear) < 0 ? decemberNumber : januaryNumber;
+                    GregorianCalendar.getInstance().get(MONTH) :
+                    selectedYearNumber.compareTo(actualYear) < 0 ? DECEMBER : JANUARY;
 
+            System.out.println("============ " + selectedMonth + " ==============");
             Month month = Month.findByMonthNumber(selectedYearNumber);
             initialMoneyResponse = initialMoneyService.getInitialMoneyByMonthAndYearLogic(customerId, month, yearOptional.get());
             expenseInfoResponses = expenseInfoService.getExpensesByMonthAndYearLogic(customerId, month, yearOptional.get());
