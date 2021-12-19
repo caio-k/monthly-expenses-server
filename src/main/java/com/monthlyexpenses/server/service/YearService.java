@@ -33,7 +33,7 @@ public class YearService {
     }
 
     public YearResponse createYear(Long customerId, Integer yearNumber) {
-        Customer customer = customerService.getUserByUserId(customerId);
+        Customer customer = customerService.getCustomerByCustomerId(customerId);
         Year year = Year.builder()
                 .yearNumber(yearNumber)
                 .customer(customer)

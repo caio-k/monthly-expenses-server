@@ -34,7 +34,7 @@ public class ExpenseInfoService {
 
     public ExpenseInfoResponse createExpense(Long customerId, String name, float price, boolean paid, Long expenseTypeId,
                                              Integer monthNumber, Integer yearNumber) {
-        Customer customer = customerService.getUserByUserId(customerId);
+        Customer customer = customerService.getCustomerByCustomerId(customerId);
         Year year = yearService.findByYearNumberAndUserId(yearNumber, customerId);
         ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndUserId(expenseTypeId, customerId);
 
@@ -49,7 +49,6 @@ public class ExpenseInfoService {
                 .build();
 
         Expense expenseSaved = expenseInfoRepository.saveAndFlush(expense);
-
         return buildExpenseInfoResponse(expenseSaved);
     }
 

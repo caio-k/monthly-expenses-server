@@ -30,7 +30,7 @@ public class InitialMoneyService {
 
     public InitialMoneyResponse createInitialMoney(Long customerId, Integer yearNumber, Integer monthNumber, float initialMoneyValue) {
         Year year = yearService.findByYearNumberAndUserId(yearNumber, customerId);
-        Customer customer = customerService.getUserByUserId(customerId);
+        Customer customer = customerService.getCustomerByCustomerId(customerId);
 
         InitialMoney initialMoneyToBeSaved = InitialMoney.builder()
                 .initialMoney(initialMoneyValue)

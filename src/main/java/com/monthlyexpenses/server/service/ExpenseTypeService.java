@@ -30,7 +30,7 @@ public class ExpenseTypeService {
     }
 
     public ExpenseTypeResponse create(Long customerId, String expenseTypeName) {
-        Customer customer = customerService.getUserByUserId(customerId);
+        Customer customer = customerService.getCustomerByCustomerId(customerId);
 
         ExpenseType expenseType = ExpenseType.builder()
                 .name(expenseTypeName)
