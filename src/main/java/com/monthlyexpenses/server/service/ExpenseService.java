@@ -1,75 +1,91 @@
 package com.monthlyexpenses.server.service;
 
+import com.monthlyexpenses.server.configuration.MessagesComponent;
 import com.monthlyexpenses.server.constants.Month;
-import com.monthlyexpenses.server.dto.response.expense.ExpenseResponse;
-import com.monthlyexpenses.server.dto.response.expense.ExpenseResponseUpdate;
+import com.monthlyexpenses.server.dto.response.MessageResponse;
 import com.monthlyexpenses.server.dto.response.expenseInfo.ExpenseInfoResponse;
-import com.monthlyexpenses.server.dto.response.expenseType.ExpenseTypeResponse;
-import com.monthlyexpenses.server.dto.response.initialMoney.InitialMoneyResponse;
-import com.monthlyexpenses.server.dto.response.year.YearResponse;
+import com.monthlyexpenses.server.exceptions.ResourceNotFoundException;
+import com.monthlyexpenses.server.model.Customer;
+import com.monthlyexpenses.server.model.Expense;
+import com.monthlyexpenses.server.model.ExpenseType;
 import com.monthlyexpenses.server.model.Year;
+import com.monthlyexpenses.server.repository.ExpenseInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Optional;
-
-import static java.util.Calendar.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ExpenseService {
 
+    private final ExpenseInfoRepository expenseInfoRepository;
+    private final CustomerService customerService;
     private final YearService yearService;
     private final ExpenseTypeService expenseTypeService;
-    private final InitialMoneyService initialMoneyService;
-    private final ExpenseInfoService expenseInfoService;
+    private final MessagesComponent messages;
 
-    public ExpenseResponse getInitializationData(Long customerId) {
-        int selectedMonth = -1;
-        Integer selectedYearNumber = -1;
-        Optional<Year> yearOptional = yearService.getNearestYearFromNow(customerId);
-
-        List<YearResponse> yearResponses = yearService.getAllYearsByUserId(customerId);
-        List<ExpenseTypeResponse> expenseTypeResponses = expenseTypeService.getAllExpenseTypes(customerId);
-
-        List<ExpenseInfoResponse> expenseInfoResponses = new ArrayList<>();
-        InitialMoneyResponse initialMoneyResponse = null;
-
-        if (yearOptional.isPresent()) {
-            selectedYearNumber = yearOptional.get().getYearNumber();
-            Integer actualYear = GregorianCalendar.getInstance().get(YEAR);
-
-            selectedMonth = selectedYearNumber.equals(actualYear) ?
-                    GregorianCalendar.getInstance().get(MONTH) :
-                    selectedYearNumber.compareTo(actualYear) < 0 ? DECEMBER : JANUARY;
-
-            Month month = Month.findByMonthNumber(selectedMonth);
-            initialMoneyResponse = initialMoneyService.getInitialMoneyByMonthAndYearLogic(customerId, month, yearOptional.get());
-            expenseInfoResponses = expenseInfoService.getExpensesByMonthAndYearLogic(customerId, month, yearOptional.get());
-        }
-
-        return ExpenseResponse.builder()
-                .selectedYearNumber(selectedYearNumber)
-                .selectedMonth(selectedMonth)
-                .years(yearResponses)
-                .expenseTypes(expenseTypeResponses)
-                .expenseInfos(expenseInfoResponses)
-                .initialMoney(initialMoneyResponse)
-                .build();
+    public List<ExpenseInfoResponse> getExpensesByMonthAndYearLogic(Long customerId, Month month, Year year) {
+        return expenseInfoRepository.findAllByMonthAndYearAndCustomerId(month, year, customerId)
+                .stream().map(this::buildExpenseInfoResponse)
+                .collect(Collectors.toList());
     }
 
-    public ExpenseResponseUpdate getByMonthAndYear(Long customerId, int monthNumber, int yearNumber) {
-        Month month = Month.findByMonthNumber(monthNumber);
+    public ExpenseInfoResponse createExpense(Long customerId, String name, float price, boolean paid, Long expenseTypeId,
+                                             Integer monthNumber, Integer yearNumber) {
+        Customer customer = customerService.findCustomerByIdOrElseThrow(customerId);
         Year year = yearService.findYearByNumberAndCustomerIdOrElseThrow(yearNumber, customerId);
-        InitialMoneyResponse initialMoneyResponse = initialMoneyService.getInitialMoneyByMonthAndYearLogic(customerId, month, year);
-        List<ExpenseInfoResponse> expenseInfoResponses = expenseInfoService.getExpensesByMonthAndYearLogic(customerId, month, year);
+        ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndCustomerIdOrElseThrow(expenseTypeId, customerId);
 
-        return ExpenseResponseUpdate.builder()
-                .expenseInfos(expenseInfoResponses)
-                .initialMoney(initialMoneyResponse)
+        Expense expense = Expense.builder()
+                .name(name)
+                .price(price)
+                .paid(paid)
+                .expenseType(expenseType)
+                .customer(customer)
+                .year(year)
+                .month(Month.findByMonthNumber(monthNumber))
+                .build();
+
+        Expense expenseSaved = expenseInfoRepository.saveAndFlush(expense);
+        return buildExpenseInfoResponse(expenseSaved);
+    }
+
+    public ExpenseInfoResponse updateExpense(Long customerId, Long expenseId, String name, float price, boolean paid,
+                                             Long expenseTypeId) {
+        ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndCustomerIdOrElseThrow(expenseTypeId, customerId);
+        Expense expense = findExpenseByIdOrElseThrow(expenseId, customerId);
+
+        expense.setName(name);
+        expense.setPrice(price);
+        expense.setPaid(paid);
+        expense.setExpenseType(expenseType);
+
+        Expense expenseSaved = expenseInfoRepository.saveAndFlush(expense);
+        return buildExpenseInfoResponse(expenseSaved);
+    }
+
+    public MessageResponse deleteExpense(Long customerId, Long expenseId) {
+        Expense expense = findExpenseByIdOrElseThrow(expenseId, customerId);
+        expenseInfoRepository.delete(expense);
+        return MessageResponse.builder().message(messages.get("EXPENSE_DELETED")).build();
+    }
+
+    private Expense findExpenseByIdOrElseThrow(Long id, Long customerId) {
+        return expenseInfoRepository.findByIdAndCustomerId(id, customerId)
+                .orElseThrow(() -> new ResourceNotFoundException(messages.get("EXPENSE_NOT_FOUND")));
+    }
+
+    private ExpenseInfoResponse buildExpenseInfoResponse(Expense expense) {
+        return ExpenseInfoResponse.builder()
+                .id(expense.getId())
+                .name(expense.getName())
+                .price(expense.getPrice())
+                .paid(expense.isPaid())
+                .month(expense.getMonth().getNumber())
+                .year(expense.getYear().getYearNumber())
+                .expenseTypeId(expense.getExpenseType().getId())
                 .build();
     }
 }

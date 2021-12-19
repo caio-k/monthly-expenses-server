@@ -2,7 +2,7 @@ package com.monthlyexpenses.server.controller;
 
 import com.monthlyexpenses.server.dto.response.expense.ExpenseResponse;
 import com.monthlyexpenses.server.dto.response.expense.ExpenseResponseUpdate;
-import com.monthlyexpenses.server.service.ExpenseService;
+import com.monthlyexpenses.server.service.ExpenseCompositionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,17 +14,17 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequiredArgsConstructor
 public class ExpenseController {
 
-    private final ExpenseService expenseService;
+    private final ExpenseCompositionService expenseCompositionService;
 
     @GetMapping("/initializationData")
     public ResponseEntity<ExpenseResponse> getInitializationData(@RequestHeader(value = "userId") Long userId) {
-        return ok(expenseService.getInitializationData(userId));
+        return ok(expenseCompositionService.getInitializationData(userId));
     }
 
     @GetMapping("/byMonthAndYear")
     public ResponseEntity<ExpenseResponseUpdate> getByMonthAndYear(@RequestHeader(value = "userId") Long userId,
                                                                    @RequestParam int monthNumber,
                                                                    @RequestParam int yearNumber) {
-        return ok(expenseService.getByMonthAndYear(userId, monthNumber, yearNumber));
+        return ok(expenseCompositionService.getByMonthAndYear(userId, monthNumber, yearNumber));
     }
 }
