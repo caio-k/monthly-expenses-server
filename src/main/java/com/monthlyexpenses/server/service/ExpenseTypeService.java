@@ -37,24 +37,14 @@ public class ExpenseTypeService {
                 .customer(customer)
                 .build();
 
-        try {
-            ExpenseType expenseTypeSaved = expenseTypeRepository.saveAndFlush(expenseType);
-            return buildExpenseInfoResponse(expenseTypeSaved);
-        } catch (DataIntegrityViolationException exception) {
-            throw new UniqueViolationException(messages.get("EXPENSE_TYPE_NAME_ALREADY_EXISTS"));
-        }
+        return saveExpenseType(expenseType);
     }
 
     public ExpenseTypeResponse update(Long customerId, String expenseTypeName, Long expenseTypeId) {
         ExpenseType expenseType = findExpenseTypeByIdAndCustomerIdOrElseThrow(expenseTypeId, customerId);
         expenseType.setName(expenseTypeName);
 
-        try {
-            ExpenseType expenseTypeSaved = expenseTypeRepository.saveAndFlush(expenseType);
-            return buildExpenseInfoResponse(expenseTypeSaved);
-        } catch (DataIntegrityViolationException exception) {
-            throw new UniqueViolationException(messages.get("EXPENSE_TYPE_NAME_ALREADY_EXISTS"));
-        }
+        return saveExpenseType(expenseType);
     }
 
     public MessageResponse delete(Long customerId, Long expenseTypeId) {
@@ -66,6 +56,15 @@ public class ExpenseTypeService {
     public ExpenseType findExpenseTypeByIdAndCustomerIdOrElseThrow(Long expenseTypeId, Long customerId) {
         return expenseTypeRepository.findByIdAndCustomerId(expenseTypeId, customerId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("EXPENSE_TYPE_NOT_FOUND")));
+    }
+
+    private ExpenseTypeResponse saveExpenseType(ExpenseType expenseType) {
+        try {
+            ExpenseType expenseTypeSaved = expenseTypeRepository.saveAndFlush(expenseType);
+            return buildExpenseInfoResponse(expenseTypeSaved);
+        } catch (DataIntegrityViolationException exception) {
+            throw new UniqueViolationException(messages.get("EXPENSE_TYPE_NAME_ALREADY_EXISTS"));
+        }
     }
 
     private ExpenseTypeResponse buildExpenseInfoResponse(ExpenseType expenseType) {
