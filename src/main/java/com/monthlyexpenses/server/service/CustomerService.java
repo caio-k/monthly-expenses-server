@@ -14,7 +14,7 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final MessagesComponent messages;
 
-    public Customer getCustomerByCustomerId(Long customerId) {
+    public Customer findCustomerByIdOrElseThrow(Long customerId) {
         return customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("USER_NOT_FOUND")));
     }

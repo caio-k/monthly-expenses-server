@@ -34,9 +34,9 @@ public class ExpenseInfoService {
 
     public ExpenseInfoResponse createExpense(Long customerId, String name, float price, boolean paid, Long expenseTypeId,
                                              Integer monthNumber, Integer yearNumber) {
-        Customer customer = customerService.getCustomerByCustomerId(customerId);
-        Year year = yearService.findByYearNumberAndUserId(yearNumber, customerId);
-        ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndUserId(expenseTypeId, customerId);
+        Customer customer = customerService.findCustomerByIdOrElseThrow(customerId);
+        Year year = yearService.findYearByNumberAndCustomerIdOrElseThrow(yearNumber, customerId);
+        ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndCustomerIdOrElseThrow(expenseTypeId, customerId);
 
         Expense expense = Expense.builder()
                 .name(name)
@@ -54,8 +54,8 @@ public class ExpenseInfoService {
 
     public ExpenseInfoResponse updateExpense(Long customerId, Long expenseId, String name, float price, boolean paid,
                                              Long expenseTypeId) {
-        ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndUserId(expenseTypeId, customerId);
-        Expense expense = getExpenseById(expenseId, customerId);
+        ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndCustomerIdOrElseThrow(expenseTypeId, customerId);
+        Expense expense = findExpenseByIdOrElseThrow(expenseId, customerId);
 
         expense.setName(name);
         expense.setPrice(price);
@@ -67,12 +67,12 @@ public class ExpenseInfoService {
     }
 
     public MessageResponse deleteExpense(Long customerId, Long expenseId) {
-        Expense expense = getExpenseById(expenseId, customerId);
+        Expense expense = findExpenseByIdOrElseThrow(expenseId, customerId);
         expenseInfoRepository.delete(expense);
         return MessageResponse.builder().message(messages.get("EXPENSE_DELETED")).build();
     }
 
-    private Expense getExpenseById(Long id, Long customerId) {
+    private Expense findExpenseByIdOrElseThrow(Long id, Long customerId) {
         return expenseInfoRepository.findByIdAndCustomerId(id, customerId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("EXPENSE_NOT_FOUND")));
     }

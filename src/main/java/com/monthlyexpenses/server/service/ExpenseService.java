@@ -63,7 +63,7 @@ public class ExpenseService {
 
     public ExpenseResponseUpdate getByMonthAndYear(Long customerId, int monthNumber, int yearNumber) {
         Month month = Month.findByMonthNumber(monthNumber);
-        Year year = yearService.findByYearNumberAndUserId(yearNumber, customerId);
+        Year year = yearService.findYearByNumberAndCustomerIdOrElseThrow(yearNumber, customerId);
         InitialMoneyResponse initialMoneyResponse = initialMoneyService.getInitialMoneyByMonthAndYearLogic(customerId, month, year);
         List<ExpenseInfoResponse> expenseInfoResponses = expenseInfoService.getExpensesByMonthAndYearLogic(customerId, month, year);
 

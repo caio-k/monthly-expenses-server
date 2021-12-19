@@ -33,7 +33,7 @@ public class YearService {
     }
 
     public YearResponse createYear(Long customerId, Integer yearNumber) {
-        Customer customer = customerService.getCustomerByCustomerId(customerId);
+        Customer customer = customerService.findCustomerByIdOrElseThrow(customerId);
         Year year = Year.builder()
                 .yearNumber(yearNumber)
                 .customer(customer)
@@ -48,7 +48,7 @@ public class YearService {
     }
 
     public YearResponse updateYear(Long customerId, Long yearId, Integer yearNumber) {
-        Year year = findYearByYearIdAndUserId(yearId, customerId);
+        Year year = findYearByIdAndCustomerIdOrElseThrow(yearId, customerId);
         year.setYearNumber(yearNumber);
 
         try {
@@ -60,7 +60,7 @@ public class YearService {
     }
 
     public MessageResponse deleteYear(Long customerId, Long yearId) {
-        Year year = findYearByYearIdAndUserId(yearId, customerId);
+        Year year = findYearByIdAndCustomerIdOrElseThrow(yearId, customerId);
         yearRepository.delete(year);
         return MessageResponse.builder().message(messages.get("YEAR_DELETED")).build();
     }
@@ -87,12 +87,12 @@ public class YearService {
         return Optional.of(years.get(index));
     }
 
-    public Year findYearByYearIdAndUserId(Long id, Long customerId) {
+    public Year findYearByIdAndCustomerIdOrElseThrow(Long id, Long customerId) {
         return yearRepository.findByIdAndCustomerId(id, customerId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("YEAR_NOT_FOUND")));
     }
 
-    public Year findByYearNumberAndUserId(Integer yearNumber, Long userId) {
+    public Year findYearByNumberAndCustomerIdOrElseThrow(Integer yearNumber, Long userId) {
         return yearRepository.findByYearNumberAndCustomerId(yearNumber, userId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("YEAR_NOT_FOUND")));
     }

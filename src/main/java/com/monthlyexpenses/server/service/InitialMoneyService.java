@@ -29,8 +29,8 @@ public class InitialMoneyService {
     }
 
     public InitialMoneyResponse createInitialMoney(Long customerId, Integer yearNumber, Integer monthNumber, float initialMoneyValue) {
-        Year year = yearService.findByYearNumberAndUserId(yearNumber, customerId);
-        Customer customer = customerService.getCustomerByCustomerId(customerId);
+        Year year = yearService.findYearByNumberAndCustomerIdOrElseThrow(yearNumber, customerId);
+        Customer customer = customerService.findCustomerByIdOrElseThrow(customerId);
 
         InitialMoney initialMoneyToBeSaved = InitialMoney.builder()
                 .initialMoney(initialMoneyValue)
@@ -48,14 +48,14 @@ public class InitialMoneyService {
     }
 
     public InitialMoneyResponse updateInitialMoney(Long customerId, Long initialMoneyId, float initialMoneyValue) {
-        InitialMoney initialMoney = findInitialMoneyById(initialMoneyId, customerId);
+        InitialMoney initialMoney = findInitialMoneyByIdAndCustomerIdOrElseThrow(initialMoneyId, customerId);
         initialMoney.setInitialMoney(initialMoneyValue);
         initialMoneyRepository.saveAndFlush(initialMoney);
 
         return buildInitialMoneyResponse(initialMoney);
     }
 
-    private InitialMoney findInitialMoneyById(Long initialMoneyId, Long customerId) {
+    private InitialMoney findInitialMoneyByIdAndCustomerIdOrElseThrow(Long initialMoneyId, Long customerId) {
         return initialMoneyRepository.findByIdAndCustomerId(initialMoneyId, customerId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("INITIAL_MONEY_NOT_FOUND")));
     }

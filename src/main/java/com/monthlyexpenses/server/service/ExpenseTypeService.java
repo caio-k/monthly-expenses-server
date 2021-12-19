@@ -30,7 +30,7 @@ public class ExpenseTypeService {
     }
 
     public ExpenseTypeResponse create(Long customerId, String expenseTypeName) {
-        Customer customer = customerService.getCustomerByCustomerId(customerId);
+        Customer customer = customerService.findCustomerByIdOrElseThrow(customerId);
 
         ExpenseType expenseType = ExpenseType.builder()
                 .name(expenseTypeName)
@@ -46,7 +46,7 @@ public class ExpenseTypeService {
     }
 
     public ExpenseTypeResponse update(Long customerId, String expenseTypeName, Long expenseTypeId) {
-        ExpenseType expenseType = findExpenseTypeByIdAndUserId(expenseTypeId, customerId);
+        ExpenseType expenseType = findExpenseTypeByIdAndCustomerIdOrElseThrow(expenseTypeId, customerId);
         expenseType.setName(expenseTypeName);
 
         try {
@@ -58,12 +58,12 @@ public class ExpenseTypeService {
     }
 
     public MessageResponse delete(Long customerId, Long expenseTypeId) {
-        ExpenseType expenseType = findExpenseTypeByIdAndUserId(expenseTypeId, customerId);
+        ExpenseType expenseType = findExpenseTypeByIdAndCustomerIdOrElseThrow(expenseTypeId, customerId);
         expenseTypeRepository.delete(expenseType);
         return MessageResponse.builder().message(messages.get("EXPENSE_TYPE_DELETED")).build();
     }
 
-    public ExpenseType findExpenseTypeByIdAndUserId(Long expenseTypeId, Long customerId) {
+    public ExpenseType findExpenseTypeByIdAndCustomerIdOrElseThrow(Long expenseTypeId, Long customerId) {
         return expenseTypeRepository.findByIdAndCustomerId(expenseTypeId, customerId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("EXPENSE_TYPE_NOT_FOUND")));
     }
