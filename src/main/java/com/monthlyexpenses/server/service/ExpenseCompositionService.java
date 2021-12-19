@@ -61,7 +61,7 @@ public class ExpenseCompositionService {
                 .build();
     }
 
-    public ExpenseResponseUpdate getByMonthAndYear(Long customerId, int monthNumber, int yearNumber) {
+    public ExpenseResponseUpdate getAllExpensesAndInitialMoneyByMonthAndYear(Long customerId, int monthNumber, int yearNumber) {
         Month month = Month.findByMonthNumber(monthNumber);
         Year year = yearService.findYearByNumberAndCustomerIdOrElseThrow(yearNumber, customerId);
         InitialMoneyResponse initialMoneyResponse = initialMoneyService.findInitialMoneyByCustomerIdAndMonthAndYear(customerId, month, year);

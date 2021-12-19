@@ -25,6 +25,6 @@ public class ExpenseController {
     public ResponseEntity<ExpenseResponseUpdate> getByMonthAndYear(@RequestHeader(value = "userId") Long userId,
                                                                    @RequestParam int monthNumber,
                                                                    @RequestParam int yearNumber) {
-        return ok(expenseCompositionService.getByMonthAndYear(userId, monthNumber, yearNumber));
+        return ok(expenseCompositionService.getAllExpensesAndInitialMoneyByMonthAndYear(userId, monthNumber, yearNumber));
     }
 }
