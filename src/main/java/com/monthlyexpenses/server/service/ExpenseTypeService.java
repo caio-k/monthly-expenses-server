@@ -37,14 +37,14 @@ public class ExpenseTypeService {
                 .customer(customer)
                 .build();
 
-        return saveExpenseType(expenseType);
+        return saveExpenseTypeAndBuildResponse(expenseType);
     }
 
     public ExpenseTypeResponse update(Long customerId, String expenseTypeName, Long expenseTypeId) {
         ExpenseType expenseType = findExpenseTypeByIdAndCustomerIdOrElseThrow(expenseTypeId, customerId);
         expenseType.setName(expenseTypeName);
 
-        return saveExpenseType(expenseType);
+        return saveExpenseTypeAndBuildResponse(expenseType);
     }
 
     public MessageResponse delete(Long customerId, Long expenseTypeId) {
@@ -58,7 +58,7 @@ public class ExpenseTypeService {
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("EXPENSE_TYPE_NOT_FOUND")));
     }
 
-    private ExpenseTypeResponse saveExpenseType(ExpenseType expenseType) {
+    private ExpenseTypeResponse saveExpenseTypeAndBuildResponse(ExpenseType expenseType) {
         try {
             ExpenseType expenseTypeSaved = expenseTypeRepository.saveAndFlush(expenseType);
             return buildExpenseInfoResponse(expenseTypeSaved);

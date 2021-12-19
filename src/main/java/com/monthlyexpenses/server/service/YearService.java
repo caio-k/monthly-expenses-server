@@ -39,24 +39,14 @@ public class YearService {
                 .customer(customer)
                 .build();
 
-        try {
-            Year yearSaved = yearRepository.saveAndFlush(year);
-            return buildYearResponse(yearSaved);
-        } catch (DataIntegrityViolationException exception) {
-            throw new UniqueViolationException(messages.get("YEAR_ALREADY_EXISTS"));
-        }
+        return saveYearAndBuildResponse(year);
     }
 
     public YearResponse updateYear(Long customerId, Long yearId, Integer yearNumber) {
         Year year = findYearByIdAndCustomerIdOrElseThrow(yearId, customerId);
         year.setYearNumber(yearNumber);
 
-        try {
-            Year yearSaved = yearRepository.saveAndFlush(year);
-            return buildYearResponse(yearSaved);
-        } catch (DataIntegrityViolationException exception) {
-            throw new UniqueViolationException(messages.get("YEAR_ALREADY_EXISTS"));
-        }
+        return saveYearAndBuildResponse(year);
     }
 
     public MessageResponse deleteYear(Long customerId, Long yearId) {
@@ -95,6 +85,15 @@ public class YearService {
     public Year findYearByNumberAndCustomerIdOrElseThrow(Integer yearNumber, Long userId) {
         return yearRepository.findByYearNumberAndCustomerId(yearNumber, userId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("YEAR_NOT_FOUND")));
+    }
+
+    private YearResponse saveYearAndBuildResponse(Year year) {
+        try {
+            Year yearSaved = yearRepository.saveAndFlush(year);
+            return buildYearResponse(yearSaved);
+        } catch (DataIntegrityViolationException exception) {
+            throw new UniqueViolationException(messages.get("YEAR_ALREADY_EXISTS"));
+        }
     }
 
     private YearResponse buildYearResponse(Year year) {
