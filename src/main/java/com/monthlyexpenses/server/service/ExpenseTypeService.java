@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class ExpenseTypeService {
 
     private final ExpenseTypeRepository expenseTypeRepository;
-    private final UserService userService;
+    private final CustomerService customerService;
     private final MessagesComponent messages;
 
     public List<ExpenseTypeResponse> getAllExpenseTypes(Long customerId) {
@@ -30,7 +30,7 @@ public class ExpenseTypeService {
     }
 
     public ExpenseTypeResponse create(Long customerId, String expenseTypeName) {
-        Customer customer = userService.getUserByUserId(customerId);
+        Customer customer = customerService.getUserByUserId(customerId);
 
         ExpenseType expenseType = ExpenseType.builder()
                 .name(expenseTypeName)

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class YearService {
 
     private final YearRepository yearRepository;
-    private final UserService userService;
+    private final CustomerService customerService;
     private final MessagesComponent messages;
 
     public List<YearResponse> getAllYearsByUserId(Long customerId) {
@@ -33,7 +33,7 @@ public class YearService {
     }
 
     public YearResponse createYear(Long customerId, Integer yearNumber) {
-        Customer customer = userService.getUserByUserId(customerId);
+        Customer customer = customerService.getUserByUserId(customerId);
         Year year = Year.builder()
                 .yearNumber(yearNumber)
                 .customer(customer)

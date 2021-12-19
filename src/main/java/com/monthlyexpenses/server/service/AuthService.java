@@ -7,7 +7,7 @@ import com.monthlyexpenses.server.dto.response.auth.JwtResponse;
 import com.monthlyexpenses.server.exceptions.UniqueViolationException;
 import com.monthlyexpenses.server.configuration.MessagesComponent;
 import com.monthlyexpenses.server.model.Customer;
-import com.monthlyexpenses.server.repository.UserRepository;
+import com.monthlyexpenses.server.repository.CustomerRepository;
 import com.monthlyexpenses.server.security.jwt.JwtUtils;
 import com.monthlyexpenses.server.security.services.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class AuthService {
     private final JwtUtils jwtUtils;
     private final PasswordEncoder encoder;
     private final MessagesComponent messages;
-    private final UserRepository userRepository;
+    private final CustomerRepository customerRepository;
     private final AuthenticationManager authenticationManager;
 
     public JwtResponse authenticateCustomer(LoginRequest loginRequest) {
@@ -55,11 +55,11 @@ public class AuthService {
     }
 
     public MessageResponse registerCustomer(SignUpRequest signUpRequest) {
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+        if (customerRepository.existsByUsername(signUpRequest.getUsername())) {
             throw new UniqueViolationException(messages.get("USERNAME_ALREADY_TAKEN"));
         }
 
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+        if (customerRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new UniqueViolationException(messages.get("EMAIL_ALREADY_TAKEN"));
         }
 
@@ -69,7 +69,7 @@ public class AuthService {
                 .password(encoder.encode(signUpRequest.getPassword()))
                 .build();
 
-        userRepository.saveAndFlush(customer);
+        customerRepository.saveAndFlush(customer);
 
         return MessageResponse.builder().message(messages.get("USER_REGISTERED_SUCCESSFULLY")).build();
     }

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class InitialMoneyService {
 
     private final InitialMoneyRepository initialMoneyRepository;
-    private final UserService userService;
+    private final CustomerService customerService;
     private final YearService yearService;
     private final MessagesComponent messages;
 
@@ -30,7 +30,7 @@ public class InitialMoneyService {
 
     public InitialMoneyResponse createInitialMoney(Long customerId, Integer yearNumber, Integer monthNumber, float initialMoneyValue) {
         Year year = yearService.findByYearNumberAndUserId(yearNumber, customerId);
-        Customer customer = userService.getUserByUserId(customerId);
+        Customer customer = customerService.getUserByUserId(customerId);
 
         InitialMoney initialMoneyToBeSaved = InitialMoney.builder()
                 .initialMoney(initialMoneyValue)

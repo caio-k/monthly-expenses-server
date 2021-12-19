@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class ExpenseInfoService {
 
     private final ExpenseInfoRepository expenseInfoRepository;
-    private final UserService userService;
+    private final CustomerService customerService;
     private final YearService yearService;
     private final ExpenseTypeService expenseTypeService;
     private final MessagesComponent messages;
@@ -34,7 +34,7 @@ public class ExpenseInfoService {
 
     public ExpenseInfoResponse createExpense(Long customerId, String name, float price, boolean paid, Long expenseTypeId,
                                              Integer monthNumber, Integer yearNumber) {
-        Customer customer = userService.getUserByUserId(customerId);
+        Customer customer = customerService.getUserByUserId(customerId);
         Year year = yearService.findByYearNumberAndUserId(yearNumber, customerId);
         ExpenseType expenseType = expenseTypeService.findExpenseTypeByIdAndUserId(expenseTypeId, customerId);
 

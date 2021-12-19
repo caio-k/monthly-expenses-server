@@ -3,19 +3,19 @@ package com.monthlyexpenses.server.service;
 import com.monthlyexpenses.server.exceptions.ResourceNotFoundException;
 import com.monthlyexpenses.server.configuration.MessagesComponent;
 import com.monthlyexpenses.server.model.Customer;
-import com.monthlyexpenses.server.repository.UserRepository;
+import com.monthlyexpenses.server.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class CustomerService {
 
-    private final UserRepository userRepository;
+    private final CustomerRepository customerRepository;
     private final MessagesComponent messages;
 
     public Customer getUserByUserId(Long customerId) {
-        return userRepository.findById(customerId)
+        return customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException(messages.get("USER_NOT_FOUND")));
     }
 }
