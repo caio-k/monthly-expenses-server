@@ -15,7 +15,7 @@ public class SettingsService {
     private final YearService yearService;
     private final ExpenseTypeService expenseTypeService;
 
-    public SettingsResponse getInitializationData(Long customerId) {
+    public SettingsResponse findAllYearsAndExpensesTypeByCustomerId(Long customerId) {
         List<YearResponse> yearResponses = yearService.findAllYearsByCustomerId(customerId);
         List<ExpenseTypeResponse> expenseTypeResponses = expenseTypeService.findAllExpenseTypesByCustomerId(customerId);
 

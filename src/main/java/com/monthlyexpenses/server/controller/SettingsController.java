@@ -20,6 +20,6 @@ public class SettingsController {
 
     @GetMapping
     public ResponseEntity<SettingsResponse> getInitializationData(@RequestHeader(value = "userId") Long userId) {
-        return ok(settingsService.getInitializationData(userId));
+        return ok(settingsService.findAllYearsAndExpensesTypeByCustomerId(userId));
     }
 }
