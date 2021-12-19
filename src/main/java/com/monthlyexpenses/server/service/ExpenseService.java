@@ -26,7 +26,7 @@ public class ExpenseService {
     private final ExpenseTypeService expenseTypeService;
     private final MessagesComponent messages;
 
-    public List<ExpenseInfoResponse> getExpensesByMonthAndYearLogic(Long customerId, Month month, Year year) {
+    public List<ExpenseInfoResponse> findExpensesByCustomerIdAndMonthAndYear(Long customerId, Month month, Year year) {
         return expenseInfoRepository.findAllByMonthAndYearAndCustomerId(month, year, customerId)
                 .stream().map(this::buildExpenseInfoResponse)
                 .collect(Collectors.toList());

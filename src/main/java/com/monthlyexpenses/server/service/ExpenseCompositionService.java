@@ -30,10 +30,10 @@ public class ExpenseCompositionService {
     public ExpenseResponse getInitializationData(Long customerId) {
         int selectedMonth = -1;
         Integer selectedYearNumber = -1;
-        Optional<Year> yearOptional = yearService.getNearestYearFromNow(customerId);
+        Optional<Year> yearOptional = yearService.findNearestYearFromNow(customerId);
 
-        List<YearResponse> yearResponses = yearService.getAllYearsByUserId(customerId);
-        List<ExpenseTypeResponse> expenseTypeResponses = expenseTypeService.getAllExpenseTypes(customerId);
+        List<YearResponse> yearResponses = yearService.findAllYearsByCustomerId(customerId);
+        List<ExpenseTypeResponse> expenseTypeResponses = expenseTypeService.findAllExpenseTypesByCustomerId(customerId);
 
         List<ExpenseInfoResponse> expenseInfoResponses = new ArrayList<>();
         InitialMoneyResponse initialMoneyResponse = null;
@@ -47,8 +47,8 @@ public class ExpenseCompositionService {
                     selectedYearNumber.compareTo(actualYear) < 0 ? DECEMBER : JANUARY;
 
             Month month = Month.findByMonthNumber(selectedMonth);
-            initialMoneyResponse = initialMoneyService.getInitialMoneyByMonthAndYearLogic(customerId, month, yearOptional.get());
-            expenseInfoResponses = expenseService.getExpensesByMonthAndYearLogic(customerId, month, yearOptional.get());
+            initialMoneyResponse = initialMoneyService.findInitialMoneyByCustomerIdAndMonthAndYear(customerId, month, yearOptional.get());
+            expenseInfoResponses = expenseService.findExpensesByCustomerIdAndMonthAndYear(customerId, month, yearOptional.get());
         }
 
         return ExpenseResponse.builder()
@@ -64,8 +64,8 @@ public class ExpenseCompositionService {
     public ExpenseResponseUpdate getByMonthAndYear(Long customerId, int monthNumber, int yearNumber) {
         Month month = Month.findByMonthNumber(monthNumber);
         Year year = yearService.findYearByNumberAndCustomerIdOrElseThrow(yearNumber, customerId);
-        InitialMoneyResponse initialMoneyResponse = initialMoneyService.getInitialMoneyByMonthAndYearLogic(customerId, month, year);
-        List<ExpenseInfoResponse> expenseInfoResponses = expenseService.getExpensesByMonthAndYearLogic(customerId, month, year);
+        InitialMoneyResponse initialMoneyResponse = initialMoneyService.findInitialMoneyByCustomerIdAndMonthAndYear(customerId, month, year);
+        List<ExpenseInfoResponse> expenseInfoResponses = expenseService.findExpensesByCustomerIdAndMonthAndYear(customerId, month, year);
 
         return ExpenseResponseUpdate.builder()
                 .expenseInfos(expenseInfoResponses)

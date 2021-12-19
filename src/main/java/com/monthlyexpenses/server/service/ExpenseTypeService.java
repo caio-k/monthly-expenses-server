@@ -23,7 +23,7 @@ public class ExpenseTypeService {
     private final CustomerService customerService;
     private final MessagesComponent messages;
 
-    public List<ExpenseTypeResponse> getAllExpenseTypes(Long customerId) {
+    public List<ExpenseTypeResponse> findAllExpenseTypesByCustomerId(Long customerId) {
         return expenseTypeRepository.findAllByCustomerIdOrderByNameAsc(customerId)
                 .stream().map(this::buildExpenseInfoResponse)
                 .collect(Collectors.toList());

@@ -26,7 +26,7 @@ public class YearService {
     private final CustomerService customerService;
     private final MessagesComponent messages;
 
-    public List<YearResponse> getAllYearsByUserId(Long customerId) {
+    public List<YearResponse> findAllYearsByCustomerId(Long customerId) {
         return yearRepository.findAllByCustomerIdOrderByYearNumberDesc(customerId)
                 .stream().map(this::buildYearResponse)
                 .collect(Collectors.toList());
@@ -55,7 +55,7 @@ public class YearService {
         return MessageResponse.builder().message(messages.get("YEAR_DELETED")).build();
     }
 
-    public Optional<Year> getNearestYearFromNow(Long customerId) {
+    public Optional<Year> findNearestYearFromNow(Long customerId) {
         List<Year> years = yearRepository.findAllByCustomerIdOrderByYearNumberDesc(customerId);
         Integer actualYear = GregorianCalendar.getInstance().get(Calendar.YEAR);
         int index = 0;

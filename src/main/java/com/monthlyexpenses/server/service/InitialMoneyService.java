@@ -22,7 +22,7 @@ public class InitialMoneyService {
     private final YearService yearService;
     private final MessagesComponent messages;
 
-    public InitialMoneyResponse getInitialMoneyByMonthAndYearLogic(Long customerId, Month month, Year year) {
+    public InitialMoneyResponse findInitialMoneyByCustomerIdAndMonthAndYear(Long customerId, Month month, Year year) {
         return initialMoneyRepository.findByMonthAndYearAndCustomerId(month, year, customerId)
                 .map(this::buildInitialMoneyResponse)
                 .orElse(null);
