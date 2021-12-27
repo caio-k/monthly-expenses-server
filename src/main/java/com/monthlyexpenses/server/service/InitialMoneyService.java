@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import static java.util.Objects.isNull;
+
 @Service
 @RequiredArgsConstructor
 public class InitialMoneyService {
@@ -22,6 +24,8 @@ public class InitialMoneyService {
     private final MessagesComponent messages;
 
     public InitialMoneyResponse findInitialMoneyByCustomerIdAndMonthAndYear(Long customerId, Integer month, Year year) {
+        if (isNull(year)) return null;
+
         return initialMoneyRepository.findByMonthNumberAndYearAndCustomerId(month, year, customerId)
                 .map(this::buildInitialMoneyResponse)
                 .orElse(null);

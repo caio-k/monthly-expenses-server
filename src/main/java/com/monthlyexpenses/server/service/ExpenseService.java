@@ -12,8 +12,11 @@ import com.monthlyexpenses.server.repository.ExpenseInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +29,8 @@ public class ExpenseService {
     private final MessagesComponent messages;
 
     public List<ExpenseInfoResponse> findExpensesByCustomerIdAndMonthAndYear(Long customerId, Integer monthNumber, Year year) {
+        if (isNull(year)) return new ArrayList<>();
+
         return expenseInfoRepository.findAllByMonthNumberAndYearAndCustomerId(monthNumber, year, customerId)
                 .stream().map(this::buildExpenseInfoResponse)
                 .collect(Collectors.toList());

@@ -10,7 +10,6 @@ import com.monthlyexpenses.server.model.Year;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
@@ -26,34 +25,27 @@ public class ExpenseCompositionService {
     private final InitialMoneyService initialMoneyService;
     private final ExpenseService expenseService;
 
+    private static final Integer UNDEFINED_YEAR = -1;
+    private static final Integer UNDEFINED_MONTH = -1;
+
     public ExpenseResponse getInitializationData(Long customerId) {
-        int selectedMonth = -1;
-        Integer selectedYearNumber = -1;
-        Optional<Year> yearOptional = yearService.findNearestYearFromNow(customerId);
+        List<YearResponse> allYears = yearService.findAllYearsByCustomerId(customerId);
+        Optional<Year> nearestYearFromNowOptional = yearService.findNearestYearFromNow(customerId);
+        Integer selectedYearNumber = nearestYearFromNowOptional.map(Year::getYearNumber).orElse(UNDEFINED_YEAR);
 
-        List<YearResponse> yearResponses = yearService.findAllYearsByCustomerId(customerId);
-        List<ExpenseTypeResponse> expenseTypeResponses = expenseTypeService.findAllExpenseTypesByCustomerId(customerId);
+        int nearestMonthRegisteredFromNow = findNearestMonthRegisteredFromNow(selectedYearNumber);
 
-        List<ExpenseInfoResponse> expenseInfoResponses = new ArrayList<>();
-        InitialMoneyResponse initialMoneyResponse = null;
+        Year nearestYearFromNowOrElseNull = nearestYearFromNowOptional.orElse(null);
+        InitialMoneyResponse initialMoneyResponse = initialMoneyService.findInitialMoneyByCustomerIdAndMonthAndYear(customerId, nearestMonthRegisteredFromNow, nearestYearFromNowOrElseNull);
+        List<ExpenseInfoResponse> expenseInfoResponses = expenseService.findExpensesByCustomerIdAndMonthAndYear(customerId, nearestMonthRegisteredFromNow, nearestYearFromNowOrElseNull);
 
-        if (yearOptional.isPresent()) {
-            selectedYearNumber = yearOptional.get().getYearNumber();
-            Integer actualYear = GregorianCalendar.getInstance().get(YEAR);
-
-            selectedMonth = selectedYearNumber.equals(actualYear) ?
-                    GregorianCalendar.getInstance().get(MONTH) :
-                    selectedYearNumber.compareTo(actualYear) < 0 ? DECEMBER : JANUARY;
-
-            initialMoneyResponse = initialMoneyService.findInitialMoneyByCustomerIdAndMonthAndYear(customerId, selectedMonth, yearOptional.get());
-            expenseInfoResponses = expenseService.findExpensesByCustomerIdAndMonthAndYear(customerId, selectedMonth, yearOptional.get());
-        }
+        List<ExpenseTypeResponse> allExpensesType = expenseTypeService.findAllExpenseTypesByCustomerId(customerId);
 
         return ExpenseResponse.builder()
                 .selectedYearNumber(selectedYearNumber)
-                .selectedMonth(selectedMonth)
-                .years(yearResponses)
-                .expenseTypes(expenseTypeResponses)
+                .selectedMonth(nearestMonthRegisteredFromNow)
+                .years(allYears)
+                .expenseTypes(allExpensesType)
                 .expenseInfos(expenseInfoResponses)
                 .initialMoney(initialMoneyResponse)
                 .build();
@@ -68,5 +60,17 @@ public class ExpenseCompositionService {
                 .expenseInfos(expenseInfoResponses)
                 .initialMoney(initialMoneyResponse)
                 .build();
+    }
+
+    private Integer findNearestMonthRegisteredFromNow(Integer selectedYearNumber) {
+        if (UNDEFINED_YEAR.equals(selectedYearNumber)) {
+            return UNDEFINED_MONTH;
+        }
+
+        Integer actualYear = GregorianCalendar.getInstance().get(YEAR);
+
+        return selectedYearNumber.equals(actualYear) ?
+                GregorianCalendar.getInstance().get(MONTH) :
+                selectedYearNumber.compareTo(actualYear) < 0 ? DECEMBER : JANUARY;
     }
 }
