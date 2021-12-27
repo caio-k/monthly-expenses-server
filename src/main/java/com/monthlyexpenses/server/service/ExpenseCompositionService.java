@@ -1,6 +1,5 @@
 package com.monthlyexpenses.server.service;
 
-import com.monthlyexpenses.server.constants.Month;
 import com.monthlyexpenses.server.dto.response.expense.ExpenseResponse;
 import com.monthlyexpenses.server.dto.response.expense.ExpenseResponseUpdate;
 import com.monthlyexpenses.server.dto.response.expenseInfo.ExpenseInfoResponse;
@@ -46,8 +45,7 @@ public class ExpenseCompositionService {
                     GregorianCalendar.getInstance().get(MONTH) :
                     selectedYearNumber.compareTo(actualYear) < 0 ? DECEMBER : JANUARY;
 
-            Month month = Month.findByMonthNumber(selectedMonth);
-            initialMoneyResponse = initialMoneyService.findInitialMoneyByCustomerIdAndMonthAndYear(customerId, month, yearOptional.get());
+            initialMoneyResponse = initialMoneyService.findInitialMoneyByCustomerIdAndMonthAndYear(customerId, selectedMonth, yearOptional.get());
             expenseInfoResponses = expenseService.findExpensesByCustomerIdAndMonthAndYear(customerId, selectedMonth, yearOptional.get());
         }
 
@@ -62,9 +60,8 @@ public class ExpenseCompositionService {
     }
 
     public ExpenseResponseUpdate getAllExpensesAndInitialMoneyByMonthAndYear(Long customerId, int monthNumber, int yearNumber) {
-        Month month = Month.findByMonthNumber(monthNumber);
         Year year = yearService.findYearByNumberAndCustomerIdOrElseThrow(yearNumber, customerId);
-        InitialMoneyResponse initialMoneyResponse = initialMoneyService.findInitialMoneyByCustomerIdAndMonthAndYear(customerId, month, year);
+        InitialMoneyResponse initialMoneyResponse = initialMoneyService.findInitialMoneyByCustomerIdAndMonthAndYear(customerId, monthNumber, year);
         List<ExpenseInfoResponse> expenseInfoResponses = expenseService.findExpensesByCustomerIdAndMonthAndYear(customerId, monthNumber, year);
 
         return ExpenseResponseUpdate.builder()

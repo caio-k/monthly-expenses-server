@@ -1,7 +1,6 @@
 package com.monthlyexpenses.server.service;
 
 import com.monthlyexpenses.server.configuration.MessagesComponent;
-import com.monthlyexpenses.server.constants.Month;
 import com.monthlyexpenses.server.dto.response.initialMoney.InitialMoneyResponse;
 import com.monthlyexpenses.server.exceptions.ResourceNotFoundException;
 import com.monthlyexpenses.server.exceptions.UniqueViolationException;
@@ -22,8 +21,8 @@ public class InitialMoneyService {
     private final YearService yearService;
     private final MessagesComponent messages;
 
-    public InitialMoneyResponse findInitialMoneyByCustomerIdAndMonthAndYear(Long customerId, Month month, Year year) {
-        return initialMoneyRepository.findByMonthAndYearAndCustomerId(month, year, customerId)
+    public InitialMoneyResponse findInitialMoneyByCustomerIdAndMonthAndYear(Long customerId, Integer month, Year year) {
+        return initialMoneyRepository.findByMonthNumberAndYearAndCustomerId(month, year, customerId)
                 .map(this::buildInitialMoneyResponse)
                 .orElse(null);
     }
@@ -36,7 +35,7 @@ public class InitialMoneyService {
                 .initialMoney(initialMoneyValue)
                 .customer(customer)
                 .year(year)
-                .month(Month.findByMonthNumber(monthNumber))
+                .monthNumber(monthNumber)
                 .build();
 
         try {
@@ -63,7 +62,7 @@ public class InitialMoneyService {
     private InitialMoneyResponse buildInitialMoneyResponse(InitialMoney initialMoney) {
         return InitialMoneyResponse.builder()
                 .initialMoneyId(initialMoney.getId())
-                .month(initialMoney.getMonth().getNumber())
+                .month(initialMoney.getMonthNumber())
                 .year(initialMoney.getYear().getYearNumber())
                 .initialMoney(initialMoney.getInitialMoney())
                 .build();
