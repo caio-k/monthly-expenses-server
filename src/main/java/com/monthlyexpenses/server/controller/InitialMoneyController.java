@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping("/api/initialMoney")
+@RequestMapping("/api/initial-money")
 @RequiredArgsConstructor
 public class InitialMoneyController {
 

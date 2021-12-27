@@ -16,12 +16,12 @@ public class ExpenseController {
 
     private final ExpenseCompositionService expenseCompositionService;
 
-    @GetMapping("/initializationData")
+    @GetMapping("/initialization-data")
     public ResponseEntity<ExpenseResponse> getInitializationData(@RequestHeader(value = "userId") Long userId) {
         return ok(expenseCompositionService.getInitializationData(userId));
     }
 
-    @GetMapping("/byMonthAndYear")
+    @GetMapping("/by-month-and-year")
     public ResponseEntity<ExpenseResponseUpdate> getByMonthAndYear(@RequestHeader(value = "userId") Long userId,
                                                                    @RequestParam int monthNumber,
                                                                    @RequestParam int yearNumber) {

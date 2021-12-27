@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping("/api/expenseType")
+@RequestMapping("/api/expense-type")
 @RequiredArgsConstructor
 public class ExpenseTypeController {
 
