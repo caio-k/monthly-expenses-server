@@ -48,7 +48,7 @@ public class ExpenseCompositionService {
 
             Month month = Month.findByMonthNumber(selectedMonth);
             initialMoneyResponse = initialMoneyService.findInitialMoneyByCustomerIdAndMonthAndYear(customerId, month, yearOptional.get());
-            expenseInfoResponses = expenseService.findExpensesByCustomerIdAndMonthAndYear(customerId, month, yearOptional.get());
+            expenseInfoResponses = expenseService.findExpensesByCustomerIdAndMonthAndYear(customerId, selectedMonth, yearOptional.get());
         }
 
         return ExpenseResponse.builder()
@@ -65,7 +65,7 @@ public class ExpenseCompositionService {
         Month month = Month.findByMonthNumber(monthNumber);
         Year year = yearService.findYearByNumberAndCustomerIdOrElseThrow(yearNumber, customerId);
         InitialMoneyResponse initialMoneyResponse = initialMoneyService.findInitialMoneyByCustomerIdAndMonthAndYear(customerId, month, year);
-        List<ExpenseInfoResponse> expenseInfoResponses = expenseService.findExpensesByCustomerIdAndMonthAndYear(customerId, month, year);
+        List<ExpenseInfoResponse> expenseInfoResponses = expenseService.findExpensesByCustomerIdAndMonthAndYear(customerId, monthNumber, year);
 
         return ExpenseResponseUpdate.builder()
                 .expenseInfos(expenseInfoResponses)

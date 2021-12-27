@@ -1,12 +1,10 @@
 package com.monthlyexpenses.server.model;
 
-import com.monthlyexpenses.server.constants.Month;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
-import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.SEQUENCE;
 
@@ -46,7 +44,6 @@ public class Expense {
     @JoinColumn(name = "IDT_YEAR")
     private Year year;
 
-    @Enumerated(STRING)
     @Column(name = "COD_MONTH")
-    private Month month;
+    private Integer monthNumber;
 }

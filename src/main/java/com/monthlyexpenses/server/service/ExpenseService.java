@@ -1,7 +1,6 @@
 package com.monthlyexpenses.server.service;
 
 import com.monthlyexpenses.server.configuration.MessagesComponent;
-import com.monthlyexpenses.server.constants.Month;
 import com.monthlyexpenses.server.dto.response.MessageResponse;
 import com.monthlyexpenses.server.dto.response.expenseInfo.ExpenseInfoResponse;
 import com.monthlyexpenses.server.exceptions.ResourceNotFoundException;
@@ -26,8 +25,8 @@ public class ExpenseService {
     private final ExpenseTypeService expenseTypeService;
     private final MessagesComponent messages;
 
-    public List<ExpenseInfoResponse> findExpensesByCustomerIdAndMonthAndYear(Long customerId, Month month, Year year) {
-        return expenseInfoRepository.findAllByMonthAndYearAndCustomerId(month, year, customerId)
+    public List<ExpenseInfoResponse> findExpensesByCustomerIdAndMonthAndYear(Long customerId, Integer monthNumber, Year year) {
+        return expenseInfoRepository.findAllByMonthNumberAndYearAndCustomerId(monthNumber, year, customerId)
                 .stream().map(this::buildExpenseInfoResponse)
                 .collect(Collectors.toList());
     }
@@ -45,7 +44,7 @@ public class ExpenseService {
                 .expenseType(expenseType)
                 .customer(customer)
                 .year(year)
-                .month(Month.findByMonthNumber(monthNumber))
+                .monthNumber(monthNumber)
                 .build();
 
         Expense expenseSaved = expenseInfoRepository.saveAndFlush(expense);
@@ -83,7 +82,7 @@ public class ExpenseService {
                 .name(expense.getName())
                 .price(expense.getPrice())
                 .paid(expense.isPaid())
-                .month(expense.getMonth().getNumber())
+                .month(expense.getMonthNumber())
                 .year(expense.getYear().getYearNumber())
                 .expenseTypeId(expense.getExpenseType().getId())
                 .build();
