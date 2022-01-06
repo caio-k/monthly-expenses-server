@@ -3,17 +3,23 @@ package com.monthlyexpenses.server.service;
 import com.monthlyexpenses.server.BasicConfigurationTest;
 import com.monthlyexpenses.server.configuration.MessagesComponent;
 import com.monthlyexpenses.server.dto.response.year.YearResponse;
+import com.monthlyexpenses.server.exceptions.ResourceNotFoundException;
+import com.monthlyexpenses.server.exceptions.UniqueViolationException;
+import com.monthlyexpenses.server.model.Customer;
 import com.monthlyexpenses.server.model.Year;
 import com.monthlyexpenses.server.repository.YearRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +38,7 @@ class YearServiceTest extends BasicConfigurationTest {
     private MessagesComponent messages;
 
     @Nested
+    @DisplayName("Tests for findAllYearsByCustomerId method")
     class FindAllYearsByCustomerIdTest {
 
         @Test
@@ -91,6 +98,64 @@ class YearServiceTest extends BasicConfigurationTest {
                     .thenThrow(new RuntimeException());
 
             assertThrows(RuntimeException.class, () -> yearService.findAllYearsByCustomerId(1L));
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests for createYear method")
+    class CreateYearTest {
+
+        @Test
+        void shouldThrowResourceNotFoundExceptionWhenNotFindCustomer() {
+            when(customerService.findCustomerByIdOrElseThrow(1L))
+                    .thenThrow(ResourceNotFoundException.class);
+
+            assertThrows(ResourceNotFoundException.class, () -> yearService.createYear(1L, 2022));
+        }
+
+        @Test
+        void shouldThrowUniqueViolationExceptionWhenYearNumberAlreadyExistsForUser() {
+            Customer customer = Customer.builder()
+                    .id(1L)
+                    .username("username")
+                    .email("email@email.com")
+                    .password("6g46er")
+                    .build();
+
+            when(customerService.findCustomerByIdOrElseThrow(1L))
+                    .thenReturn(customer);
+
+            when(yearRepository.saveAndFlush(any(Year.class)))
+                    .thenThrow(DataIntegrityViolationException.class);
+
+            assertThrows(UniqueViolationException.class, () -> yearService.createYear(1L, 2022));
+        }
+
+        @Test
+        void shouldCreateYear() {
+            Customer customer = Customer.builder()
+                    .id(1L)
+                    .username("username")
+                    .email("email@email.com")
+                    .password("6g46er")
+                    .build();
+
+            Year yearCreated = Year.builder()
+                    .id(1L)
+                    .yearNumber(2022)
+                    .customer(customer)
+                    .build();
+
+            when(customerService.findCustomerByIdOrElseThrow(1L))
+                    .thenReturn(customer);
+
+            when(yearRepository.saveAndFlush(any(Year.class)))
+                    .thenReturn(yearCreated);
+
+            YearResponse yearResponse = yearService.createYear(1L, 2022);
+
+            assertEquals(1L, yearResponse.getId());
+            assertEquals(2022, yearResponse.getYearNumber());
         }
     }
 }
