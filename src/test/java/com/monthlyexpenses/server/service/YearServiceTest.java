@@ -229,4 +229,42 @@ class YearServiceTest extends BasicConfigurationTest {
             assertEquals(2022, yearResponse.getYearNumber());
         }
     }
+
+    @Nested
+    @DisplayName("Tests for findYearByIdAndCustomerIdOrElseThrow method")
+    class FindYearByIdAndCustomerIdOrElseThrowTest {
+
+        @Test
+        void shouldNotFindYearByIdAndCustomerIdAndThrowsResourceNotFoundException() {
+            when(yearRepository.findByIdAndCustomerId(1L, 1L))
+                    .thenReturn(Optional.empty());
+
+            assertThrows(ResourceNotFoundException.class, () -> yearService.findYearByIdAndCustomerIdOrElseThrow(1L, 1L));
+        }
+
+        @Test
+        void shouldFindYearByIdAndCustomer() {
+            Customer customer = Customer.builder()
+                    .id(1L)
+                    .username("username")
+                    .email("email@email.com")
+                    .password("6g46er")
+                    .build();
+
+            Year yearFound = Year.builder()
+                    .id(1L)
+                    .yearNumber(2022)
+                    .customer(customer)
+                    .build();
+
+            when(yearRepository.findByIdAndCustomerId(1L, 1L))
+                    .thenReturn(Optional.of(yearFound));
+
+            Year year = yearService.findYearByIdAndCustomerIdOrElseThrow(1L, 1L);
+
+            assertEquals(1L, year.getId());
+            assertEquals(2022, year.getYearNumber());
+            assertEquals(1L, year.getCustomer().getId());
+        }
+    }
 }
