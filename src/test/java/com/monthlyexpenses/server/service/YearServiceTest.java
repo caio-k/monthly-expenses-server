@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -153,6 +154,76 @@ class YearServiceTest extends BasicConfigurationTest {
                     .thenReturn(yearCreated);
 
             YearResponse yearResponse = yearService.createYear(1L, 2022);
+
+            assertEquals(1L, yearResponse.getId());
+            assertEquals(2022, yearResponse.getYearNumber());
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests for updateYear method")
+    class UpdateYearTest {
+
+        @Test
+        void shouldThrowResourceNotFoundExceptionWhenNotFindYear() {
+            when(yearRepository.findByIdAndCustomerId(1L, 1L))
+                    .thenReturn(Optional.empty());
+
+            assertThrows(ResourceNotFoundException.class, () -> yearService.updateYear(1L, 1L, 2022));
+        }
+
+        @Test
+        void shouldThrowUniqueViolationExceptionWhenYearNumberAlreadyExistsForUser() {
+            Customer customer = Customer.builder()
+                    .id(1L)
+                    .username("username")
+                    .email("email@email.com")
+                    .password("6g46er")
+                    .build();
+
+            Year yearFound = Year.builder()
+                    .id(1L)
+                    .yearNumber(2023)
+                    .customer(customer)
+                    .build();
+
+            when(yearRepository.findByIdAndCustomerId(1L, 1L))
+                    .thenReturn(Optional.of(yearFound));
+
+            when(yearRepository.saveAndFlush(any(Year.class)))
+                    .thenThrow(DataIntegrityViolationException.class);
+
+            assertThrows(UniqueViolationException.class, () -> yearService.updateYear(1L, 1L, 2022));
+        }
+
+        @Test
+        void shouldUpdateYear() {
+            Customer customer = Customer.builder()
+                    .id(1L)
+                    .username("username")
+                    .email("email@email.com")
+                    .password("6g46er")
+                    .build();
+
+            Year yearFound = Year.builder()
+                    .id(1L)
+                    .yearNumber(2023)
+                    .customer(customer)
+                    .build();
+
+            Year yearUpdated = Year.builder()
+                    .id(1L)
+                    .yearNumber(2022)
+                    .customer(customer)
+                    .build();
+
+            when(yearRepository.findByIdAndCustomerId(1L, 1L))
+                    .thenReturn(Optional.of(yearFound));
+
+            when(yearRepository.saveAndFlush(any(Year.class)))
+                    .thenReturn(yearUpdated);
+
+            YearResponse yearResponse = yearService.updateYear(1L, 1L, 2022);
 
             assertEquals(1L, yearResponse.getId());
             assertEquals(2022, yearResponse.getYearNumber());
