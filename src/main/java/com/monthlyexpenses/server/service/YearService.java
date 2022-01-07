@@ -25,7 +25,7 @@ public class YearService {
     private final CustomerService customerService;
     private final MessagesComponent messages;
 
-    Calendar calendar = Calendar.getInstance();
+    Integer currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
     public List<YearResponse> findAllYearsByCustomerId(Long customerId) {
         return yearRepository.findAllByCustomerIdOrderByYearNumberDesc(customerId)
@@ -58,17 +58,16 @@ public class YearService {
 
     public Optional<Year> findTheSmallestYearGreaterThanTheCurrentYearOrElseTheGreatestYearSmallerThanTheCurrentYear(Long customerId) {
         List<Year> years = yearRepository.findAllByCustomerIdOrderByYearNumberDesc(customerId);
-        Integer actualYear = calendar.get(Calendar.YEAR);
-        int index = 0;
-
         if (years.isEmpty()) return Optional.empty();
 
-        while (index < years.size() && years.get(index).getYearNumber().compareTo(actualYear) > 0) {
+        int index = 0;
+
+        while (index < years.size() && isGreaterThanTheCurrentYear(years.get(index).getYearNumber())) {
             index++;
         }
 
         if (index < years.size()) {
-            if (index > 0 && years.get(index).getYearNumber().compareTo(actualYear) < 0) {
+            if (index > 0 && isSmallerThanTheCurrentYear(years.get(index).getYearNumber())) {
                 index--;
             }
         } else {
@@ -102,5 +101,13 @@ public class YearService {
                 .id(year.getId())
                 .yearNumber(year.getYearNumber())
                 .build();
+    }
+
+    private boolean isGreaterThanTheCurrentYear(Integer yearNumber) {
+        return yearNumber.compareTo(currentYear) > 0;
+    }
+
+    private boolean isSmallerThanTheCurrentYear(Integer yearNumber) {
+        return yearNumber.compareTo(currentYear) < 0;
     }
 }

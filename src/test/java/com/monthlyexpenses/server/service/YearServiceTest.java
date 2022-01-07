@@ -17,10 +17,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -213,14 +211,10 @@ class YearServiceTest extends BasicConfigurationTest {
         @ParameterizedTest
         @ValueSource(ints = {2021, 2022, 2023})
         void shouldFindOneYearInDatabaseAndReturnIt(int yearNumberInDatabase) {
-            Calendar calendar = Mockito.mock(Calendar.class);
-
-            when(calendar.get(Calendar.YEAR)).thenReturn(2022);
-
             when(yearRepository.findAllByCustomerIdOrderByYearNumberDesc(1L))
                     .thenReturn(List.of(yearWithNumber(yearNumberInDatabase)));
 
-            yearService.calendar = calendar;
+            yearService.currentYear = 2022;
 
             Optional<Year> nearestYearFromNow = yearService.findTheSmallestYearGreaterThanTheCurrentYearOrElseTheGreatestYearSmallerThanTheCurrentYear(1L);
 
@@ -232,14 +226,10 @@ class YearServiceTest extends BasicConfigurationTest {
     @ParameterizedTest
     @MethodSource("provideTwoYearsNumberAndExpectedResultWhenCurrentYearIs2022")
     void shouldFindTwoYearsAndReturnTheNearestYear(int yearNumber1, int yearNumber2, int nearestYearExpected, String details) {
-        Calendar calendar = Mockito.mock(Calendar.class);
-
-        when(calendar.get(Calendar.YEAR)).thenReturn(2022);
-
         when(yearRepository.findAllByCustomerIdOrderByYearNumberDesc(1L))
                 .thenReturn(List.of(yearWithNumber(yearNumber1), yearWithNumber(yearNumber2)));
 
-        yearService.calendar = calendar;
+        yearService.currentYear = 2022;
 
         Optional<Year> nearestYearFromNow = yearService.findTheSmallestYearGreaterThanTheCurrentYearOrElseTheGreatestYearSmallerThanTheCurrentYear(1L);
 
@@ -260,14 +250,10 @@ class YearServiceTest extends BasicConfigurationTest {
     @ParameterizedTest
     @MethodSource("provideThreeYearsNumberAndExpectedResultWhenCurrentYearIs2022")
     void shouldFindThreeYearsAndReturnTheNearestYear(int yearNumber1, int yearNumber2, int yearNumber3, int nearestYearExpected, String details) {
-        Calendar calendar = Mockito.mock(Calendar.class);
-
-        when(calendar.get(Calendar.YEAR)).thenReturn(2022);
-
         when(yearRepository.findAllByCustomerIdOrderByYearNumberDesc(1L))
                 .thenReturn(List.of(yearWithNumber(yearNumber1), yearWithNumber(yearNumber2), yearWithNumber(yearNumber3)));
 
-        yearService.calendar = calendar;
+        yearService.currentYear = 2022;
 
         Optional<Year> nearestYearFromNow = yearService.findTheSmallestYearGreaterThanTheCurrentYearOrElseTheGreatestYearSmallerThanTheCurrentYear(1L);
 
