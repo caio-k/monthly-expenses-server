@@ -30,12 +30,12 @@ public class ExpenseCompositionService {
 
     public ExpenseResponse getInitializationData(Long customerId) {
         List<YearResponse> allYears = yearService.findAllYearsByCustomerId(customerId);
-        Optional<Year> nearestYearFromNowOptional = yearService.findNearestYearFromNow(customerId);
-        Integer selectedYearNumber = nearestYearFromNowOptional.map(Year::getYearNumber).orElse(UNDEFINED_YEAR);
+        Optional<Year> nearestYear = yearService.findTheSmallestYearGreaterThanTheCurrentYearOrElseTheGreatestYearSmallerThanTheCurrentYear(customerId);
+        Integer selectedYearNumber = nearestYear.map(Year::getYearNumber).orElse(UNDEFINED_YEAR);
 
         int nearestMonthRegisteredFromNow = findNearestMonthRegisteredFromNow(selectedYearNumber);
 
-        Year nearestYearFromNowOrElseNull = nearestYearFromNowOptional.orElse(null);
+        Year nearestYearFromNowOrElseNull = nearestYear.orElse(null);
         InitialMoneyResponse initialMoneyResponse = initialMoneyService.findInitialMoneyByCustomerIdAndMonthAndYear(customerId, nearestMonthRegisteredFromNow, nearestYearFromNowOrElseNull);
         List<ExpenseInfoResponse> expenseInfoResponses = expenseService.findExpensesByCustomerIdAndMonthAndYear(customerId, nearestMonthRegisteredFromNow, nearestYearFromNowOrElseNull);
 

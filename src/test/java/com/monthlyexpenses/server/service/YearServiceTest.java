@@ -11,12 +11,20 @@ import com.monthlyexpenses.server.repository.YearRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,13 +62,8 @@ class YearServiceTest extends BasicConfigurationTest {
 
         @Test
         void shouldFindAListWithOneYear() {
-            Year year = Year.builder()
-                    .id(1L)
-                    .yearNumber(2022)
-                    .build();
-
             when(yearRepository.findAllByCustomerIdOrderByYearNumberDesc(eq(1L)))
-                    .thenReturn(List.of(year));
+                    .thenReturn(List.of(yearWithNumber(2022)));
 
             List<YearResponse> yearsFound = yearService.findAllYearsByCustomerId(1L);
 
@@ -71,18 +74,8 @@ class YearServiceTest extends BasicConfigurationTest {
 
         @Test
         void shouldFindAListWithTwoYears() {
-            Year year1 = Year.builder()
-                    .id(1L)
-                    .yearNumber(2021)
-                    .build();
-
-            Year year2 = Year.builder()
-                    .id(2L)
-                    .yearNumber(2022)
-                    .build();
-
             when(yearRepository.findAllByCustomerIdOrderByYearNumberDesc(eq(1L)))
-                    .thenReturn(List.of(year2, year1));
+                    .thenReturn(List.of(yearWithNumberAndId(2022, 2L), yearWithNumberAndId(2021, 1L)));
 
             List<YearResponse> yearsFound = yearService.findAllYearsByCustomerId(1L);
 
@@ -116,15 +109,8 @@ class YearServiceTest extends BasicConfigurationTest {
 
         @Test
         void shouldThrowUniqueViolationExceptionWhenYearNumberAlreadyExistsForUser() {
-            Customer customer = Customer.builder()
-                    .id(1L)
-                    .username("username")
-                    .email("email@email.com")
-                    .password("6g46er")
-                    .build();
-
             when(customerService.findCustomerByIdOrElseThrow(1L))
-                    .thenReturn(customer);
+                    .thenReturn(customer());
 
             when(yearRepository.saveAndFlush(any(Year.class)))
                     .thenThrow(DataIntegrityViolationException.class);
@@ -134,24 +120,11 @@ class YearServiceTest extends BasicConfigurationTest {
 
         @Test
         void shouldCreateYear() {
-            Customer customer = Customer.builder()
-                    .id(1L)
-                    .username("username")
-                    .email("email@email.com")
-                    .password("6g46er")
-                    .build();
-
-            Year yearCreated = Year.builder()
-                    .id(1L)
-                    .yearNumber(2022)
-                    .customer(customer)
-                    .build();
-
             when(customerService.findCustomerByIdOrElseThrow(1L))
-                    .thenReturn(customer);
+                    .thenReturn(customer());
 
             when(yearRepository.saveAndFlush(any(Year.class)))
-                    .thenReturn(yearCreated);
+                    .thenReturn(yearWithNumber(2022));
 
             YearResponse yearResponse = yearService.createYear(1L, 2022);
 
@@ -174,21 +147,8 @@ class YearServiceTest extends BasicConfigurationTest {
 
         @Test
         void shouldThrowUniqueViolationExceptionWhenYearNumberAlreadyExistsForUser() {
-            Customer customer = Customer.builder()
-                    .id(1L)
-                    .username("username")
-                    .email("email@email.com")
-                    .password("6g46er")
-                    .build();
-
-            Year yearFound = Year.builder()
-                    .id(1L)
-                    .yearNumber(2023)
-                    .customer(customer)
-                    .build();
-
             when(yearRepository.findByIdAndCustomerId(1L, 1L))
-                    .thenReturn(Optional.of(yearFound));
+                    .thenReturn(Optional.of(yearWithNumber(2023)));
 
             when(yearRepository.saveAndFlush(any(Year.class)))
                     .thenThrow(DataIntegrityViolationException.class);
@@ -198,30 +158,11 @@ class YearServiceTest extends BasicConfigurationTest {
 
         @Test
         void shouldUpdateYear() {
-            Customer customer = Customer.builder()
-                    .id(1L)
-                    .username("username")
-                    .email("email@email.com")
-                    .password("6g46er")
-                    .build();
-
-            Year yearFound = Year.builder()
-                    .id(1L)
-                    .yearNumber(2023)
-                    .customer(customer)
-                    .build();
-
-            Year yearUpdated = Year.builder()
-                    .id(1L)
-                    .yearNumber(2022)
-                    .customer(customer)
-                    .build();
-
             when(yearRepository.findByIdAndCustomerId(1L, 1L))
-                    .thenReturn(Optional.of(yearFound));
+                    .thenReturn(Optional.of(yearWithNumber(2023)));
 
             when(yearRepository.saveAndFlush(any(Year.class)))
-                    .thenReturn(yearUpdated);
+                    .thenReturn(yearWithNumber(2022));
 
             YearResponse yearResponse = yearService.updateYear(1L, 1L, 2022);
 
@@ -244,21 +185,8 @@ class YearServiceTest extends BasicConfigurationTest {
 
         @Test
         void shouldFindYearByIdAndCustomer() {
-            Customer customer = Customer.builder()
-                    .id(1L)
-                    .username("username")
-                    .email("email@email.com")
-                    .password("6g46er")
-                    .build();
-
-            Year yearFound = Year.builder()
-                    .id(1L)
-                    .yearNumber(2022)
-                    .customer(customer)
-                    .build();
-
             when(yearRepository.findByIdAndCustomerId(1L, 1L))
-                    .thenReturn(Optional.of(yearFound));
+                    .thenReturn(Optional.of(yearWithNumber(2022)));
 
             Year year = yearService.findYearByIdAndCustomerIdOrElseThrow(1L, 1L);
 
@@ -266,5 +194,115 @@ class YearServiceTest extends BasicConfigurationTest {
             assertEquals(2022, year.getYearNumber());
             assertEquals(1L, year.getCustomer().getId());
         }
+    }
+
+    @Nested
+    @DisplayName("Tests for findTheSmallestYearGreaterThanTheCurrentYear method")
+    class FindTheSmallestYearGreaterThanTheCurrentYear {
+
+        @Test
+        void shouldReturnOptionalEmptyWhenNotFoundAnyYearInDatabase() {
+            when(yearRepository.findAllByCustomerIdOrderByYearNumberDesc(1L))
+                    .thenReturn(Collections.emptyList());
+
+            Optional<Year> nearestYearFromNow = yearService.findTheSmallestYearGreaterThanTheCurrentYearOrElseTheGreatestYearSmallerThanTheCurrentYear(1L);
+
+            assertTrue(nearestYearFromNow.isEmpty());
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = {2021, 2022, 2023})
+        void shouldFindOneYearInDatabaseAndReturnIt(int yearNumberInDatabase) {
+            Calendar calendar = Mockito.mock(Calendar.class);
+
+            when(calendar.get(Calendar.YEAR)).thenReturn(2022);
+
+            when(yearRepository.findAllByCustomerIdOrderByYearNumberDesc(1L))
+                    .thenReturn(List.of(yearWithNumber(yearNumberInDatabase)));
+
+            yearService.calendar = calendar;
+
+            Optional<Year> nearestYearFromNow = yearService.findTheSmallestYearGreaterThanTheCurrentYearOrElseTheGreatestYearSmallerThanTheCurrentYear(1L);
+
+            assertTrue(nearestYearFromNow.isPresent());
+            assertEquals(yearNumberInDatabase, nearestYearFromNow.get().getYearNumber());
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideTwoYearsNumberAndExpectedResultWhenCurrentYearIs2022")
+    void shouldFindTwoYearsAndReturnTheNearestYear(int yearNumber1, int yearNumber2, int nearestYearExpected, String details) {
+        Calendar calendar = Mockito.mock(Calendar.class);
+
+        when(calendar.get(Calendar.YEAR)).thenReturn(2022);
+
+        when(yearRepository.findAllByCustomerIdOrderByYearNumberDesc(1L))
+                .thenReturn(List.of(yearWithNumber(yearNumber1), yearWithNumber(yearNumber2)));
+
+        yearService.calendar = calendar;
+
+        Optional<Year> nearestYearFromNow = yearService.findTheSmallestYearGreaterThanTheCurrentYearOrElseTheGreatestYearSmallerThanTheCurrentYear(1L);
+
+        assertTrue(nearestYearFromNow.isPresent(), details);
+        assertEquals(nearestYearExpected, nearestYearFromNow.get().getYearNumber(), details);
+    }
+
+    private static Stream<Arguments> provideTwoYearsNumberAndExpectedResultWhenCurrentYearIs2022() {
+        return Stream.of(
+                Arguments.of(2021, 2020, 2021, "should find two years smaller than the current year and return the greatest year between them"),
+                Arguments.of(2024, 2023, 2023, "should find two years greater than the current year and return the smallest year between them"),
+                Arguments.of(2023, 2021, 2023, "should find one year smaller and another year greater than the current year return the greatest year between them"),
+                Arguments.of(2022, 2021, 2022, "should find one year smaller than the current year and another year equals to current year and return the current year"),
+                Arguments.of(2023, 2022, 2022, "should find one year greater than the current year and another year equals to current year and return the current year")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideThreeYearsNumberAndExpectedResultWhenCurrentYearIs2022")
+    void shouldFindThreeYearsAndReturnTheNearestYear(int yearNumber1, int yearNumber2, int yearNumber3, int nearestYearExpected, String details) {
+        Calendar calendar = Mockito.mock(Calendar.class);
+
+        when(calendar.get(Calendar.YEAR)).thenReturn(2022);
+
+        when(yearRepository.findAllByCustomerIdOrderByYearNumberDesc(1L))
+                .thenReturn(List.of(yearWithNumber(yearNumber1), yearWithNumber(yearNumber2), yearWithNumber(yearNumber3)));
+
+        yearService.calendar = calendar;
+
+        Optional<Year> nearestYearFromNow = yearService.findTheSmallestYearGreaterThanTheCurrentYearOrElseTheGreatestYearSmallerThanTheCurrentYear(1L);
+
+        assertTrue(nearestYearFromNow.isPresent(), details);
+        assertEquals(nearestYearExpected, nearestYearFromNow.get().getYearNumber(), details);
+    }
+
+    private static Stream<Arguments> provideThreeYearsNumberAndExpectedResultWhenCurrentYearIs2022() {
+        return Stream.of(
+                Arguments.of(2021, 2020, 2019, 2021, "should find three years smaller than the current year and return the greatest year between them"),
+                Arguments.of(2025, 2024, 2023, 2023, "should find three years greater than the current year and return the smallest year between them"),
+                Arguments.of(2023, 2021, 2020, 2023, "should two one years smaller and another year greater than the current year return the greatest year between them"),
+                Arguments.of(2022, 2021, 2020, 2022, "should find two years smaller than the current year and another year equals to current year and return the current year"),
+                Arguments.of(2024, 2023, 2022, 2022, "should find two years greater than the current year and another year equals to current year and return the current year")
+        );
+    }
+
+    private Customer customer() {
+        return Customer.builder()
+                .id(1L)
+                .username("username")
+                .email("email@email.com")
+                .password("6g46er")
+                .build();
+    }
+
+    private Year yearWithNumber(int yearNumber) {
+        return yearWithNumberAndId(yearNumber, 1L);
+    }
+
+    private Year yearWithNumberAndId(int yearNumber, Long id) {
+        return Year.builder()
+                .id(id)
+                .yearNumber(yearNumber)
+                .customer(customer())
+                .build();
     }
 }

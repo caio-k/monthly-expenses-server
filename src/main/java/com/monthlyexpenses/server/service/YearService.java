@@ -13,7 +13,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +24,8 @@ public class YearService {
     private final YearRepository yearRepository;
     private final CustomerService customerService;
     private final MessagesComponent messages;
+
+    Calendar calendar = Calendar.getInstance();
 
     public List<YearResponse> findAllYearsByCustomerId(Long customerId) {
         return yearRepository.findAllByCustomerIdOrderByYearNumberDesc(customerId)
@@ -55,9 +56,9 @@ public class YearService {
         return MessageResponse.builder().message(messages.get("YEAR_DELETED")).build();
     }
 
-    public Optional<Year> findNearestYearFromNow(Long customerId) {
+    public Optional<Year> findTheSmallestYearGreaterThanTheCurrentYearOrElseTheGreatestYearSmallerThanTheCurrentYear(Long customerId) {
         List<Year> years = yearRepository.findAllByCustomerIdOrderByYearNumberDesc(customerId);
-        Integer actualYear = GregorianCalendar.getInstance().get(Calendar.YEAR);
+        Integer actualYear = calendar.get(Calendar.YEAR);
         int index = 0;
 
         if (years.isEmpty()) return Optional.empty();
